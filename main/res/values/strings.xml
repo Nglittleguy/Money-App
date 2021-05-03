@@ -1,0 +1,17 @@
+<resources>
+    <string name="app_name">Money</string>
+    <string name="incomeTitleValue">Long Term Income</string>
+    <string name="incomeDescriptionValue">Description</string>
+    <string name="incomeValue">Income</string>
+    <string name="incomeHintValue">$ Dollars earned</string>
+    <string name="otherPeriodValue">Number of Days</string>
+    <string name="perValue">per</string>
+    <string name="addIncomeButtonValue">Add Income</string>
+    <string-array name="incomePeriodValues">
+        <item>per Year</item>
+        <item>per Month</item>
+        <item>per 2 Weeks</item>
+        <item>per Week</item>
+        <item>per Other Period</item>
+    </string-array>
+</resources>
