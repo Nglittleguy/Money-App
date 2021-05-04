@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -25,7 +26,7 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
     private EditText periodInput;
     private TextView showWI;
     private int weeklyIncome;       //in cents
-    private int periodOfWeeks;
+    private double periodOfWeeks;
     private DecimalFormat incomeToText;
 
 
@@ -57,26 +58,22 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
-                if(incomeInput.getText()==null) {
-                    updateWeeklyIncome(periodOfWeeks, 0);
-                    updateWeeklyIncomeView();
-                    return;
-                }
                 if(!incomeInput.getText().toString().startsWith("$")) {
                     incomeInput.setText("$" + incomeInput.getText().toString().replace("$", ""));
                     Selection.setSelection(incomeInput.getText(), incomeInput.getText().length());
                 }
-                if(!(periodInput.equals(null) && incomePeriod.getSelectedItemPosition()==4)) {
-
-                    double amountDouble = Double.parseDouble(incomeInput.getText().toString().substring(1));
-                    if(amountDouble/100 > Integer.MAX_VALUE)
-                        Toast.makeText(MainActivity.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
-
-                    int amountInteger = (int) amountDouble*100;
-                    updateWeeklyIncome(periodOfWeeks, amountInteger);
-                    updateWeeklyIncomeView();
-
+                try {
+                    if(!(periodInput.equals(null) && incomePeriod.getSelectedItemPosition()==4)) {
+                        int amountInteger = getIncomeAmount();
+                        updateWeeklyIncome(periodOfWeeks, amountInteger);
+                    }
                 }
+                catch (NumberFormatException e) {
+                    Log.d("Exception", e.toString());
+                    Toast.makeText(MainActivity.this, "Failed to parse income.", Toast.LENGTH_LONG).show();
+                    updateWeeklyIncome(periodOfWeeks, 0);
+                }
+
             }
         });
 
@@ -96,23 +93,37 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                     periodInput.setText("");
                     return;
                 }
+                try{
+                    if(s.length()>0 && !s.toString().contains(" days") && !s.toString().equals(" days")) {
 
-                if(s.length()>0 && !s.toString().contains(" days") && !s.toString().equals(" days")) {
-                    String text = s.toString().concat(" days");
-                    periodInput.setText(text);
-                    periodInput.setSelection(text.length() - 5);
-                    suffixAdded = true;
-
-                    periodOfWeeks = Integer.parseInt(periodInput.getText().toString()
-                            .substring(0, periodInput.getText().toString().length()-5));
-                    updateWeeklyIncome(periodOfWeeks, weeklyIncome);
-                    updateWeeklyIncomeView();
+                        String text = s.toString().concat(" days");
+                        periodInput.setText(text);
+                        periodInput.setSelection(text.length() - 5);
+                        suffixAdded = true;
+                    }
                 }
+                catch (NumberFormatException e) {
+                    Log.d("Exception", e.toString());
+                    Toast.makeText(MainActivity.this, "Failed to parse period", Toast.LENGTH_LONG).show();
+                }
+
             }
             @Override
             public void afterTextChanged(Editable s) {
                 if(s.length()==0)
                     suffixAdded = false;
+                try {
+                    if(periodInput.getText().toString().length()>5) {
+                        periodOfWeeks = ((double) Integer.parseInt(periodInput.getText().toString()
+                                .substring(0, periodInput.getText().toString().length() - 5))) / 7;
+                    }
+
+                }
+                catch (NumberFormatException e) {
+                    Log.d("Exception", e.toString());
+                    Toast.makeText(MainActivity.this, "Failed to parse period", Toast.LENGTH_LONG).show();
+                }
+                updateWeeklyIncome(periodOfWeeks, getIncomeAmount());
             }
         });
 
@@ -153,17 +164,59 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
                 break;
         }
 
+        try {
+            if(!(periodInput.equals(null) && incomePeriod.getSelectedItemPosition()==4)) {
+                if (incomeInput.getText().toString().length() > 1) {
+                    double amountDouble = Double.parseDouble(incomeInput.getText().toString().substring(1));
+                    if (amountDouble / 100 > Integer.MAX_VALUE)
+                        Toast.makeText(MainActivity.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
+
+                    int amountInteger = (int) amountDouble * 100;
+                    updateWeeklyIncome(periodOfWeeks, amountInteger);
+                }
+                else {
+                    updateWeeklyIncome(periodOfWeeks, 0);
+                }
+            }
+        }
+        catch (NumberFormatException e) {
+            Toast.makeText(MainActivity.this, "Failed to parse income.", Toast.LENGTH_LONG).show();
+            updateWeeklyIncome(periodOfWeeks, 0);
+        }
+
+
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {}
 
 
+    public int getIncomeAmount() {
+        int amountInteger = 0;
+        try{
+            if(incomeInput.getText().toString().length()>0) {
+                double amountDouble = Double.parseDouble(incomeInput.getText().toString().substring(1));
+                if(amountDouble/100 > Integer.MAX_VALUE)
+                    Toast.makeText(MainActivity.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
+
+                amountInteger = (int) amountDouble*100;
+            }
+            else
+                amountInteger = 0;
+
+        }
+        catch (NumberFormatException e) {
+            Toast.makeText(MainActivity.this, "Failed to parse amount", Toast.LENGTH_LONG).show();
+        }
+        return amountInteger;
+    }
+
     /*
     Updates the weekly income
      */
-    public void updateWeeklyIncome(int period, int amount) {
-        weeklyIncome = amount/period;
+    public void updateWeeklyIncome(double period, int amount) {
+        weeklyIncome = (int) (amount/period);
+        updateWeeklyIncomeView();
     }
 
     /*
@@ -175,6 +228,5 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         double amount = ((double)weeklyIncome)/100;
         String num = incomeToText.format(amount);
         showWI.setText(text+num);
-        Toast.makeText(this, ""+weeklyIncome, Toast.LENGTH_LONG).show();
     }
 }
