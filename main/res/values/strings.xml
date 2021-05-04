@@ -7,6 +7,9 @@
     <string name="otherPeriodValue">Number of Days</string>
     <string name="perValue">per</string>
     <string name="addIncomeButtonValue">Add Income</string>
+    <string name="addNewIncomeValue">Add New Income</string>
+    <string name="nextValue">Next</string>
+    <string name="removeValue">Remove</string>
     <string-array name="incomePeriodValues">
         <item>per Year</item>
         <item>per Month</item>
