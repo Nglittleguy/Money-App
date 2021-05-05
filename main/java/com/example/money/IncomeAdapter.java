@@ -13,9 +13,10 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.text.DecimalFormat;
 import java.util.List;
 
-public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder>{
+public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder> {
 
     Context c;
     List<Income> incomeList;
@@ -69,7 +70,20 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder
     public void onBindViewHolder(@NonNull IncomeAdapter.ViewHolder holder, int position) {
         Income i = incomeList.get(position);
         holder.rowDesc.setText(""+i.getDesc());
-        holder.rowAmount.setText(""+i.getAmountPerWeek());
+        holder.rowAmount.setText(""+Databases.centsToDollar(i.getAmountPerWeek()));
+
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editIncome = new Intent(c, AddIncome.class);
+                editIncome.putExtra("Edit", true);
+                editIncome.putExtra("WeeklyIncome", i.getAmountPerWeek());
+                editIncome.putExtra("OldID", i.getId());
+                editIncome.putExtra("Description", i.getDesc());
+                c.startActivity(editIncome);
+                //Toast.makeText(c, "Here at number "+position, Toast.LENGTH_SHORT).show();
+            }
+        });
     }
 
     @Override
@@ -84,4 +98,6 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder
         notifyItemRemoved(pos);
         notifyItemRangeChanged(pos, incomeList.size());
     }
+
+
 }

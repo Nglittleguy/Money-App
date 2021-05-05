@@ -71,4 +71,14 @@ public class IncomeDBHelper extends SQLiteOpenHelper {
 
         return c.moveToFirst();
     }
+
+    public boolean editOne(Income i, int id) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + TABLE +
+                " SET " + COL_AMNT + " = " + i.getAmountPerWeek() + "" +
+                ", " + COL_DESC + " = '" + i.getDesc() + "' " +
+                " WHERE " + COL_ID + " = " + id;
+        db.execSQL(query);
+        return true;
+    }
 }

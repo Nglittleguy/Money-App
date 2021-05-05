@@ -33,17 +33,23 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
     private DecimalFormat incomeToText;
     private Button button;
     private IncomeDBHelper dbHelper;
+    private Boolean edit;
+    private int oldID;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
-
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.add_income);
+        setContentView(R.layout.activity_add_income);
 
         incomeToText = new DecimalFormat("0.00");
-        weeklyIncome = 0;
+
+        Intent intent = getIntent();
+        edit = intent.getBooleanExtra("Edit", false);
+        weeklyIncome = intent.getIntExtra("WeeklyIncome", 0);
+        oldID = intent.getIntExtra("OldID", 0);
+
 
         //Select Income Period
         incomePeriod = findViewById(R.id.selectIncomePeriod);
@@ -139,12 +145,21 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
 
         //Showing Weekly Income
         showWI = findViewById(R.id.showIncomeText);
+        if(edit) {
+            updateWeeklyIncomeView();
+            incomeInput.setText(Databases.centsToDollar(weeklyIncome));
+        }
+
 
         //Button Press
         button = findViewById(R.id.addIncomeButton);
+        if(edit)
+            button.setText("Update Income");
 
         //Description Text
         descriptionInput = findViewById(R.id.incomeDesc);
+        if(edit)
+            descriptionInput.setText(intent.getStringExtra("Description"));
 
         //Database Helper
         dbHelper = Databases.getIncomeHelper();
@@ -164,16 +179,16 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
 
         switch(position) {
             case 0:
-                periodOfWeeks = 52;
+                periodOfWeeks = 1;
                 break;
             case 1:
-                periodOfWeeks = 4;
-                break;
-            case 2:
                 periodOfWeeks = 2;
                 break;
+            case 2:
+                periodOfWeeks = 4;
+                break;
             case 3:
-                periodOfWeeks = 1;
+                periodOfWeeks = 52;
                 break;
         }
 
@@ -237,10 +252,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
     https://www.geeksforgeeks.org/insert-a-string-into-another-string-in-java/
      */
     public void updateWeeklyIncomeView() {
-        String text = "Weekly income: $";
-        double amount = ((double)weeklyIncome)/100;
-        String num = incomeToText.format(amount);
-        showWI.setText(text+num);
+        showWI.setText("Weekly income: " + Databases.centsToDollar(weeklyIncome));
     }
 
     /*
@@ -253,7 +265,12 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
         Income i;
         try {
             i = new Income(-1, descriptionInput.getText().toString(), weeklyIncome);
-            boolean success = dbHelper.addOne(i);
+            Boolean success;
+            if(edit) {
+                success = dbHelper.editOne(i, oldID);
+            }
+            else
+                success = dbHelper.addOne(i);
             Log.d("Success", "Add it "+success);
             Intent leaveActivity = new Intent(this, MainAdd.class);
             startActivity(leaveActivity);

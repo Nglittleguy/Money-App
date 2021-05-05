@@ -5,12 +5,8 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
-import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -26,7 +22,7 @@ public class MainAdd extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.main_add);
+        setContentView(R.layout.activity_main_add);
 
         dbHelper = new IncomeDBHelper(this);
         Databases.setIncomeHelper(dbHelper);
@@ -52,6 +48,7 @@ public class MainAdd extends AppCompatActivity {
 
     public void addNewIncomePressed(View v) {
         Intent leaveActivity = new Intent(this, AddIncome.class);
+        leaveActivity.putExtra("Edit", false);
         startActivity(leaveActivity);
     }
 
