@@ -97,6 +97,8 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder
         Databases.getIncomeHelper().removeOne(i);
         notifyItemRemoved(pos);
         notifyItemRangeChanged(pos, incomeList.size());
+        if(c instanceof MainAddIncome)
+            ((MainAddIncome) c).updateTotal();
     }
 
 
