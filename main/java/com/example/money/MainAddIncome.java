@@ -24,14 +24,12 @@ public class MainAddIncome extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_add);
+        setContentView(R.layout.activity_main_add_income);
 
         dbHelper = new IncomeDBHelper(this);
         Databases.setIncomeHelper(dbHelper);
 
         incomeList = dbHelper.getAll();
-
-        //listOfIncome = findViewById(R.id.listOfIncome);
 
 
 
@@ -53,7 +51,7 @@ public class MainAddIncome extends AppCompatActivity {
         for(Income i:incomeList)
             total+=i.getAmountPerWeek();
 
-        totalIncome.setText("Total: " + Databases.centsToDollar(total));
+        totalIncome.setText("Weekly Total: " + Databases.centsToDollar(total));
     }
 
     public void addNewIncomePressed(View v) {
@@ -63,6 +61,7 @@ public class MainAddIncome extends AppCompatActivity {
     }
 
     public void nextPressed(View v) {
-
+        Intent leaveActivity = new Intent(this, MainAddExpense.class);
+        startActivity(leaveActivity);
     }
 }

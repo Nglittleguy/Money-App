@@ -10,6 +10,15 @@ public final class Databases {
     public static void setIncomeHelper(IncomeDBHelper i) {
         incomeHelper = i;
     }
+
+    private static ExpenseDBHelper expenseHelper;
+    public static ExpenseDBHelper getExpenseHelper() {
+        return expenseHelper;
+    }
+    public static void setExpenseHelper(ExpenseDBHelper i) {
+        expenseHelper = i;
+    }
+
     public static String centsToDollar(int wi) {
         DecimalFormat incomeToText = new DecimalFormat("0.00");
         double amount = ((double)wi)/100;

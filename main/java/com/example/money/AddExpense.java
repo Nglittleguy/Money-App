@@ -20,73 +20,73 @@ import android.widget.Toast;
 
 import java.text.DecimalFormat;
 
-public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class AddExpense extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private Spinner incomePeriod;
+    private Spinner expensePeriod;
     private ConstraintLayout manualPeriodInput;
-    private EditText incomeInput;
+    private EditText expenseInput;
     private EditText periodInput;
     private EditText descriptionInput;
     private TextView showWI;
-    private int weeklyIncome;       //in cents
+    private int weeklyExpense;       //in cents
     private double periodOfWeeks;
+    private DecimalFormat ExpenseToText;
     private Button button;
-    private IncomeDBHelper dbHelper;
+    private ExpenseDBHelper dbHelper;
     private Boolean edit;
     private int oldID;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_income);
+        setContentView(R.layout.activity_add_expense);
 
         Intent intent = getIntent();
         edit = intent.getBooleanExtra("Edit", false);
-        weeklyIncome = intent.getIntExtra("WeeklyIncome", 0);
+        weeklyExpense = intent.getIntExtra("WeeklyExpense", 0);
         oldID = intent.getIntExtra("OldID", 0);
 
 
-        //Select Income Period
-        incomePeriod = findViewById(R.id.selectIncomePeriod);
-        ArrayAdapter<CharSequence> incomePeriodAdapter = ArrayAdapter.createFromResource(
+        //Select Expense Period
+        expensePeriod = findViewById(R.id.selectExpensePeriod);
+        ArrayAdapter<CharSequence> expensePeriodAdapter = ArrayAdapter.createFromResource(
                 this, R.array.incomePeriodValues, android.R.layout.simple_spinner_item);
-        incomePeriodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        incomePeriod.setAdapter(incomePeriodAdapter);
-        incomePeriod.setOnItemSelectedListener(this);
+        expensePeriodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        expensePeriod.setAdapter(expensePeriodAdapter);
+        expensePeriod.setOnItemSelectedListener(this);
 
 
-        //Income Input
-        incomeInput = findViewById(R.id.incomeAmount);
-        incomeInput.addTextChangedListener(new TextWatcher() {
+        //Expense Input
+        expenseInput = findViewById(R.id.expenseAmount);
+        expenseInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
             @Override
             public void onTextChanged(CharSequence s, int start, int before, int count) {}
             @Override
             public void afterTextChanged(Editable s) {
-                if(!incomeInput.getText().toString().startsWith("$")) {
-                    incomeInput.setText("$" + incomeInput.getText().toString().replace("$", ""));
-                    Selection.setSelection(incomeInput.getText(), incomeInput.getText().length());
+                if(!expenseInput.getText().toString().startsWith("$")) {
+                    expenseInput.setText("$" + expenseInput.getText().toString().replace("$", ""));
+                    Selection.setSelection(expenseInput.getText(), expenseInput.getText().length());
                 }
                 try {
-                    if(!(periodInput.equals(null) && incomePeriod.getSelectedItemPosition()==4)) {
-                        int amountInteger = getIncomeAmount();
-                        updateWeeklyIncome(periodOfWeeks, amountInteger);
+                    if(!(periodInput.equals(null) && expensePeriod.getSelectedItemPosition()==4)) {
+                        int amountInteger = getExpenseAmount();
+                        updateWeeklyExpense(periodOfWeeks, amountInteger);
                     }
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
-                    Toast.makeText(AddIncome.this, "Failed to parse income.", Toast.LENGTH_LONG).show();
-                    updateWeeklyIncome(periodOfWeeks, 0);
+                    Toast.makeText(AddExpense.this, "Failed to parse expense.", Toast.LENGTH_LONG).show();
+                    updateWeeklyExpense(periodOfWeeks, 0);
                 }
 
             }
         });
 
         //Period Input
-        periodInput = findViewById(R.id.setIncomePeriod);
+        periodInput = findViewById(R.id.setExpensePeriod);
         periodInput.addTextChangedListener(new TextWatcher() {
             /*
                 https://stackoverflow.com/questions/34596536/android-edittext-with-suffix -
@@ -113,7 +113,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
-                    Toast.makeText(AddIncome.this, "Failed to parse period", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddExpense.this, "Failed to parse period", Toast.LENGTH_LONG).show();
                 }
 
             }
@@ -130,40 +130,40 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
-                    Toast.makeText(AddIncome.this, "Failed to parse period", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddExpense.this, "Failed to parse period", Toast.LENGTH_LONG).show();
                 }
-                updateWeeklyIncome(periodOfWeeks, getIncomeAmount());
+                updateWeeklyExpense(periodOfWeeks, getExpenseAmount());
             }
         });
 
 
-        //Manual Income Period Input
-        manualPeriodInput = findViewById(R.id.manualIncomePeriod);
+        //Manual Expense Period Input
+        manualPeriodInput = findViewById(R.id.manualExpensePeriod);
 
-        //Showing Weekly Income
-        showWI = findViewById(R.id.showIncomeText);
+        //Showing Weekly Expense
+        showWI = findViewById(R.id.showExpenseText);
         if(edit) {
-            updateWeeklyIncomeView();
-            incomeInput.setText(Databases.centsToDollar(weeklyIncome));
+            updateWeeklyExpenseView();
+            expenseInput.setText(Databases.centsToDollar(weeklyExpense));
         }
 
 
         //Button Press
-        button = findViewById(R.id.addIncomeButton);
+        button = findViewById(R.id.addExpenseButton);
         if(edit)
-            button.setText("Update Income");
+            button.setText("Update Expense");
 
         //Description Text
-        descriptionInput = findViewById(R.id.incomeDesc);
+        descriptionInput = findViewById(R.id.expenseDesc);
         if(edit)
             descriptionInput.setText(intent.getStringExtra("Description"));
 
         //Database Helper
-        dbHelper = Databases.getIncomeHelper();
+        dbHelper = Databases.getExpenseHelper();
 
     }
 
-    //incomePeriod Spinner Methods
+    //expensePeriod Spinner Methods
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         String text = parent.getItemAtPosition(position).toString();
@@ -190,23 +190,23 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
         }
 
         try {
-            if(!(periodInput.equals(null) && incomePeriod.getSelectedItemPosition()==4)) {
-                if (incomeInput.getText().toString().length() > 1) {
-                    double amountDouble = Double.parseDouble(incomeInput.getText().toString().substring(1));
+            if(!(periodInput.equals(null) && expensePeriod.getSelectedItemPosition()==4)) {
+                if (expenseInput.getText().toString().length() > 1) {
+                    double amountDouble = Double.parseDouble(expenseInput.getText().toString().substring(1));
                     if (amountDouble / 100 > Integer.MAX_VALUE)
-                        Toast.makeText(AddIncome.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
+                        Toast.makeText(AddExpense.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
 
                     int amountInteger = (int) amountDouble * 100;
-                    updateWeeklyIncome(periodOfWeeks, amountInteger);
+                    updateWeeklyExpense(periodOfWeeks, amountInteger);
                 }
                 else {
-                    updateWeeklyIncome(periodOfWeeks, 0);
+                    updateWeeklyExpense(periodOfWeeks, 0);
                 }
             }
         }
         catch (NumberFormatException e) {
-            Toast.makeText(AddIncome.this, "Failed to parse income.", Toast.LENGTH_LONG).show();
-            updateWeeklyIncome(periodOfWeeks, 0);
+            Toast.makeText(AddExpense.this, "Failed to parse expense.", Toast.LENGTH_LONG).show();
+            updateWeeklyExpense(periodOfWeeks, 0);
         }
 
 
@@ -216,13 +216,13 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
     public void onNothingSelected(AdapterView<?> parent) {}
 
 
-    public int getIncomeAmount() {
+    public int getExpenseAmount() {
         int amountInteger = 0;
         try{
-            if(incomeInput.getText().toString().length()>0) {
-                double amountDouble = Double.parseDouble(incomeInput.getText().toString().substring(1));
+            if(expenseInput.getText().toString().length()>0) {
+                double amountDouble = Double.parseDouble(expenseInput.getText().toString().substring(1));
                 if(amountDouble/100 > Integer.MAX_VALUE)
-                    Toast.makeText(AddIncome.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
+                    Toast.makeText(AddExpense.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
 
                 amountInteger = (int) amountDouble*100;
             }
@@ -231,37 +231,37 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
 
         }
         catch (NumberFormatException e) {
-            Toast.makeText(AddIncome.this, "Failed to parse amount", Toast.LENGTH_LONG).show();
+            Toast.makeText(AddExpense.this, "Failed to parse amount", Toast.LENGTH_LONG).show();
         }
         return amountInteger;
     }
 
     /*
-    Updates the weekly income
+    Updates the weekly expense
      */
-    public void updateWeeklyIncome(double period, int amount) {
-        weeklyIncome = (int) (amount/period);
-        updateWeeklyIncomeView();
+    public void updateWeeklyExpense(double period, int amount) {
+        weeklyExpense = (int) (amount/period);
+        updateWeeklyExpenseView();
     }
 
     /*
-    Updates the view of the weekly income
+    Updates the view of the weekly expense
     https://www.geeksforgeeks.org/insert-a-string-into-another-string-in-java/
      */
-    public void updateWeeklyIncomeView() {
-        showWI.setText("Weekly income: " + Databases.centsToDollar(weeklyIncome));
+    public void updateWeeklyExpenseView() {
+        showWI.setText("Weekly expenses: " + Databases.centsToDollar(weeklyExpense));
     }
 
     /*
-    Adds the income of the current values to a list
+    Adds the expense of the current values to a list
      */
-    public void addIncomeToList(View v) {
-        if(weeklyIncome==0 || descriptionInput.getText().toString().length()==0)
+    public void addExpenseToList(View v) {
+        if(weeklyExpense==0 || descriptionInput.getText().toString().length()==0)
             return;
 
-        Income i;
+        Expense i;
         try {
-            i = new Income(-1, descriptionInput.getText().toString(), weeklyIncome);
+            i = new Expense(-1, descriptionInput.getText().toString(), weeklyExpense);
             Boolean success;
             if(edit) {
                 success = dbHelper.editOne(i, oldID);
@@ -269,18 +269,18 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
             else
                 success = dbHelper.addOne(i);
             Log.d("Success", "Add it "+success);
-            Intent leaveActivity = new Intent(this, MainAddIncome.class);
+            Intent leaveActivity = new Intent(this, MainAddExpense.class);
             startActivity(leaveActivity);
         }
         catch (Exception e) {
-            Toast.makeText(this, "Failed to add income", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Failed to add expense", Toast.LENGTH_LONG).show();
         }
     }
 
     /*
     Allows other activities to access the database
      */
-    public IncomeDBHelper getDatabase() {
+    public ExpenseDBHelper getDatabase() {
         return dbHelper;
     }
 }

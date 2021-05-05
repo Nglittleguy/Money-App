@@ -8,18 +8,16 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
-public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder> {
+public class ExpenseAdapter extends RecyclerView.Adapter<ExpenseAdapter.ViewHolder> {
 
     Context c;
-    List<Income> incomeList;
+    List<Expense> expenseList;
     RecyclerView recyclerView;
     //final View.OnClickListener buttonClickListener = new MyButtonClickListener();
 
@@ -34,9 +32,9 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder
          */
         public ViewHolder(@NonNull View itemView) {
             super(itemView);
-            rowDesc = itemView.findViewById(R.id.income_desc);
-            rowAmount = itemView.findViewById(R.id.income_amount);
-            rowButton = itemView.findViewById(R.id.income_remove_button);
+            rowDesc = itemView.findViewById(R.id.expense_desc);
+            rowAmount = itemView.findViewById(R.id.expense_amount);
+            rowButton = itemView.findViewById(R.id.expense_remove_button);
 
             rowButton.setOnClickListener(this);
         }
@@ -45,42 +43,42 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder
         public void onClick(View v) {
             int iPos = getAdapterPosition();
             removeAt(iPos);
-            //Databases.getIncomeHelper().removeOne(incomeList.get(iPos));
+            //Databases.getExpenseHelper().removeOne(expenseList.get(iPos));
             Log.d("Success", iPos+"");
         }
 
     }
 
-    public IncomeAdapter(Context c, List<Income> incomeList, RecyclerView recyclerView) {
+    public ExpenseAdapter(Context c, List<Expense> expenseList, RecyclerView recyclerView) {
         this.c = c;
-        this.incomeList = incomeList;
+        this.expenseList = expenseList;
         this.recyclerView = recyclerView;
     }
 
     @NonNull
     @Override
-    public IncomeAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public ExpenseAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(c);
-        View v = inflater.inflate(R.layout.single_income, parent, false);
-        ViewHolder vH = new ViewHolder(v);
+        View v = inflater.inflate(R.layout.single_expense, parent, false);
+        ExpenseAdapter.ViewHolder vH = new ExpenseAdapter.ViewHolder(v);
         return vH;
     }
 
     @Override
-    public void onBindViewHolder(@NonNull IncomeAdapter.ViewHolder holder, int position) {
-        Income i = incomeList.get(position);
+    public void onBindViewHolder(@NonNull ExpenseAdapter.ViewHolder holder, int position) {
+        Expense i = expenseList.get(position);
         holder.rowDesc.setText(""+i.getDesc());
         holder.rowAmount.setText(""+Databases.centsToDollar(i.getAmountPerWeek()));
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent editIncome = new Intent(c, AddIncome.class);
-                editIncome.putExtra("Edit", true);
-                editIncome.putExtra("WeeklyIncome", i.getAmountPerWeek());
-                editIncome.putExtra("OldID", i.getId());
-                editIncome.putExtra("Description", i.getDesc());
-                c.startActivity(editIncome);
+                Intent editExpense = new Intent(c, AddExpense.class);
+                editExpense.putExtra("Edit", true);
+                editExpense.putExtra("WeeklyExpense", i.getAmountPerWeek());
+                editExpense.putExtra("OldID", i.getId());
+                editExpense.putExtra("Description", i.getDesc());
+                c.startActivity(editExpense);
                 //Toast.makeText(c, "Here at number "+position, Toast.LENGTH_SHORT).show();
             }
         });
@@ -88,16 +86,17 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder
 
     @Override
     public int getItemCount() {
-        return incomeList.size();
+        return expenseList.size();
     }
 
     public void removeAt(int pos) {
-        Income i = incomeList.get(pos);
-        incomeList.remove(pos);
-        Databases.getIncomeHelper().removeOne(i);
+        Expense i = expenseList.get(pos);
+        expenseList.remove(pos);
+        Databases.getExpenseHelper().removeOne(i);
         notifyItemRemoved(pos);
-        notifyItemRangeChanged(pos, incomeList.size());
-        if(c instanceof MainAddIncome)
-            ((MainAddIncome) c).updateTotal();
+        notifyItemRangeChanged(pos, expenseList.size());
+        if(c instanceof MainAddExpense)
+            ((MainAddExpense) c).updateTotal();
     }
+
 }
