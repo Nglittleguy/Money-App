@@ -78,7 +78,9 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder
     }
 
     public void removeAt(int pos) {
+        Income i = incomeList.get(pos);
         incomeList.remove(pos);
+        Databases.getIncomeHelper().removeOne(i);
         notifyItemRemoved(pos);
         notifyItemRangeChanged(pos, incomeList.size());
     }
