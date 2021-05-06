@@ -16,6 +16,11 @@
     <string name="expenseTitleValue">Long Term Expenses</string>
     <string name="expenseHintValue">$ Dollars Spent</string>
     <string name="addExpenseButtonValue">Add Expense</string>
+    <string name="longTermSavingValue">Long Term Savings</string>
+    <string name="savingHintValue">$ Dollars to Save</string>
+    <string name="addSavingsValue">Add Savings</string>
+    <string name="percentValue">Percent of Remaining</string>
+    <string name="dollarValue">Dollar Amount</string>
     <string-array name="incomePeriodValues">
         <item>per Week</item>
         <item>per 2 Weeks</item>

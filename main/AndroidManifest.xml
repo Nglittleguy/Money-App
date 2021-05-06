@@ -9,12 +9,21 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Money">
-        <activity android:name=".MainAddIncome">
+        <activity android:name=".AddSavingLongTerm">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
+            <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
+            <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
+        </activity>
+        <activity
+            android:name=".AddExpense"
+            android:parentActivityName=".MainAddExpense" />
+        <activity
+            android:name=".MainAddExpense"
+            android:parentActivityName=".MainAddIncome" />
+        <activity android:name=".MainAddIncome">
+
         </activity>
         <activity
             android:name=".AddIncome"

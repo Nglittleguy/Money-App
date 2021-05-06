@@ -14,43 +14,40 @@ import java.util.List;
 
 public class MainAddExpense extends AppCompatActivity {
 
-    private ExpenseDBHelper dbHelper;
+    private IncomeDBHelper dbHelper;
     private RecyclerView rvExpense;
     private RecyclerView.LayoutManager rvExpenseManger;
-    private ExpenseAdapter ExpenseAdapter;
+    private IncomeAdapter expenseAdapter;
     private TextView totalExpense;
-    List<Expense> ExpenseList = new ArrayList<>();
+    List<Income> expenseList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_add_expense);
 
-        dbHelper = new ExpenseDBHelper(this);
-        Databases.setExpenseHelper(dbHelper);
+        dbHelper = Databases.getIncomeHelper();
 
-        ExpenseList = dbHelper.getAll();
-
+        expenseList = dbHelper.getAll(false);
 
 
 
         rvExpense = findViewById(R.id.recyclerView);
         rvExpense.setHasFixedSize(true);
         rvExpenseManger = new LinearLayoutManager(this);
-        ExpenseAdapter = new ExpenseAdapter(this, ExpenseList, rvExpense);
+        expenseAdapter = new IncomeAdapter(this, expenseList, rvExpense);
         rvExpense.setLayoutManager(rvExpenseManger);
-        rvExpense.setAdapter(ExpenseAdapter);
+        rvExpense.setAdapter(expenseAdapter);
 
         totalExpense = findViewById(R.id.totalExpense);
         updateTotal();
-
 
     }
 
     public void updateTotal() {
         int total = 0;
-        for(Expense i:ExpenseList)
-            total+=i.getAmountPerWeek();
+        for(Income i:expenseList)
+            total += i.getInc() * i.getAmountPerWeek();
 
         totalExpense.setText("Weekly Total Expenses: " + Databases.centsToDollar(total));
     }
@@ -69,4 +66,5 @@ public class MainAddExpense extends AppCompatActivity {
     public void nextPressed(View v) {
 
     }
+
 }

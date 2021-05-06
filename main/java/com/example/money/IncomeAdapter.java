@@ -75,7 +75,11 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent editIncome = new Intent(c, AddIncome.class);
+                Intent editIncome;
+                if(c instanceof MainAddIncome)                          //Editing Income
+                    editIncome = new Intent(c, AddIncome.class);
+                else                                                    //Editing Expense
+                    editIncome = new Intent(c, AddExpense.class);
                 editIncome.putExtra("Edit", true);
                 editIncome.putExtra("WeeklyIncome", i.getAmountPerWeek());
                 editIncome.putExtra("OldID", i.getId());

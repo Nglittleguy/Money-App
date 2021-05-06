@@ -32,7 +32,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
     private double periodOfWeeks;
     private DecimalFormat ExpenseToText;
     private Button button;
-    private ExpenseDBHelper dbHelper;
+    private IncomeDBHelper dbHelper;
     private Boolean edit;
     private int oldID;
 
@@ -44,7 +44,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
 
         Intent intent = getIntent();
         edit = intent.getBooleanExtra("Edit", false);
-        weeklyExpense = intent.getIntExtra("WeeklyExpense", 0);
+        weeklyExpense = intent.getIntExtra("WeeklyIncome", 0);
         oldID = intent.getIntExtra("OldID", 0);
 
 
@@ -159,7 +159,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
             descriptionInput.setText(intent.getStringExtra("Description"));
 
         //Database Helper
-        dbHelper = Databases.getExpenseHelper();
+        dbHelper = Databases.getIncomeHelper();
 
     }
 
@@ -208,8 +208,6 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
             Toast.makeText(AddExpense.this, "Failed to parse expense.", Toast.LENGTH_LONG).show();
             updateWeeklyExpense(periodOfWeeks, 0);
         }
-
-
     }
 
     @Override
@@ -259,28 +257,24 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
         if(weeklyExpense==0 || descriptionInput.getText().toString().length()==0)
             return;
 
-        Expense i;
+        Income i;
         try {
-            i = new Expense(-1, descriptionInput.getText().toString(), weeklyExpense);
+            i = new Income(-1, descriptionInput.getText().toString(), weeklyExpense, -1);
+            Log.d("Success", i.toString());
             Boolean success;
             if(edit) {
                 success = dbHelper.editOne(i, oldID);
             }
             else
                 success = dbHelper.addOne(i);
-            Log.d("Success", "Add it "+success);
             Intent leaveActivity = new Intent(this, MainAddExpense.class);
             startActivity(leaveActivity);
         }
         catch (Exception e) {
             Toast.makeText(this, "Failed to add expense", Toast.LENGTH_LONG).show();
+            Log.d("Success", e.toString());
         }
     }
 
-    /*
-    Allows other activities to access the database
-     */
-    public ExpenseDBHelper getDatabase() {
-        return dbHelper;
-    }
+
 }

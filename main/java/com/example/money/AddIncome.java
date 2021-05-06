@@ -261,7 +261,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
 
         Income i;
         try {
-            i = new Income(-1, descriptionInput.getText().toString(), weeklyIncome);
+            i = new Income(-1, descriptionInput.getText().toString(), weeklyIncome, 1);
             Boolean success;
             if(edit) {
                 success = dbHelper.editOne(i, oldID);

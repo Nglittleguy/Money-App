@@ -29,7 +29,7 @@ public class MainAddIncome extends AppCompatActivity {
         dbHelper = new IncomeDBHelper(this);
         Databases.setIncomeHelper(dbHelper);
 
-        incomeList = dbHelper.getAll();
+        incomeList = dbHelper.getAll(true);
 
 
 
@@ -49,7 +49,7 @@ public class MainAddIncome extends AppCompatActivity {
     public void updateTotal() {
         int total = 0;
         for(Income i:incomeList)
-            total+=i.getAmountPerWeek();
+            total += i.getInc() * i.getAmountPerWeek();
 
         totalIncome.setText("Weekly Total: " + Databases.centsToDollar(total));
     }
