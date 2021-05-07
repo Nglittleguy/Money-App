@@ -45,7 +45,7 @@
         tools:visibility="invisible">
 
         <SeekBar
-            android:id="@+id/percentRemaingSlider"
+            android:id="@+id/percentRemainingSlider"
             style="@android:style/Widget.DeviceDefault.Light.SeekBar"
             android:layout_width="366dp"
             android:layout_height="52dp"
@@ -79,7 +79,7 @@
         app:layout_constraintTop_toBottomOf="@+id/savingLTDesc">
 
         <Spinner
-            android:id="@+id/selectsavingLTPeriod"
+            android:id="@+id/selectSavingLTPeriod"
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:layout_marginStart="16dp"
@@ -116,7 +116,7 @@
         tools:visibility="invisible">
 
         <EditText
-            android:id="@+id/setsavingLTPeriod"
+            android:id="@+id/setSavingLTPeriod"
             android:layout_width="200dp"
             android:layout_height="50dp"
             android:autofillHints=""
@@ -136,13 +136,13 @@
             android:gravity="end"
             android:text="@string/perValue"
             android:textSize="20sp"
-            app:layout_constraintEnd_toStartOf="@+id/setsavingLTPeriod"
-            app:layout_constraintTop_toTopOf="@+id/setsavingLTPeriod" />
+            app:layout_constraintEnd_toStartOf="@+id/setSavingLTPeriod"
+            app:layout_constraintTop_toTopOf="@+id/setSavingLTPeriod" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
-        android:id="@+id/addsavingLTButton"
+        android:id="@+id/addSavingLTButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginBottom="68dp"
@@ -154,7 +154,7 @@
         app:layout_constraintStart_toStartOf="parent" />
 
     <TextView
-        android:id="@+id/showsavingLTText"
+        android:id="@+id/showSavingLTText"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="50dp"
@@ -170,7 +170,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/percentValue"
-        app:layout_constraintBottom_toTopOf="@+id/selectsavingLTPeriod"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/savingLTDesc" />
