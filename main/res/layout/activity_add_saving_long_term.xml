@@ -148,7 +148,7 @@
         android:layout_marginBottom="68dp"
         android:onClick="addSavingLTToList"
         android:text="@string/addSavingsValue"
-        app:backgroundTint="@color/myGreen"
+        app:backgroundTint="#e67300"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
@@ -173,5 +173,21 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/savingLTDesc" />
+
+    <ProgressBar
+        android:id="@+id/addSavingProgress"
+        style="@style/ThreeToneProgressBar"
+        android:layout_width="350dp"
+        android:layout_height="10dp"
+        android:layout_marginTop="16dp"
+        android:indeterminate="false"
+        android:max="100"
+        android:progress="100"
+        android:secondaryProgress="0"
+
+        app:layout_constraintBottom_toTopOf="@+id/addSavingLTButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showSavingLTText" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

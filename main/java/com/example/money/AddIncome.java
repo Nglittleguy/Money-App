@@ -24,20 +24,18 @@ import java.text.DecimalFormat;
 
 public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private Spinner incomePeriod;
-    private ConstraintLayout manualPeriodInput;
-    private EditText incomeInput;
-    private EditText periodInput;
-    private EditText descriptionInput;
+    private EditText incomeInput, periodInput, descriptionInput;
     private TextView showWI;
-    private int weeklyIncome;       //in cents
-    private double periodOfWeeks;
     private Button button;
-    private IncomeDBHelper dbHelper;
-    private Boolean edit, taxes;
-    private int oldID;
+    private Spinner incomePeriod;
     private Switch switchTaxes;
 
+    private ConstraintLayout manualPeriodInput;
+    private IncomeDBHelper dbHelper;
+
+    private int weeklyIncome, oldID;
+    private Boolean edit, taxes;
+    private double periodOfWeeks;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,10 +43,12 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_income);
 
+        //Read Information of Previous Income for Editing
         Intent intent = getIntent();
         edit = intent.getBooleanExtra("Edit", false);
         weeklyIncome = intent.getIntExtra("WeeklyIncome", 0);
         oldID = intent.getIntExtra("OldID", 0);
+
 
 
         //Select Income Period
@@ -70,11 +70,9 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                     taxes = true;
                 else
                     taxes = false;
-
                 updateWeeklyIncome(periodOfWeeks, getIncomeAmount());
             }
         });
-
 
         //Income Input
         incomeInput = findViewById(R.id.incomeAmount);
@@ -100,7 +98,6 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                     Toast.makeText(AddIncome.this, "Failed to parse income.", Toast.LENGTH_LONG).show();
                     updateWeeklyIncome(periodOfWeeks, 0);
                 }
-
             }
         });
 
@@ -145,7 +142,6 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                         periodOfWeeks = ((double) Integer.parseInt(periodInput.getText().toString()
                                 .substring(0, periodInput.getText().toString().length() - 5))) / 7;
                     }
-
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
@@ -154,7 +150,6 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                 updateWeeklyIncome(periodOfWeeks, getIncomeAmount());
             }
         });
-
 
         //Manual Income Period Input
         manualPeriodInput = findViewById(R.id.manualIncomePeriod);
@@ -165,7 +160,6 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
             updateWeeklyIncomeView();
             incomeInput.setText(Databases.centsToDollar(weeklyIncome));
         }
-
 
         //Button Press
         button = findViewById(R.id.addIncomeButton);
@@ -185,13 +179,10 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
     //incomePeriod Spinner Methods
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String text = parent.getItemAtPosition(position).toString();
-        if(position == 4) {
+        if(position == 4)
             manualPeriodInput.setVisibility(View.VISIBLE);
-        }
-        else {
+        else
             manualPeriodInput.setVisibility(View.INVISIBLE);
-        }
 
         switch(position) {
             case 0:
@@ -227,14 +218,15 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
             Toast.makeText(AddIncome.this, "Failed to parse income.", Toast.LENGTH_LONG).show();
             updateWeeklyIncome(periodOfWeeks, 0);
         }
-
-
     }
 
     @Override
     public void onNothingSelected(AdapterView<?> parent) {}
 
 
+    /*
+    Reads income amount from input
+     */
     public int getIncomeAmount() {
         int amountInteger = 0;
         try{
@@ -250,7 +242,6 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
             }
             else
                 amountInteger = 0;
-
         }
         catch (NumberFormatException e) {
             Toast.makeText(AddIncome.this, "Failed to parse amount", Toast.LENGTH_LONG).show();
@@ -297,12 +288,5 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
         catch (Exception e) {
             Toast.makeText(this, "Failed to add income", Toast.LENGTH_LONG).show();
         }
-    }
-
-    /*
-    Allows other activities to access the database
-     */
-    public IncomeDBHelper getDatabase() {
-        return dbHelper;
     }
 }

@@ -15,6 +15,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.SeekBar;
 import android.widget.Spinner;
 import android.widget.Switch;
@@ -25,37 +26,35 @@ import com.google.android.material.slider.Slider;
 
 public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private Switch switchAP;
-    private Boolean aP, edit;
-    private ConstraintLayout amountLayout;
-    private ConstraintLayout percentLayout;
-    private ConstraintLayout manualPeriodInput;
-    private Spinner savingPeriod;
-    private double periodOfWeeks;
-    private EditText savingInput;
-    private EditText percentInput;
-    private EditText periodInput;
-    private EditText descriptionInput;
+    private EditText savingInput, percentInput, periodInput, descriptionInput;
     private TextView showWS;
-    private Boolean suffixAdded1;
-    private double percent;
+    private Spinner savingPeriod;
+    private Switch switchAP;
     private Button button;
-    private int oldID;
-    private SavingDBHelper dbHelper;
-    private int weeklySaving;
     private SeekBar percentSlider;
+    private ProgressBar incomeExpenseSavingProgress;
+
+    private ConstraintLayout amountLayout, percentLayout, manualPeriodInput;
+    private SavingDBHelper dbHelper;
+
+    private int weeklySaving, oldSaving, oldID;
+    private double periodOfWeeks, percent;
+    private Boolean aP, edit, suffixAdded;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_saving_long_term);
 
-        Log.d("Success", "Opening add saving");
         //Constraints
         manualPeriodInput = findViewById(R.id.manualSavingLTPeriod);
         amountLayout = findViewById(R.id.amountLayout);
         percentLayout = findViewById(R.id.percentLayout);
+        periodOfWeeks = 1;
 
+        //Progress Bar
+        incomeExpenseSavingProgress = findViewById(R.id.addSavingProgress);
 
         //Select Saving Period
         savingPeriod = findViewById(R.id.selectSavingLTPeriod);
@@ -65,12 +64,8 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
         savingPeriod.setAdapter(savingPeriodAdapter);
         savingPeriod.setOnItemSelectedListener(this);
 
-        periodOfWeeks = 1;
-
-
         //Database Helper
         dbHelper = Databases.getSavingHelper();
-
 
         //Switch
         switchAP = findViewById(R.id.amountVPercent);
@@ -90,20 +85,19 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     percentLayout.setVisibility(View.INVISIBLE);
                     if(savingPeriod.getSelectedItemPosition()==4)
                         manualPeriodInput.setVisibility(View.VISIBLE);
-
                 }
             }
         });
 
-        //Setting Edit Values
+        //Read Information of Previous Income for Editing
         Intent intent = getIntent();
         edit = intent.getBooleanExtra("Edit", false);
         weeklySaving = intent.getIntExtra("WeeklySaving", 0);
+        oldSaving = weeklySaving;
         oldID = intent.getIntExtra("OldID", 0);
         percent = intent.getDoubleExtra("Percent", 0);
 
-        Log.d("Success", "Percent is "+percent);
-
+        //Set visibility based on editing percent of saving
         if(percent!=0) {
             switchAP.setChecked(true);
             aP = true;
@@ -120,10 +114,8 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                 manualPeriodInput.setVisibility(View.VISIBLE);
         }
 
-
         //Saving Amount Input
         savingInput = findViewById(R.id.savingLTAmount);
-
 
         //Showing Weekly Expense
         showWS = findViewById(R.id.showSavingLTText);
@@ -137,7 +129,6 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                 savingInput.setText(Databases.centsToDollar(weeklySaving));
             }
         }
-
 
         //Saving Amount Input
         savingInput.addTextChangedListener(new TextWatcher() {
@@ -165,8 +156,6 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
             }
         });
 
-
-
         //Saving Percent Input
         percentInput = findViewById(R.id.percentOfRemaining);
         percentInput.addTextChangedListener(new TextWatcher() {
@@ -184,26 +173,24 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                         String text = s.toString().concat("%");
                         percentInput.setText(text);
                         percentInput.setSelection(text.length() - 1);
-                        suffixAdded1 = true;
+                        suffixAdded = true;
                     }
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
                     Toast.makeText(AddSavingLongTerm.this, "Failed to parse percent", Toast.LENGTH_LONG).show();
                 }
-
             }
             @Override
             public void afterTextChanged(Editable s) {
                 if(s.length()==0)
-                    suffixAdded1 = false;
+                    suffixAdded = false;
                 try {
                     if(percentInput.getText().toString().length()>1) {
                         percent = ((double) Integer.parseInt(percentInput.getText().toString()
                                 .substring(0, percentInput.getText().toString().length() - 1)));
                         percentSlider.setProgress((int)(percent/5));
                     }
-
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
@@ -213,7 +200,6 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     updateWeeklySaving(percent);
             }
         });
-
 
         //Saving Percent Slider
         percentSlider = findViewById(R.id.percentRemainingSlider);
@@ -229,10 +215,10 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
+
+        //Default Percent Slider Value
         if(edit)
             percentSlider.setProgress((int)(percent/5));
-
-
 
         //Period Input
         periodInput = findViewById(R.id.setSavingLTPeriod);
@@ -275,7 +261,6 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                         periodOfWeeks = ((double) Integer.parseInt(periodInput.getText().toString()
                                 .substring(0, periodInput.getText().toString().length() - 5))) / 7;
                     }
-
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
@@ -297,18 +282,16 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
         if(edit)
             descriptionInput.setText(intent.getStringExtra("Description"));
 
+        updateProgress();
     }
 
     //savingPeriod Spinner Methods
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String text = parent.getItemAtPosition(position).toString();
-        if(position == 4) {
+        if(position == 4)
             manualPeriodInput.setVisibility(View.VISIBLE);
-        }
-        else {
+        else
             manualPeriodInput.setVisibility(View.INVISIBLE);
-        }
 
         switch(position) {
             case 0:
@@ -350,6 +333,9 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
     @Override
     public void onNothingSelected(AdapterView<?> parent) { }
 
+    /*
+    Read saving amount from input
+     */
     public int getSavingAmount() {
         int amountInteger = 0;
         try{
@@ -388,6 +374,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
     https://www.geeksforgeeks.org/insert-a-string-into-another-string-in-java/
      */
     public void updateWeeklySavingView() {
+        updateProgress();
         showWS.setText("Weekly Savings: " + Databases.centsToDollar(weeklySaving));
     }
 
@@ -420,5 +407,27 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
             Log.d("Success", e.toString());
         }
     }
+
+    /*
+    Update progress bar with saving
+     */
+    public void updateProgress() {
+        int incomeSubExpense =
+                (int)(100*(1- (double) (Databases.getWeeklyExpenses())/Databases.getWeeklyIncome()));
+        Log.d("Success", "Secondary at "+incomeSubExpense);
+        if(incomeSubExpense<=0)
+            incomeExpenseSavingProgress.setSecondaryProgress(0);
+        else {
+            incomeExpenseSavingProgress.setSecondaryProgress(incomeSubExpense);
+            incomeSubExpense =
+                    (int)(100*(1- (double) (Databases.getWeeklyExpenses()+Databases.getWeeklySaving()+weeklySaving-oldSaving)/Databases.getWeeklyIncome()));
+            Log.d("Success", "Primary at "+incomeSubExpense);
+            if(incomeSubExpense<=0)
+                incomeExpenseSavingProgress.setProgress(0);
+            else
+                incomeExpenseSavingProgress.setProgress(incomeSubExpense);
+        }
+    }
+
 
 }

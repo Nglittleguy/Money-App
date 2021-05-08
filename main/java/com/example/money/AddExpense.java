@@ -14,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -22,19 +23,19 @@ import java.text.DecimalFormat;
 
 public class AddExpense extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    private Spinner expensePeriod;
-    private ConstraintLayout manualPeriodInput;
-    private EditText expenseInput;
-    private EditText periodInput;
-    private EditText descriptionInput;
+    private EditText expenseInput, periodInput, descriptionInput;
     private TextView showWI;
-    private int weeklyExpense;       //in cents
-    private double periodOfWeeks;
-    private DecimalFormat ExpenseToText;
     private Button button;
+    private Spinner expensePeriod;
+    private ProgressBar incomeExpenseProgress;
+
+    private ConstraintLayout manualPeriodInput;
+    private DecimalFormat ExpenseToText;
     private IncomeDBHelper dbHelper;
+
+    private int weeklyExpense, oldID, oldWeeklyExpense;
+    private double periodOfWeeks;
     private Boolean edit;
-    private int oldID;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +43,17 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_expense);
 
+        //Read Information of Previous Expense for Editing
         Intent intent = getIntent();
         edit = intent.getBooleanExtra("Edit", false);
         weeklyExpense = intent.getIntExtra("WeeklyIncome", 0);
+        oldWeeklyExpense = weeklyExpense;
         oldID = intent.getIntExtra("OldID", 0);
 
+
+
+        //Progress Bar
+        incomeExpenseProgress = findViewById(R.id.addSavingProgress);
 
         //Select Expense Period
         expensePeriod = findViewById(R.id.selectExpensePeriod);
@@ -55,7 +62,6 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
         expensePeriodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         expensePeriod.setAdapter(expensePeriodAdapter);
         expensePeriod.setOnItemSelectedListener(this);
-
 
         //Expense Input
         expenseInput = findViewById(R.id.expenseAmount);
@@ -81,7 +87,6 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
                     Toast.makeText(AddExpense.this, "Failed to parse expense.", Toast.LENGTH_LONG).show();
                     updateWeeklyExpense(periodOfWeeks, 0);
                 }
-
             }
         });
 
@@ -115,7 +120,6 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
                     Log.d("Exception", e.toString());
                     Toast.makeText(AddExpense.this, "Failed to parse period", Toast.LENGTH_LONG).show();
                 }
-
             }
             @Override
             public void afterTextChanged(Editable s) {
@@ -126,7 +130,6 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
                         periodOfWeeks = ((double) Integer.parseInt(periodInput.getText().toString()
                                 .substring(0, periodInput.getText().toString().length() - 5))) / 7;
                     }
-
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
@@ -147,7 +150,6 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
             expenseInput.setText(Databases.centsToDollar(weeklyExpense));
         }
 
-
         //Button Press
         button = findViewById(R.id.addExpenseButton);
         if(edit)
@@ -160,19 +162,15 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
 
         //Database Helper
         dbHelper = Databases.getIncomeHelper();
-
     }
 
     //expensePeriod Spinner Methods
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-        String text = parent.getItemAtPosition(position).toString();
-        if(position == 4) {
+        if(position == 4)
             manualPeriodInput.setVisibility(View.VISIBLE);
-        }
-        else {
+        else
             manualPeriodInput.setVisibility(View.INVISIBLE);
-        }
 
         switch(position) {
             case 0:
@@ -192,6 +190,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
         try {
             if(!(periodInput.equals(null) && expensePeriod.getSelectedItemPosition()==4)) {
                 if (expenseInput.getText().toString().length() > 1) {
+                    //Find the period from the text
                     double amountDouble = Double.parseDouble(expenseInput.getText().toString().substring(1));
                     if (amountDouble / 100 > Integer.MAX_VALUE)
                         Toast.makeText(AddExpense.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
@@ -213,7 +212,9 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
     @Override
     public void onNothingSelected(AdapterView<?> parent) {}
 
-
+    /*
+    Reads the expense input
+     */
     public int getExpenseAmount() {
         int amountInteger = 0;
         try{
@@ -226,7 +227,6 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
             }
             else
                 amountInteger = 0;
-
         }
         catch (NumberFormatException e) {
             Toast.makeText(AddExpense.this, "Failed to parse amount", Toast.LENGTH_LONG).show();
@@ -247,6 +247,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
     https://www.geeksforgeeks.org/insert-a-string-into-another-string-in-java/
      */
     public void updateWeeklyExpenseView() {
+        updateProgress();
         showWI.setText("Weekly expenses: " + Databases.centsToDollar(weeklyExpense));
     }
 
@@ -274,6 +275,18 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
             Toast.makeText(this, "Failed to add expense", Toast.LENGTH_LONG).show();
             Log.d("Success", e.toString());
         }
+    }
+
+    /*
+    Updates the Progress Bar with Expenses
+     */
+    public void updateProgress() {
+        int incomeSubExpense =
+                (int)(100*(1- (double) (Databases.getWeeklyExpenses()+weeklyExpense-oldWeeklyExpense)/Databases.getWeeklyIncome()));
+        if(incomeSubExpense<=0)
+            incomeExpenseProgress.setProgress(0);
+        else
+            incomeExpenseProgress.setProgress(incomeSubExpense);
     }
 
 

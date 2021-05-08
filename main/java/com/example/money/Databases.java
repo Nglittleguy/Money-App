@@ -45,6 +45,42 @@ public final class Databases {
         return 0;
     }
 
+    public static int getWeeklyIncome() {
+        if(incomeHelper!=null) {
+            List<Income> in = incomeHelper.getAll(true);
+            int total=0;
+            for(Income i:in) {
+                total+=i.getAmountPerWeek();
+            }
+            return total;
+        }
+        return 0;
+    }
+
+    public static int getWeeklyExpenses() {
+        if(incomeHelper!=null) {
+            List<Income> in = incomeHelper.getAll(false);
+            int total=0;
+            for(Income i:in) {
+                total+=i.getAmountPerWeek();
+            }
+            return total;
+        }
+        return 0;
+    }
+
+    public static int getWeeklySaving() {
+        if(savingHelper!=null) {
+            List<Saving> sa = savingHelper.getAllNonFinished();
+            int total = 0;
+            for(Saving s:sa) {
+                total+=s.getAmountPerWeek();
+            }
+            return total;
+        }
+        return 0;
+    }
+
     public static int getWeeklyAfterExpensesAfterSavings() {
         return 0;
     }

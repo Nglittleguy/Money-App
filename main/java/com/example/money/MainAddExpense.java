@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class MainAddExpense extends AppCompatActivity {
     private RecyclerView.LayoutManager rvExpenseManger;
     private IncomeAdapter expenseAdapter;
     private TextView totalExpense;
+    private ProgressBar incomeExpenseProgress;
     List<Income> expenseList = new ArrayList<>();
 
     @Override
@@ -27,11 +29,12 @@ public class MainAddExpense extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_add_expense);
 
+        Intent i = getIntent();
         dbHelper = Databases.getIncomeHelper();
 
         expenseList = dbHelper.getAll(false);
 
-
+        incomeExpenseProgress = findViewById(R.id.totalIncomeExpenseProgress);
 
         rvExpense = findViewById(R.id.recyclerView);
         rvExpense.setHasFixedSize(true);
@@ -50,7 +53,13 @@ public class MainAddExpense extends AppCompatActivity {
         for(Income i:expenseList)
             total += i.getInc() * i.getAmountPerWeek();
 
-        totalExpense.setText("Weekly Total Expenses: " + Databases.centsToDollar(total));
+        int incomeSubExpense =
+                (int)(100*(1- (double) Databases.getWeeklyExpenses()/Databases.getWeeklyIncome()));
+        if(incomeSubExpense<=0)
+            incomeExpenseProgress.setProgress(0);
+        else
+            incomeExpenseProgress.setProgress(incomeSubExpense);
+        totalExpense.setText("Weekly Expenses: " + Databases.centsToDollar(total));
     }
 
     public void addNewExpensePressed(View v) {

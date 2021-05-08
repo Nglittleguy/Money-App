@@ -103,5 +103,7 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder
         notifyItemRangeChanged(pos, incomeList.size());
         if(c instanceof MainAddIncome)
             ((MainAddIncome) c).updateTotal();
+        else if(c instanceof MainAddExpense)
+            ((MainAddExpense) c).updateTotal();
     }
 }

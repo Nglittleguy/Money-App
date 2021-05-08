@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -19,6 +20,8 @@ public class MainAddIncome extends AppCompatActivity {
     private RecyclerView.LayoutManager rvIncomeManger;
     private IncomeAdapter incomeAdapter;
     private TextView totalIncome;
+    private ProgressBar totalIncomeProgress;
+    private int incomeTotal;
     List<Income> incomeList = new ArrayList<>();
 
     @Override
@@ -41,6 +44,8 @@ public class MainAddIncome extends AppCompatActivity {
         rvIncome.setAdapter(incomeAdapter);
 
         totalIncome = findViewById(R.id.totalIncome);
+        totalIncomeProgress = findViewById(R.id.addSavingProgress);
+        totalIncomeProgress.setVisibility(View.INVISIBLE);
         updateTotal();
 
 
@@ -51,7 +56,13 @@ public class MainAddIncome extends AppCompatActivity {
         for(Income i:incomeList)
             total += i.getInc() * i.getAmountPerWeek();
 
-        totalIncome.setText("Weekly Total: " + Databases.centsToDollar(total));
+        if(total!=0)
+            totalIncomeProgress.setVisibility(View.VISIBLE);
+        else
+            totalIncomeProgress.setVisibility(View.INVISIBLE);
+
+        incomeTotal = total;
+        totalIncome.setText("Weekly Income: " + Databases.centsToDollar(total));
     }
 
     public void addNewIncomePressed(View v) {

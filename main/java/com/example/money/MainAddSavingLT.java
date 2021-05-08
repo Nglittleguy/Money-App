@@ -8,6 +8,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class MainAddSavingLT extends AppCompatActivity {
     private RecyclerView.LayoutManager rvSavingManger;
     private SavingAdapter rvSavingAdapter;
     private TextView totalSaving;
+    private ProgressBar incomeExpenseSavingProgress;
     List<Saving> rvSavingList = new ArrayList<>();
 
     @Override
@@ -31,7 +33,7 @@ public class MainAddSavingLT extends AppCompatActivity {
         Databases.setSavingHelper(dbHelper);
         rvSavingList = dbHelper.getAllNonFinished();
 
-
+        incomeExpenseSavingProgress = findViewById(R.id.savingLTProgress);
 
         rvSaving = findViewById(R.id.recyclerView);
         rvSaving.setHasFixedSize(true);
@@ -50,6 +52,21 @@ public class MainAddSavingLT extends AppCompatActivity {
         for(Saving i:rvSavingList)
             total += i.getAmountPerWeek();
 
+        int incomeSubExpense =
+                (int)(100*(1- (double) Databases.getWeeklyExpenses()/Databases.getWeeklyIncome()));
+        if(incomeSubExpense<=0)
+            incomeExpenseSavingProgress.setSecondaryProgress(0);
+        else {
+            incomeExpenseSavingProgress.setSecondaryProgress(incomeSubExpense);
+            incomeSubExpense =
+                    (int)(100*(1- (double) (Databases.getWeeklyExpenses()+Databases.getWeeklySaving())/Databases.getWeeklyIncome()));
+            if(incomeSubExpense<=0)
+            incomeExpenseSavingProgress.setProgress(0);
+            else
+                incomeExpenseSavingProgress.setProgress(incomeSubExpense);
+        }
+
+
         totalSaving.setText("Weekly Total Savings: " + Databases.centsToDollar(total));
     }
 
@@ -64,10 +81,10 @@ public class MainAddSavingLT extends AppCompatActivity {
         startActivity(leaveActivity);
     }
 
-//    public void nextPressed(View v) {
+    public void nextPressed(View v) {
 //        Log.d("Success", "here");
 //        Intent leaveActivity = new Intent(this, AddSavingLongTerm.class);
 //        startActivity(leaveActivity);
-//    }
+    }
 
 }
