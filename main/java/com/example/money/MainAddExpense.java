@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
@@ -64,7 +65,9 @@ public class MainAddExpense extends AppCompatActivity {
     }
 
     public void nextPressed(View v) {
-
+        Log.d("Success", "here");
+        Intent leaveActivity = new Intent(this, MainAddSavingLT.class);
+        startActivity(leaveActivity);
     }
 
 }

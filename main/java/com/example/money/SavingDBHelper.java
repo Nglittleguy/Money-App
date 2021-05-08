@@ -65,11 +65,12 @@ public class SavingDBHelper extends SQLiteOpenHelper {
         String query = "UPDATE " + TABLE +
                 " SET " + COL_STOR + " = " + s.getAmountStored() +
                 ", " + COL_LIMT + " = " + s.getLimitStored() +
-                ", " + COL_DESC + " = " + s.getDesc() +
+                ", " + COL_DESC + " = '" + s.getDesc() + "' " +
                 ", " + COL_WEEK + " = " + s.getAmountPerWeek() +
                 ", " + COL_PERC + " = " + s.getPercent() +
                 ", " + COL_REMV + " = " + s.getCanTakeFrom() +
-                " WHERE " + COL_ID + " = " + s.getId();
+                " WHERE " + COL_ID + " = " + id;
+        Log.d("Success", "working on it");
         db.execSQL(query);
         return true;
     }

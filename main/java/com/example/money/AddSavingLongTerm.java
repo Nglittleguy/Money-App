@@ -26,7 +26,7 @@ import com.google.android.material.slider.Slider;
 public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private Switch switchAP;
-    private Boolean aP;
+    private Boolean aP, edit;
     private ConstraintLayout amountLayout;
     private ConstraintLayout percentLayout;
     private ConstraintLayout manualPeriodInput;
@@ -37,9 +37,10 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
     private EditText periodInput;
     private EditText descriptionInput;
     private TextView showWS;
-    private Boolean suffixAdded1, sliderMoved;
+    private Boolean suffixAdded1;
     private double percent;
     private Button button;
+    private int oldID;
     private SavingDBHelper dbHelper;
     private int weeklySaving;
     private SeekBar percentSlider;
@@ -49,14 +50,11 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_saving_long_term);
 
+        Log.d("Success", "Opening add saving");
         //Constraints
         manualPeriodInput = findViewById(R.id.manualSavingLTPeriod);
-        manualPeriodInput.setVisibility(View.INVISIBLE);
         amountLayout = findViewById(R.id.amountLayout);
         percentLayout = findViewById(R.id.percentLayout);
-        percentLayout.setVisibility(View.INVISIBLE);
-
-        sliderMoved = false;
 
 
         //Select Saving Period
@@ -67,6 +65,12 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
         savingPeriod.setAdapter(savingPeriodAdapter);
         savingPeriod.setOnItemSelectedListener(this);
 
+        periodOfWeeks = 1;
+
+
+        //Database Helper
+        dbHelper = Databases.getSavingHelper();
+
 
         //Switch
         switchAP = findViewById(R.id.amountVPercent);
@@ -76,6 +80,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                 if(isChecked){
                     aP = true;
                     amountLayout.setVisibility(View.INVISIBLE);
+                    manualPeriodInput.setVisibility(View.INVISIBLE);
                     percentLayout.setVisibility(View.VISIBLE);
 
                 }
@@ -83,13 +88,58 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     aP = false;
                     amountLayout.setVisibility(View.VISIBLE);
                     percentLayout.setVisibility(View.INVISIBLE);
+                    if(savingPeriod.getSelectedItemPosition()==4)
+                        manualPeriodInput.setVisibility(View.VISIBLE);
 
                 }
             }
         });
 
+        //Setting Edit Values
+        Intent intent = getIntent();
+        edit = intent.getBooleanExtra("Edit", false);
+        weeklySaving = intent.getIntExtra("WeeklySaving", 0);
+        oldID = intent.getIntExtra("OldID", 0);
+        percent = intent.getDoubleExtra("Percent", 0);
+
+        Log.d("Success", "Percent is "+percent);
+
+        if(percent!=0) {
+            switchAP.setChecked(true);
+            aP = true;
+            amountLayout.setVisibility(View.INVISIBLE);
+            manualPeriodInput.setVisibility(View.INVISIBLE);
+            percentLayout.setVisibility(View.VISIBLE);
+        }
+        else {
+            switchAP.setChecked(false);
+            aP = false;
+            amountLayout.setVisibility(View.VISIBLE);
+            percentLayout.setVisibility(View.INVISIBLE);
+            if(savingPeriod.getSelectedItemPosition()==4)
+                manualPeriodInput.setVisibility(View.VISIBLE);
+        }
+
+
         //Saving Amount Input
         savingInput = findViewById(R.id.savingLTAmount);
+
+
+        //Showing Weekly Expense
+        showWS = findViewById(R.id.showSavingLTText);
+        if(edit) {
+            if(aP) {
+                Log.d("Success", "updating percent");
+                updateWeeklySaving(percent);
+            }
+            else {
+                updateWeeklySavingView();
+                savingInput.setText(Databases.centsToDollar(weeklySaving));
+            }
+        }
+
+
+        //Saving Amount Input
         savingInput.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
@@ -104,16 +154,18 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                 try {
                     if(!(periodInput.equals(null) && savingPeriod.getSelectedItemPosition()==4)) {
                         int amountInteger = getSavingAmount();
-                        //updateWeeklySaving(periodOfWeeks, amountInteger);
+                        updateWeeklySaving(periodOfWeeks, amountInteger);
                     }
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
                     Toast.makeText(AddSavingLongTerm.this, "Failed to parse saving.", Toast.LENGTH_LONG).show();
-                    //updateWeeklySaving(periodOfWeeks, 0);
+                    updateWeeklySaving(periodOfWeeks, 0);
                 }
             }
         });
+
+
 
         //Saving Percent Input
         percentInput = findViewById(R.id.percentOfRemaining);
@@ -157,9 +209,11 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     Log.d("Exception", e.toString());
                     Toast.makeText(AddSavingLongTerm.this, "Failed to parse percent", Toast.LENGTH_LONG).show();
                 }
-                //updateWeeklyExpense(periodOfWeeks, getExpenseAmount());
+                if(aP)
+                    updateWeeklySaving(percent);
             }
         });
+
 
         //Saving Percent Slider
         percentSlider = findViewById(R.id.percentRemainingSlider);
@@ -167,7 +221,6 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 percentInput.setText(String.valueOf(progress*5));
-                sliderMoved = true;
             }
 
             @Override
@@ -176,6 +229,10 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
             @Override
             public void onStopTrackingTouch(SeekBar seekBar) { }
         });
+        if(edit)
+            percentSlider.setProgress((int)(percent/5));
+
+
 
         //Period Input
         periodInput = findViewById(R.id.setSavingLTPeriod);
@@ -224,31 +281,21 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     Log.d("Exception", e.toString());
                     Toast.makeText(AddSavingLongTerm.this, "Failed to parse period", Toast.LENGTH_LONG).show();
                 }
-                //updateWeeklySaving(periodOfWeeks, getSavingAmount());
+                updateWeeklySaving(periodOfWeeks, getSavingAmount());
             }
         });
 
 
-
-        //Showing Weekly Expense
-        showWS = findViewById(R.id.showSavingLTText);
-//        if(edit) {
-//            updateWeeklyExpenseView();
-//            expenseInput.setText(Databases.centsToDollar(weeklyExpense));
-//        }
-
         //Button Press
         button = findViewById(R.id.addSavingLTButton);
-//        if(edit)
-//            button.setText("Update Expense");
+        if(edit)
+            button.setText("Update Saving");
+
 
         //Description Text
-        descriptionInput = findViewById(R.id.expenseDesc);
-//        if(edit)
-//            descriptionInput.setText(intent.getStringExtra("Description"));
-
-        //Database Helper
-        dbHelper = Databases.getSavingHelper();
+        descriptionInput = findViewById(R.id.savingLTDesc);
+        if(edit)
+            descriptionInput.setText(intent.getStringExtra("Description"));
 
     }
 
@@ -286,16 +333,17 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                         Toast.makeText(AddSavingLongTerm.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
 
                     int amountInteger = (int) amountDouble * 100;
-                    //updateWeeklySaving(periodOfWeeks, amountInteger);
+                    updateWeeklySaving(periodOfWeeks, amountInteger);
                 }
                 else {
-                    //updateWeeklySaving(periodOfWeeks, 0);
+                    if(!edit || percent==0 || weeklySaving==0)
+                        updateWeeklySaving(periodOfWeeks, 0);
                 }
             }
         }
         catch (NumberFormatException e) {
             Toast.makeText(AddSavingLongTerm.this, "Failed to parse saving.", Toast.LENGTH_LONG).show();
-            //updateWeeklySaving(periodOfWeeks, 0);
+            updateWeeklySaving(periodOfWeeks, 0);
         }
     }
 
@@ -327,45 +375,50 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
      */
     public void updateWeeklySaving(double period, int amount) {
         weeklySaving = (int) (amount/period);
-        updateWeeklyExpenseView();
+        updateWeeklySavingView();
     }
 
     public void updateWeeklySaving(double percent) {
-        weeklySaving = (int) percent*Databases.getWeeklyAfterExpenses();
-        updateWeeklyExpenseView();
+        weeklySaving = (int) percent*Databases.getWeeklyAfterExpenses()/100;
+        updateWeeklySavingView();
     }
 
     /*
     Updates the view of the weekly expense
     https://www.geeksforgeeks.org/insert-a-string-into-another-string-in-java/
      */
-    public void updateWeeklyExpenseView() {
+    public void updateWeeklySavingView() {
         showWS.setText("Weekly Savings: " + Databases.centsToDollar(weeklySaving));
     }
 
     /*
     Adds the saving of the current values to a list
      */
-    public void addExpenseToList(View v) {
-        if(weeklySaving==0 || descriptionInput.getText().toString().length()==0)
+    public void addSavingLTToList(View v) {
+        if(weeklySaving==0 || descriptionInput.getText().toString().length()==0 || (aP&&percent==0))
             return;
 
-//        Income i;
-//        try {
-//            i = new Income(-1, descriptionInput.getText().toString(), weeklySaving, -1);
-//            Log.d("Success", i.toString());
-//            Boolean success;
-//            if(edit) {
-//                success = dbHelper.editOne(i, oldID);
-//            }
-//            else
-//                success = dbHelper.addOne(i);
-//            Intent leaveActivity = new Intent(this, MainAddExpense.class);
-//            startActivity(leaveActivity);
-//        }
-//        catch (Exception e) {
-//            Toast.makeText(this, "Failed to add expense", Toast.LENGTH_LONG).show();
-//            Log.d("Success", e.toString());
-//        }
+        Saving s;
+        try {
+            if(!aP)
+                s = new Saving (-1, descriptionInput.getText().toString(), Long.MAX_VALUE, 0, weeklySaving, 0, 1);
+            else
+                s = new Saving (-1, descriptionInput.getText().toString(), Long.MAX_VALUE, 0, weeklySaving, percent, 1);
+
+            Log.d("Success", s.toString());
+            Boolean success;
+            if(edit) {
+                success = dbHelper.editOne(s, oldID);
+            }
+            else
+                success = dbHelper.addOne(s);
+            Intent leaveActivity = new Intent(this, MainAddSavingLT.class);
+            startActivity(leaveActivity);
+        }
+        catch (Exception e) {
+            Toast.makeText(this, "Failed to add expense", Toast.LENGTH_LONG).show();
+            Log.d("Success", e.toString());
+        }
     }
+
 }

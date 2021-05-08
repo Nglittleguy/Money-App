@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainAddExpense">
+    tools:context=".MainAddSavingLT">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -38,7 +38,7 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/totalExpense"
+            android:id="@+id/totalSaving"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
@@ -51,12 +51,12 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
-        android:id="@+id/addNewExpenseButton"
+        android:id="@+id/addNewSavingButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:onClick="addNewExpensePressed"
-        android:text="@string/addNewExpenseValue"
+        android:onClick="addNewSavingPressed"
+        android:text="@string/addNewSavingValue"
         app:backgroundTint="@color/myGreen"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -67,7 +67,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/expenseValue"
+        android:text="@string/longTermSavingValue"
         android:textColor="#000"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -82,7 +82,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addNewExpenseButton" />
+        app:layout_constraintTop_toBottomOf="@+id/addNewSavingButton" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

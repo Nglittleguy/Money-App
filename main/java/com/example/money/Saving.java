@@ -10,18 +10,6 @@ public class Saving {
     private double percent;
     private int amountPerWeek;
 
-    public Saving(int id, String desc, long limitStored, long amountStored, double percent, int weeklyLeft, int canTakeFrom) {
-        //If long term savings: limitStored = long.MAX_VALUE, and canTakeFrom = 1
-        //If short term savings: limitStored != long.MAx_VALUE, and canTakeFrom = 0 (flips to 1 when limitStored = amountStored
-        this.id = id;
-        this.desc = desc;
-        this.limitStored = limitStored;
-        this.amountStored = amountStored;
-        this.percent = percent;
-        this.amountPerWeek = (int)(weeklyLeft * this.percent);
-        this.canTakeFrom = canTakeFrom;
-    }
-
     public Saving(int id, String desc, long limitStored, long amountStored, int amountPerWeek, double percent, int canTakeFrom) {
         this.id = id;
         this.desc = desc;
@@ -111,13 +99,13 @@ public class Saving {
             if(percent==0)
                 return "Savings Long Term: "+id+" {"+desc+" : "+amountPerWeek+" per week, total["+amountStored+"]}";
             else
-                return "Savings Long Term: "+id+" {"+desc+" : "+percent*100+"% per week, total["+amountStored+"]}";
+                return "Savings Long Term: "+id+" {"+desc+" : "+percent+"% per week, total["+amountStored+"]}";
         }
         else {
             if(percent==0)
                 return "Savings Short Term: "+id+" {"+desc+" : "+amountPerWeek+" per week, total["+amountStored+"], "+take+"}";
             else
-                return "Savings Short Term: "+id+" {"+desc+" : "+percent*100+"% per week, total["+amountStored+"], "+take+"}";
+                return "Savings Short Term: "+id+" {"+desc+" : "+percent+"% per week, total["+amountStored+"], "+take+"}";
         }
     }
 }

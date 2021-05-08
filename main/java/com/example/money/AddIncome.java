@@ -13,8 +13,10 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -32,8 +34,9 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
     private double periodOfWeeks;
     private Button button;
     private IncomeDBHelper dbHelper;
-    private Boolean edit;
+    private Boolean edit, taxes;
     private int oldID;
+    private Switch switchTaxes;
 
 
     @Override
@@ -55,6 +58,22 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
         incomePeriodAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         incomePeriod.setAdapter(incomePeriodAdapter);
         incomePeriod.setOnItemSelectedListener(this);
+
+        //Switch
+        switchTaxes = findViewById(R.id.switchTax);
+        switchTaxes.setChecked(false);
+        taxes = false;
+        switchTaxes.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                    taxes = true;
+                else
+                    taxes = false;
+
+                updateWeeklyIncome(periodOfWeeks, getIncomeAmount());
+            }
+        });
 
 
         //Income Input
@@ -225,6 +244,9 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                     Toast.makeText(AddIncome.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
 
                 amountInteger = (int) amountDouble*100;
+                if(taxes) {
+                    amountInteger -= (int) Databases.taxAmount(amountInteger);
+                }
             }
             else
                 amountInteger = 0;
