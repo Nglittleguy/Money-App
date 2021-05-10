@@ -74,7 +74,6 @@ public class MainAddExpense extends AppCompatActivity {
     }
 
     public void nextPressed(View v) {
-        Log.d("Success", "here");
         Intent leaveActivity = new Intent(this, MainAddSavingLT.class);
         startActivity(leaveActivity);
     }

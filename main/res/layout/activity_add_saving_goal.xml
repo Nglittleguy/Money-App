@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".AddSavingGoal">
+
+    <TextView
+        android:id="@+id/showSavingGoalText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="135dp"
+        android:textColor="@color/myGreen"
+        android:textSize="20sp"
+        android:textStyle="bold|italic"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/savingGoalAmount" />
+
+    <ProgressBar
+        android:id="@+id/addSavingGoalProgress"
+        style="@style/ThreeToneProgressBar"
+        android:layout_width="350dp"
+        android:layout_height="10dp"
+        android:indeterminate="false"
+        android:max="100"
+
+        android:progress="100"
+        android:secondaryProgress="0"
+        app:layout_constraintBottom_toTopOf="@+id/addSavingGoalButton"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.491"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/showSavingGoalText" />
+
+    <TextView
+        android:id="@+id/savingGoalTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:text="@string/goalSavingValue"
+        android:textColor="#000"
+        android:textSize="30sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/savingGoalDesc"
+        android:layout_width="218dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="136dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:gravity="center"
+        android:hint="@string/incomeDescriptionValue"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <EditText
+        android:id="@+id/savingGoalAmount"
+        android:layout_width="160dp"
+        android:layout_height="50dp"
+        android:layout_marginTop="60dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:gravity="center"
+        android:hint="@string/savingHintValue"
+        android:inputType="numberDecimal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/savingGoalDesc" />
+
+    <Button
+        android:id="@+id/addSavingGoalButton"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="68dp"
+        android:onClick="addSavingGoalToList"
+        android:text="@string/addSavingsValue"
+        app:backgroundTint="#e67300"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <TextView
+        android:id="@+id/dateSelector"
+        android:layout_width="285dp"
+        android:layout_height="47dp"
+        android:layout_marginTop="28dp"
+        android:clickable="true"
+        android:gravity="center"
+        android:text="@string/selectDateValue"
+        android:textSize="19sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.496"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/savingGoalAmount" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

@@ -117,11 +117,10 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
         //Saving Amount Input
         savingInput = findViewById(R.id.savingLTAmount);
 
-        //Showing Weekly Expense
+        //Showing Weekly Saving
         showWS = findViewById(R.id.showSavingLTText);
         if(edit) {
             if(aP) {
-                Log.d("Success", "updating percent");
                 updateWeeklySaving(percent);
             }
             else {
@@ -392,7 +391,6 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
             else
                 s = new Saving (-1, descriptionInput.getText().toString(), Long.MAX_VALUE, 0, weeklySaving, percent, 1);
 
-            Log.d("Success", s.toString());
             Boolean success;
             if(edit) {
                 success = dbHelper.editOne(s, oldID);
@@ -403,7 +401,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
             startActivity(leaveActivity);
         }
         catch (Exception e) {
-            Toast.makeText(this, "Failed to add expense", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "Failed to add saving", Toast.LENGTH_LONG).show();
             Log.d("Success", e.toString());
         }
     }
@@ -414,14 +412,14 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
     public void updateProgress() {
         int incomeSubExpense =
                 (int)(100*(1- (double) (Databases.getWeeklyExpenses())/Databases.getWeeklyIncome()));
-        Log.d("Success", "Secondary at "+incomeSubExpense);
+
         if(incomeSubExpense<=0)
             incomeExpenseSavingProgress.setSecondaryProgress(0);
         else {
             incomeExpenseSavingProgress.setSecondaryProgress(incomeSubExpense);
             incomeSubExpense =
                     (int)(100*(1- (double) (Databases.getWeeklyExpenses()+Databases.getWeeklySaving()+weeklySaving-oldSaving)/Databases.getWeeklyIncome()));
-            Log.d("Success", "Primary at "+incomeSubExpense);
+
             if(incomeSubExpense<=0)
                 incomeExpenseSavingProgress.setProgress(0);
             else

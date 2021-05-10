@@ -63,8 +63,7 @@ public class SavingDBHelper extends SQLiteOpenHelper {
     public boolean editOne(Saving s, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + TABLE +
-                " SET " + COL_STOR + " = " + s.getAmountStored() +
-                ", " + COL_LIMT + " = " + s.getLimitStored() +
+                " SET " + COL_LIMT + " = " + s.getLimitStored() +
                 ", " + COL_DESC + " = '" + s.getDesc() + "' " +
                 ", " + COL_WEEK + " = " + s.getAmountPerWeek() +
                 ", " + COL_PERC + " = " + s.getPercent() +

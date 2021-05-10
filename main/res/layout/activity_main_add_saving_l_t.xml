@@ -74,7 +74,7 @@
         android:layout_marginTop="16dp"
         android:onClick="addNewSavingPressed"
         android:text="@string/addNewSavingValue"
-        app:backgroundTint="#e67300"
+        app:backgroundTint="@color/myOrange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/textView" />

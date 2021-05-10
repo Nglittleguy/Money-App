@@ -65,10 +65,9 @@ public class MainAddSavingLT extends AppCompatActivity {
             else
                 incomeExpenseSavingProgress.setProgress(incomeSubExpense);
         }
-
-
         totalSaving.setText("Weekly Total Savings: " + Databases.centsToDollar(total));
     }
+
 
     public void addNewSavingPressed(View v) {
         Intent leaveActivity = new Intent(this, AddSavingLongTerm.class);
@@ -82,9 +81,8 @@ public class MainAddSavingLT extends AppCompatActivity {
     }
 
     public void nextPressed(View v) {
-//        Log.d("Success", "here");
-//        Intent leaveActivity = new Intent(this, AddSavingLongTerm.class);
-//        startActivity(leaveActivity);
+        Intent leaveActivity = new Intent(this, AddSavingGoal.class);
+        startActivity(leaveActivity);
     }
 
 }
