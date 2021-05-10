@@ -79,13 +79,22 @@ public class SavingAdapter extends RecyclerView.Adapter<SavingAdapter.ViewHolder
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent editSaving = new Intent(c, AddSavingLongTerm.class);
+                Intent editSaving = new Intent();
                 editSaving.putExtra("Edit", true);
                 editSaving.putExtra("WeeklySaving", i.getAmountPerWeek());
                 editSaving.putExtra("Percent", i.getPercent());
                 editSaving.putExtra("OldID", i.getId());
                 editSaving.putExtra("Description", i.getDesc());
-                Log.d("Success", "Editing It");
+                if(c instanceof MainAddSavingLT) {
+                    editSaving.setClass(c, AddSavingLongTerm.class);
+
+                }
+                else {
+                    editSaving.putExtra("SavingTotal", i.getLimitStored());
+                    editSaving.putExtra("Stored", i.getAmountStored());
+                    editSaving.setClass(c, AddSavingGoal.class);
+                    Log.d("Success", "limit is "+i.getLimitStored());
+                }
                 c.startActivity(editSaving);
             }
         });

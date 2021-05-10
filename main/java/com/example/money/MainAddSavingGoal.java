@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -14,7 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
-public class MainAddSavingLT extends AppCompatActivity {
+public class MainAddSavingGoal extends AppCompatActivity {
 
     private SavingDBHelper dbHelper;
     private RecyclerView rvSaving;
@@ -27,13 +26,13 @@ public class MainAddSavingLT extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_add_saving_l_t);
+        setContentView(R.layout.activity_main_add_saving_goal);
 
         dbHelper = new SavingDBHelper(this);
         Databases.setSavingHelper(dbHelper);
-        rvSavingList = dbHelper.getAllLongTerm();
+        rvSavingList = dbHelper.getAllShortTerm();
 
-        incomeExpenseSavingProgress = findViewById(R.id.savingLTProgress);
+        incomeExpenseSavingProgress = findViewById(R.id.savingGoalProgress);
 
         rvSaving = findViewById(R.id.recyclerView);
         rvSaving.setHasFixedSize(true);
@@ -42,9 +41,8 @@ public class MainAddSavingLT extends AppCompatActivity {
         rvSaving.setLayoutManager(rvSavingManger);
         rvSaving.setAdapter(rvSavingAdapter);
 
-        totalSaving = findViewById(R.id.totalSaving);
+        totalSaving = findViewById(R.id.totalSavingGoal);
         updateTotal();
-
     }
 
     public void updateTotal() {
@@ -61,28 +59,26 @@ public class MainAddSavingLT extends AppCompatActivity {
             incomeSubExpense =
                     (int)(100*(1- (double) (Databases.getWeeklyExpenses()+Databases.getWeeklySaving())/Databases.getWeeklyIncome()));
             if(incomeSubExpense<=0)
-            incomeExpenseSavingProgress.setProgress(0);
+                incomeExpenseSavingProgress.setProgress(0);
             else
                 incomeExpenseSavingProgress.setProgress(incomeSubExpense);
         }
         totalSaving.setText("Weekly Total Savings: " + Databases.centsToDollar(total));
     }
 
-
-    public void addNewSavingPressed(View v) {
-        Intent leaveActivity = new Intent(this, AddSavingLongTerm.class);
-        leaveActivity.putExtra("Edit", false);
-        startActivity(leaveActivity);
+    public void nextPressed(View v) {
+//        Intent leaveActivity = new Intent(this, AddSavingLongTerm.class);
+//        leaveActivity.putExtra("Edit", false);
+//        startActivity(leaveActivity);
     }
 
     public void previousPressed(View v) {
-        Intent leaveActivity = new Intent(this, MainAddExpense.class);
+        Intent leaveActivity = new Intent(this, MainAddSavingLT.class);
         startActivity(leaveActivity);
     }
 
-    public void nextPressed(View v) {
-        Intent leaveActivity = new Intent(this, MainAddSavingGoal.class);
+    public void addNewSavingPressed(View v) {
+        Intent leaveActivity = new Intent(this, AddSavingGoal.class);
         startActivity(leaveActivity);
     }
-
 }

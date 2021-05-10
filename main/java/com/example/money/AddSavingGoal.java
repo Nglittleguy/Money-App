@@ -30,7 +30,8 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
     private ProgressBar incomeExpenseSavingProgress;
     private SavingDBHelper dbHelper;
     private Calendar currentDay, selectedDay;
-    private int weeksDiff, weeklySaving, oldSaving, oldID;
+    private int weeksDiff, weeklySaving, oldID;
+    private long totalToSave, alreadySaved, oldSaving;
     private String oldDesc;
     private int[] oldDay;
     private boolean edit;
@@ -46,23 +47,26 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
         //Read Information of Previous Income for Editing
         Intent intent = getIntent();
         edit = intent.getBooleanExtra("Edit", false);
-        weeklySaving = intent.getIntExtra("WeeklySaving", 0);
-        oldSaving = weeklySaving;
+        weeklySaving = 0;
+        totalToSave = intent.getLongExtra("SavingTotal", 0);
+        oldSaving = intent.getIntExtra("WeeklySaving", 0);
         oldID = intent.getIntExtra("OldID", 0);
         oldDesc = intent.getStringExtra("Description");
+        alreadySaved = intent.getLongExtra("Stored", 0);
         if(edit && oldDesc.length()>12) {
             int end = oldDesc.length();
             oldDay = new int[] {Integer.parseInt(oldDesc.substring(end-10, end-6)),
                     Integer.parseInt(oldDesc.substring(end-5, end-3)),
                     Integer.parseInt(oldDesc.substring(end-2))};
+            if(oldDay[1]>=1 && oldDay[1]<=12)
+                oldDay[1]--;
+            else
+                oldDay = new int[1];
+
+
         }
         currentDay = Calendar.getInstance();
         selectedDay = Calendar.getInstance();
-        if(edit && oldDay.length>3) {
-            selectedDay.set(Calendar.YEAR, oldDay[0]);
-            selectedDay.set(Calendar.MONTH, oldDay[1]);
-            selectedDay.set(Calendar.DAY_OF_MONTH, oldDay[2]);
-        }
         weeksDiff = 0;
 
         dateSelector = findViewById(R.id.dateSelector);
@@ -85,10 +89,6 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
 
         //Showing Weekly Saving
         showWS = findViewById(R.id.showSavingGoalText);
-        if(edit) {
-            updateWeeklySavingView();
-            savingInput.setText(Databases.centsToDollar(weeklySaving));
-        }
 
         //Saving Amount Input
         savingInput.addTextChangedListener(new TextWatcher() {
@@ -113,10 +113,15 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
             }
         });
 
+        if(edit && oldDay.length==3) {
+            savingInput.setText(Databases.centsToDollar(totalToSave));
+            setDate(oldDay[0], oldDay[1], oldDay[2]);
+        }
+
         descriptionInput = findViewById(R.id.savingGoalDesc);
         if(edit) {
-            if(oldDesc!=null && oldDesc.length()>12)
-                descriptionInput.setText(oldDesc.substring(0, oldDesc.length()-12));
+            if(oldDesc!=null && oldDesc.length()>13)
+                descriptionInput.setText(oldDesc.substring(0, oldDesc.length()-13));
         }
 
         //Button Press
@@ -142,6 +147,10 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
 
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
+        setDate(year, month, dayOfMonth);
+    }
+
+    public void setDate(int year, int month, int dayOfMonth) {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
         c.set(Calendar.MONTH, month);
@@ -150,7 +159,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
                 && currentDay.get(Calendar.YEAR)==year)
                 || currentDay.get(Calendar.YEAR)<year) {
             weeksDiff = differenceInWeeks(currentDay, c);
-            SimpleDateFormat format = new SimpleDateFormat("MMM dd, yyyy");
+            SimpleDateFormat format = new SimpleDateFormat("MMM d, yyyy");
             dateSelector.setText("By "+format.format(c.getTime()));
             selectedDay.setTime(c.getTime());
         }
@@ -158,8 +167,8 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
     }
 
     public void updateWeeklySaving() {
-        if(weeksDiff != 0)
-            weeklySaving = (int) Math.ceil((double)getSavingAmount()/weeksDiff);
+        if(weeksDiff != 0 && getSavingAmount()>alreadySaved)
+            weeklySaving = (int) Math.ceil((double)(getSavingAmount()-Long.valueOf(alreadySaved).intValue())/weeksDiff);
         else
             weeklySaving = 0;
         updateWeeklySavingView();
@@ -239,11 +248,11 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
 
         Saving s;
         try {
+            SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
             s = new Saving (-1,
-                    descriptionInput.getText().toString() + "- " +
-                            selectedDay.get(Calendar.YEAR) + "/" + selectedDay.get(Calendar.MONTH)
-                            + "/" + selectedDay.get(Calendar.DAY_OF_MONTH),
-                    getSavingAmount(), 0, weeklySaving, 0, 1);
+                    descriptionInput.getText().toString() + " - " +
+                            format.format(selectedDay.getTime()),
+                    getSavingAmount(), alreadySaved, weeklySaving, 0, 1);
 
             Boolean success;
             if(edit) {
@@ -252,7 +261,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
             else
                 success = dbHelper.addOne(s);
                 Log.d("Success", "Did it work? "+success+", "+s.toString());
-            Intent leaveActivity = new Intent(this, MainAddSavingLT.class);
+            Intent leaveActivity = new Intent(this, MainAddSavingGoal.class);
             startActivity(leaveActivity);
         }
         catch (Exception e) {

@@ -41,4 +41,5 @@
     <string name="addNewSavingValue">Add New Saving</string>
     <string name="goalSavingValue">Short Term Savings</string>
     <string name="selectDateValue">by this Date [Select to Change]</string>
+    <string name="savingGoalsValue">Saving Goals</string>
 </resources>

@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainAddExpense">
+    tools:context=".MainAddSavingGoal">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayout"
@@ -38,53 +38,53 @@
             app:layout_constraintStart_toStartOf="parent" />
 
         <TextView
-            android:id="@+id/totalExpense"
+            android:id="@+id/totalSavingGoal"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="40dp"
             android:text="TextView"
-            android:textSize="30sp"
+            android:textSize="25dp"
             android:textStyle="bold"
             app:layout_constraintBottom_toTopOf="@+id/nextButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent" />
 
         <ProgressBar
-            android:id="@+id/totalIncomeExpenseProgress"
+            android:id="@+id/savingGoalProgress"
             style="@style/ThreeToneProgressBar"
             android:layout_width="350dp"
             android:layout_height="10dp"
             android:layout_marginTop="16dp"
+            android:layout_marginBottom="16dp"
             android:indeterminate="false"
+
             android:max="100"
             android:progress="100"
             android:secondaryProgress="0"
-
             app:layout_constraintBottom_toTopOf="@+id/nextButton"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/totalExpense"
-            app:layout_constraintVertical_bias="0.0" />
+            app:layout_constraintTop_toBottomOf="@+id/totalSavingGoal" />
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <Button
-        android:id="@+id/addNewExpenseButton"
+        android:id="@+id/addNewSavingGoalButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:onClick="addNewExpensePressed"
-        android:text="@string/addNewExpenseValue"
-        app:backgroundTint="@color/myGreen"
+        android:onClick="addNewSavingPressed"
+        android:text="@string/addNewSavingValue"
+        app:backgroundTint="@color/myOrange"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/savingGoalMainTitle" />
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/savingGoalMainTitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
-        android:text="@string/expenseValue"
+        android:text="@string/savingGoalsValue"
         android:textColor="#000"
         android:textSize="30sp"
         android:textStyle="bold"
@@ -99,7 +99,7 @@
         android:layout_marginTop="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/addNewExpenseButton" />
+        app:layout_constraintTop_toBottomOf="@+id/addNewSavingGoalButton" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
