@@ -81,6 +81,22 @@ public final class Databases {
         return 0;
     }
 
+    public static int getWeeklySaving(boolean a) {
+        if(savingHelper!=null) {
+            List<Saving> sa;
+            int total = 0;
+            if(a)
+                sa = savingHelper.getAllLongTerm();
+            else
+                sa = savingHelper.getAllShortTerm();
+            for(Saving s:sa) {
+                total+=s.getAmountPerWeek();
+            }
+            return total;
+        }
+        return 0;
+    }
+
     public static int getRemaining() {
         return getWeeklyAfterExpenses()-getWeeklySaving();
     }

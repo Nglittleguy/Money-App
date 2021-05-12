@@ -2,6 +2,7 @@ package com.example.money;
 
 import android.content.Context;
 import android.content.Intent;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -86,29 +87,29 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
             case 0:
                 for(int i = 0; i<income.size(); i++) {
                     send.add(income.get(i));
-                    total+=income.get(i).getAmountPerWeek();
                 }
+                total = Databases.getWeeklyIncome();
                 sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddIncome.class);
                 break;
             case 1:
                 for(int i = 0; i<expense.size(); i++) {
                     send.add(expense.get(i));
-                    total-=expense.get(i).getAmountPerWeek();
                 }
+                total = Databases.getWeeklyExpenses();
                 sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddExpense.class);
                 break;
             case 2:
                 for(int i = 0; i<savingLT.size(); i++) {
                     send.add(savingLT.get(i));
-                    total+=savingLT.get(i).getAmountPerWeek();
                 }
+                total = Databases.getWeeklySaving(true);
                 sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddSavingLT.class);
                 break;
             default:
                 for(int i = 0; i<savingGoal.size(); i++) {
                     send.add(savingGoal.get(i));
-                    total+=savingGoal.get(i).getAmountPerWeek();
                 }
+                total = Databases.getWeeklySaving(false);
                 sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddSavingGoal.class);
         }
         holder.parameterTitle.setText(title+Databases.centsToDollar(total));

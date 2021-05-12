@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -55,37 +56,7 @@ public class MainParamCheck extends AppCompatActivity {
 
     public void updateTotal() {
         Databases.getSavingHelper().updatePercentAmounts(Databases.getWeeklyAfterExpenses());
-//        for(int i = 0; i<4; i++) {
-//            if(parameterList.findViewHolderForAdapterPosition(i)!=null) {
-//                int rem = 0;
-//
-//                switch(i) {
-//                    case 0:
-//                        for (int j = 0; j < iList.size(); j++)
-//                            rem += iList.get(j).getAmountPerWeek();
-//                        break;
-//                    case 1:
-//                        for (int j = 0; j < eList.size(); j++)
-//                            rem -= eList.get(j).getAmountPerWeek();
-//                        break;
-//                    case 2:
-//                        for (int j = 0; j < ltList.size(); j++)
-//                            rem += ltList.get(j).getAmountPerWeek();
-//                        break;
-//                    case 3:
-//                        for (int j = 0; j < goalList.size(); j++)
-//                            rem += goalList.get(j).getAmountPerWeek();
-//                        break;
-//
-//                }
-//                //Toast.makeText(this, "Non "+ i, Toast.LENGTH_SHORT).show();
-//                //(((ParameterAdapter.ViewHolder) Objects.requireNonNull(parameterList.findViewHolderForAdapterPosition(i)))).setParameterTitle(i, Databases.centsToDollar(rem));
-//            }
-//            else {
-//                Toast.makeText(this, "Null object "+ i, Toast.LENGTH_SHORT).show();
-//            }
-//        }
-
+        resetParameterValues();
         int incomeSubExpense =
                 (int)(100*(1- (double) Databases.getWeeklyExpenses()/Databases.getWeeklyIncome()));
         if(incomeSubExpense<=0)
@@ -100,6 +71,32 @@ public class MainParamCheck extends AppCompatActivity {
                 progress.setProgress(incomeSubExpense);
         }
         remaining.setText("Weekly Allowance: " + Databases.centsToDollar(Databases.getRemaining()));
+    }
+
+    public void resetParameterValues() {
+        for(int i = 0; i<4; i++) {
+            if(parameterList.findViewHolderForAdapterPosition(i)!=null) {
+                if(Objects.requireNonNull(parameterList.findViewHolderForAdapterPosition(i)).itemView!=null) {
+                    int val;
+
+                    switch(i) {
+                        case 0:
+                            val = Databases.getWeeklyIncome();
+                            break;
+                        case 1:
+                            val = Databases.getWeeklyExpenses();
+                            break;
+                        case 2:
+                            val = Databases.getWeeklySaving(true);
+                            break;
+                        default:
+                            val = Databases.getWeeklySaving(false);
+                            break;
+                    }
+                    (((ParameterAdapter.ViewHolder) Objects.requireNonNull(parameterList.findViewHolderForAdapterPosition(i)))).setParameterTitle(i, Databases.centsToDollar(val));
+                }
+            }
+        }
     }
 
     public void nextPressed(View v) {

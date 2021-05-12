@@ -87,7 +87,6 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
                     editIncome.putExtra("OldID", i.getId());
                     editIncome.putExtra("Description", i.getDesc());
                     c.startActivity(editIncome);
-                    //Toast.makeText(c, "Here at number "+position, Toast.LENGTH_SHORT).show();
                 }
             });
         }
@@ -139,6 +138,7 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
             Databases.getIncomeHelper().removeOne((Income)i);
         notifyItemRemoved(pos);
         notifyItemRangeChanged(pos, paramList.size());
+
         ((MainParamCheck)c).updateTotal();
     }
 
