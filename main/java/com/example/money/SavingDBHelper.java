@@ -159,6 +159,42 @@ public class SavingDBHelper extends SQLiteOpenHelper {
         return ret;
     }
 
+    public void updatePercentAmounts(int remaining) {
+        List<Saving> ret = new ArrayList<>();
+        long max = Long.MAX_VALUE;
+        String query = "SELECT * FROM "+TABLE+" WHERE "+COL_LIMT+" = "+max;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+
+        if(c.moveToFirst()) {
+            do {
+                int id = c.getInt(0);
+                String desc = c.getString(1);
+                long limit = c.getLong(2);
+                long stored = c.getLong(3);
+                int week = c.getInt(4);
+                double percent = c.getDouble(5);
+                int removeable = c.getInt(6);
+                Saving s = new Saving(id, desc, limit, stored, week, percent, removeable);
+                ret.add(s);
+            }while(c.moveToNext());
+        }
+        c.close();
+        db.close();
+
+        db = this.getWritableDatabase();
+        for(Saving s: ret) {
+            if(s.getPercent()!=0) {
+                s.setAmountPerWeek((int) s.getPercent()*remaining/100);
+                query = "UPDATE " + TABLE +
+                        " SET " + COL_WEEK + " = " + s.getAmountPerWeek() +
+                        " WHERE " + COL_ID + " = " + s.getId();
+                db.execSQL(query);
+            }
+        }
+    }
+
     public List<Saving> getAllRemoveable() {
         List<Saving> ret = new ArrayList<>();
         String query = "SELECT * FROM "+TABLE+" WHERE "+COL_REMV+" = 1";

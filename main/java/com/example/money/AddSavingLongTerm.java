@@ -397,7 +397,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
             }
             else
                 success = dbHelper.addOne(s);
-            Intent leaveActivity = new Intent(this, MainAddSavingLT.class);
+            Intent leaveActivity = new Intent(this, MainParamCheck.class);
             startActivity(leaveActivity);
         }
         catch (Exception e) {

@@ -282,7 +282,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
             else
                 success = dbHelper.addOne(i);
             Log.d("Success", "Add it "+success);
-            Intent leaveActivity = new Intent(this, MainAddIncome.class);
+            Intent leaveActivity = new Intent(this, MainParamCheck.class);
             startActivity(leaveActivity);
         }
         catch (Exception e) {

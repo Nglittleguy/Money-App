@@ -63,7 +63,7 @@ public class MainAddSavingGoal extends AppCompatActivity {
             else
                 incomeExpenseSavingProgress.setProgress(incomeSubExpense);
         }
-        totalSaving.setText("Weekly Total Savings: " + Databases.centsToDollar(total));
+        totalSaving.setText("Weekly Goal Savings: " + Databases.centsToDollar(total));
     }
 
     public void nextPressed(View v) {

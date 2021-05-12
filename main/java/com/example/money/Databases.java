@@ -81,9 +81,10 @@ public final class Databases {
         return 0;
     }
 
-    public static int getWeeklyAfterExpensesAfterSavings() {
-        return 0;
+    public static int getRemaining() {
+        return getWeeklyAfterExpenses()-getWeeklySaving();
     }
+
 
     private static int province = 2;
 

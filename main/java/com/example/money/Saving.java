@@ -1,8 +1,6 @@
 package com.example.money;
 
-public class Saving {
-    private int id;
-    private String desc;
+public class Saving extends Parameter{
     private long limitStored;
     private long amountStored;
     private int canTakeFrom;
@@ -11,8 +9,7 @@ public class Saving {
     private int amountPerWeek;
 
     public Saving(int id, String desc, long limitStored, long amountStored, int amountPerWeek, double percent, int canTakeFrom) {
-        this.id = id;
-        this.desc = desc;
+        super(id, desc);
         this.limitStored = limitStored;
         this.amountStored = amountStored;
         this.canTakeFrom = canTakeFrom;
@@ -23,29 +20,12 @@ public class Saving {
     public Saving(int id, String desc, long limitStored, long amountStored, int amountPerWeek, int canTakeFrom) {
         //If long term savings: limitStored = long.MAX_VALUE, and canTakeFrom = 1
         //If short term savings: limitStored != long.MAx_VALUE, and canTakeFrom = 0 (flips to 1 when limitStored = amountStored
-        this.id = id;
-        this.desc = desc;
+        super(id, desc);
         this.limitStored = limitStored;
         this.amountStored = amountStored;
         this.amountPerWeek = amountPerWeek;
         this.percent = 0;
         this.canTakeFrom = canTakeFrom;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
     }
 
     public long getLimitStored() {
@@ -97,15 +77,15 @@ public class Saving {
             take = "non removeable";
         if(limitStored!=Long.MAX_VALUE) {
             if(percent==0)
-                return "Savings Long Term: "+id+" {"+desc+" : "+amountPerWeek+" per week, total["+amountStored+"]}";
+                return "Savings Long Term: "+getId()+" {"+getDesc()+" : "+amountPerWeek+" per week, total["+amountStored+"]}";
             else
-                return "Savings Long Term: "+id+" {"+desc+" : "+percent+"% per week, total["+amountStored+"]}";
+                return "Savings Long Term: "+getId()+" {"+getDesc()+" : "+percent+"% per week, total["+amountStored+"]}";
         }
         else {
             if(percent==0)
-                return "Savings Short Term: "+id+" {"+desc+" : "+amountPerWeek+" per week, total["+amountStored+"], "+take+"}";
+                return "Savings Short Term: "+getId()+" {"+getDesc()+" : "+amountPerWeek+" per week, total["+amountStored+"], "+take+"}";
             else
-                return "Savings Short Term: "+id+" {"+desc+" : "+percent+"% per week, total["+amountStored+"], "+take+"}";
+                return "Savings Short Term: "+getId()+" {"+getDesc()+" : "+percent+"% per week, total["+amountStored+"], "+take+"}";
         }
     }
 }

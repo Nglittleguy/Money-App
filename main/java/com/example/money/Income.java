@@ -1,14 +1,11 @@
 package com.example.money;
 
-public class Income {
-    private int id;
-    private String desc;
+public class Income extends Parameter{
     private int amountPerWeek;
     private int inc;
 
     public Income(int id, String desc, int amountPerWeek, int inc) {
-        this.id = id;
-        this.desc = desc;
+        super(id, desc);
         this.amountPerWeek = amountPerWeek;
         this.inc = inc;
     }
@@ -21,22 +18,6 @@ public class Income {
         this.amountPerWeek = amountPerWeek;
     }
 
-    public String getDesc() {
-        return desc;
-    }
-
-    public void setDesc(String desc) {
-        this.desc = desc;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public int getInc() { return inc; }
 
     public void setInc(int a) { inc = a; }
@@ -45,8 +26,8 @@ public class Income {
     @Override
     public String toString() {
         if(inc==1)
-            return "Income "+id+": {"+desc+" : "+amountPerWeek+"}";
+            return "Income "+getId()+": {"+getDesc()+" : "+amountPerWeek+"}";
         else
-            return "Expense "+id+": {"+desc+" : "+amountPerWeek+"}";
+            return "Expense "+getId()+": {"+getDesc()+" : "+amountPerWeek+"}";
     }
 }

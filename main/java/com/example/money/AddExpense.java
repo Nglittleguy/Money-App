@@ -268,7 +268,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
             }
             else
                 success = dbHelper.addOne(i);
-            Intent leaveActivity = new Intent(this, MainAddExpense.class);
+            Intent leaveActivity = new Intent(this, MainParamCheck.class);
             startActivity(leaveActivity);
         }
         catch (Exception e) {
