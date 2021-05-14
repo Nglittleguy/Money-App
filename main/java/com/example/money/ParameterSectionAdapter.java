@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -25,7 +26,7 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
 
         TextView rowDesc;
         TextView rowAmount;
-        Button rowButton;
+        ImageButton rowButton;
 
         /*
         https://stackoverflow.com/questions/26076965/android-recyclerview-addition-removal-of-items

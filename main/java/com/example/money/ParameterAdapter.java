@@ -8,9 +8,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.money.Parameter;
@@ -31,8 +33,9 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
     class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView parameterTitle;
+        TextView parameterValue;
         RecyclerView childView;
-        Button parameterAddButton;
+        ImageButton parameterAddButton;
 
         /*
         https://stackoverflow.com/questions/26076965/android-recyclerview-addition-removal-of-items
@@ -42,7 +45,7 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
             parameterTitle = itemView.findViewById(R.id.parameterTitle);
             parameterAddButton = itemView.findViewById(R.id.addParameterButton);
             childView = itemView.findViewById(R.id.childRecycler);
-
+            parameterValue = itemView.findViewById(R.id.parameterValue);
             parameterAddButton.setOnClickListener(this);
         }
 
@@ -52,8 +55,12 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
             addParam(iPos);
         }
 
-        public void setParameterTitle(int position, String amount) {
-            parameterTitle.setText(list.get(position)+amount);
+        public void setParameterTitle(int position) {
+            parameterTitle.setText(list.get(position));
+        }
+
+        public void setParameterValue(String amount) {
+            parameterValue.setText(amount);
         }
     }
 
@@ -90,6 +97,8 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
                 }
                 total = Databases.getWeeklyIncome();
                 sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddIncome.class);
+                holder.parameterAddButton.setImageDrawable(ContextCompat.getDrawable(c, R.drawable.add_income));
+                holder.parameterValue.setTextColor(ContextCompat.getColor(c, R.color.myGreen));
                 break;
             case 1:
                 for(int i = 0; i<expense.size(); i++) {
@@ -97,6 +106,8 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
                 }
                 total = Databases.getWeeklyExpenses();
                 sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddExpense.class);
+                holder.parameterAddButton.setImageDrawable(ContextCompat.getDrawable(c, R.drawable.add_expense));
+                holder.parameterValue.setTextColor(ContextCompat.getColor(c, R.color.design_default_color_error));
                 break;
             case 2:
                 for(int i = 0; i<savingLT.size(); i++) {
@@ -112,7 +123,8 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
                 total = Databases.getWeeklySaving(false);
                 sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddSavingGoal.class);
         }
-        holder.parameterTitle.setText(title+Databases.centsToDollar(total));
+        holder.setParameterTitle(position);
+        holder.setParameterValue(Databases.centsToDollar(total));
         holder.childView.setAdapter(sectionAdapter);
     }
 

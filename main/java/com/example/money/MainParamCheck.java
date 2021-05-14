@@ -93,7 +93,7 @@ public class MainParamCheck extends AppCompatActivity {
                             val = Databases.getWeeklySaving(false);
                             break;
                     }
-                    (((ParameterAdapter.ViewHolder) Objects.requireNonNull(parameterList.findViewHolderForAdapterPosition(i)))).setParameterTitle(i, Databases.centsToDollar(val));
+                    (((ParameterAdapter.ViewHolder) Objects.requireNonNull(parameterList.findViewHolderForAdapterPosition(i)))).setParameterValue(Databases.centsToDollar(val));
                 }
             }
         }
