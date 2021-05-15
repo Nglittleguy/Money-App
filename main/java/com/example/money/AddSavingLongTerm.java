@@ -259,13 +259,14 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     if(periodInput.getText().toString().length()>5) {
                         periodOfWeeks = ((double) Integer.parseInt(periodInput.getText().toString()
                                 .substring(0, periodInput.getText().toString().length() - 5))) / 7;
+                        updateWeeklySaving(periodOfWeeks, getSavingAmount());
                     }
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
                     Toast.makeText(AddSavingLongTerm.this, "Failed to parse period", Toast.LENGTH_LONG).show();
+                    updateWeeklySaving(periodOfWeeks, 0);
                 }
-                updateWeeklySaving(periodOfWeeks, getSavingAmount());
             }
         });
 
@@ -351,6 +352,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
         }
         catch (NumberFormatException e) {
             Toast.makeText(AddSavingLongTerm.this, "Failed to parse amount", Toast.LENGTH_LONG).show();
+            amountInteger = 0;
         }
         return amountInteger;
     }

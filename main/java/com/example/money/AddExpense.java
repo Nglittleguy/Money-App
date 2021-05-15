@@ -129,13 +129,15 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
                     if(periodInput.getText().toString().length()>5) {
                         periodOfWeeks = ((double) Integer.parseInt(periodInput.getText().toString()
                                 .substring(0, periodInput.getText().toString().length() - 5))) / 7;
+                        updateWeeklyExpense(periodOfWeeks, getExpenseAmount());
                     }
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
                     Toast.makeText(AddExpense.this, "Failed to parse period", Toast.LENGTH_LONG).show();
+                    updateWeeklyExpense(periodOfWeeks, 0);
                 }
-                updateWeeklyExpense(periodOfWeeks, getExpenseAmount());
+
             }
         });
 
@@ -230,6 +232,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
         }
         catch (NumberFormatException e) {
             Toast.makeText(AddExpense.this, "Failed to parse amount", Toast.LENGTH_LONG).show();
+            amountInteger = 0;
         }
         return amountInteger;
     }
@@ -282,11 +285,24 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
      */
     public void updateProgress() {
         int incomeSubExpense =
-                (int)(100*(1- (double) (Databases.getWeeklyExpenses()+weeklyExpense-oldWeeklyExpense)/Databases.getWeeklyIncome()));
+                (int)(100*(1- (double)
+                        (Databases.getWeeklyExpenses()+weeklyExpense-oldWeeklyExpense)
+                        /Databases.getWeeklyIncome()));
         if(incomeSubExpense<=0)
             incomeExpenseProgress.setProgress(0);
         else
             incomeExpenseProgress.setProgress(incomeSubExpense);
+
+        if(incomeSubExpense<=0)
+            incomeExpenseProgress.setSecondaryProgress(0);
+        else {
+            incomeExpenseProgress.setSecondaryProgress(incomeSubExpense);
+            incomeSubExpense = (int)(100*(1- (double) (Databases.getWeeklyExpenses()+weeklyExpense-oldWeeklyExpense+Databases.getWeeklySaving())/Databases.getWeeklyIncome()));
+            if(incomeSubExpense<=0)
+                incomeExpenseProgress.setProgress(0);
+            else
+                incomeExpenseProgress.setProgress(incomeSubExpense);
+        }
     }
 
 
