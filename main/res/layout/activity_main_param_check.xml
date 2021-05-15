@@ -12,7 +12,6 @@
         android:layout_width="350dp"
         android:layout_height="10dp"
 
-        android:layout_marginBottom="12dp"
         android:indeterminate="false"
         android:max="100"
         android:progress="100"
@@ -20,7 +19,8 @@
         app:layout_constraintBottom_toTopOf="@+id/nextButton"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/totalRemaining" />
 
     <TextView
         android:id="@+id/totalRemaining"
@@ -40,7 +40,7 @@
         android:id="@+id/nextButton"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="40dp"
+        android:layout_marginBottom="24dp"
         android:onClick="nextPressed"
         android:text="@string/nextValue"
         app:backgroundTint="#0091ea"

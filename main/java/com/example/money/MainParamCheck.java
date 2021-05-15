@@ -54,6 +54,11 @@ public class MainParamCheck extends AppCompatActivity {
         updateTotal();
     }
 
+    @Override
+    public void onBackPressed() {
+
+    }
+
     public void updateTotal() {
         Databases.getSavingHelper().updatePercentAmounts(Databases.getWeeklyAfterExpenses());
         resetParameterValues();

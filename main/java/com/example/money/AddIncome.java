@@ -141,13 +141,14 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                     if(periodInput.getText().toString().length()>5) {
                         periodOfWeeks = ((double) Integer.parseInt(periodInput.getText().toString()
                                 .substring(0, periodInput.getText().toString().length() - 5))) / 7;
+                        updateWeeklyIncome(periodOfWeeks, getIncomeAmount());
                     }
                 }
                 catch (NumberFormatException e) {
                     Log.d("Exception", e.toString());
                     Toast.makeText(AddIncome.this, "Failed to parse period", Toast.LENGTH_LONG).show();
+                    updateWeeklyIncome(periodOfWeeks, 0);
                 }
-                updateWeeklyIncome(periodOfWeeks, getIncomeAmount());
             }
         });
 
@@ -245,6 +246,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
         }
         catch (NumberFormatException e) {
             Toast.makeText(AddIncome.this, "Failed to parse amount", Toast.LENGTH_LONG).show();
+            amountInteger = 0;
         }
         return amountInteger;
     }
