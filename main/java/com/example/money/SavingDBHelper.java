@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
@@ -229,5 +230,32 @@ public class SavingDBHelper extends SQLiteOpenHelper {
                 " WHERE " + COL_ID + " = " + s.getId();
         db.execSQL(query);
         return true;
+    }
+
+    public int updateSavingAmounts(Context c) {
+        int left = Databases.getWeeklyAfterExpenses();
+        List<Saving> addAmount = getAllNonFinished();
+        String query;
+
+        SQLiteDatabase db = this.getWritableDatabase();
+        for(Saving s: addAmount) {
+            if(s.getLimitStored()<s.getAmountStored()+s.getAmountPerWeek()) {
+                query = "UPDATE " + TABLE +
+                        " SET " + COL_STOR + " = " + s.getLimitStored() +
+                        ", " + COL_REMV + " = 1" +
+                        " WHERE " + COL_ID + " = " + s.getId();
+                Toast.makeText(c, "Congratulations, you've reached your goal for "+s.getDesc(), Toast.LENGTH_LONG).show();
+                Toast.makeText(c, "You can now spend the "+s.getLimitStored()+" that you've saved up.", Toast.LENGTH_LONG).show();
+                left -= s.getLimitStored()-s.getAmountStored();
+            }
+            else {
+                query = "UPDATE " + TABLE +
+                        " SET " + COL_STOR + " = " + (s.getAmountStored() + s.getAmountPerWeek()) +
+                        " WHERE " + COL_ID + " = " + s.getId();
+                left -= s.getAmountPerWeek();
+            }
+            db.execSQL(query);
+        }
+        return left;
     }
 }

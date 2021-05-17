@@ -1,5 +1,6 @@
 package com.example.money;
 
+import android.content.Context;
 import android.util.Log;
 
 import java.text.DecimalFormat;
@@ -18,6 +19,22 @@ public final class Databases {
     private static SavingDBHelper savingHelper;
     public static SavingDBHelper getSavingHelper() { return savingHelper; }
     public static void setSavingHelper(SavingDBHelper s) {savingHelper = s; }
+
+    private static SpendingDBHelper spendingHelper;
+    public static SpendingDBHelper getSpendingHelper() { return spendingHelper; }
+    public static void setSpendingHelper(SpendingDBHelper s) {spendingHelper = s; }
+
+    private static int weeklyAllowance;
+    public static int getWeeklyAllowance() {return weeklyAllowance; }
+    public static void setWeeklyAllowance(Context c, boolean a) {
+        if(a)
+            weeklyAllowance = spendingHelper.getWeeklyAllowance();
+        else {
+            weeklyAllowance = savingHelper.updateSavingAmounts(c);
+            Spending s = new Spending(-1, "", weeklyAllowance, false);
+            spendingHelper.editOne(s, 1);
+        }
+    }
 
     public static String centsToDollar(int wi) {
         DecimalFormat incomeToText = new DecimalFormat("0.00");

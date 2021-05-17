@@ -5,6 +5,7 @@ import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.util.Log;
@@ -36,13 +37,11 @@ public class MainParamCheck extends AppCompatActivity {
         progress = findViewById(R.id.progress);
         remaining = findViewById(R.id.totalRemaining);
 
-        iDBHelper = new IncomeDBHelper(this);
-        Databases.setIncomeHelper(iDBHelper);
+        iDBHelper = Databases.getIncomeHelper();
         iList = iDBHelper.getAll(true);
         eList = iDBHelper.getAll(false);
 
-        sDBHelper = new SavingDBHelper(this);
-        Databases.setSavingHelper(sDBHelper);
+        sDBHelper = Databases.getSavingHelper();
         ltList = sDBHelper.getAllLongTerm();
         goalList = sDBHelper.getAllShortTerm();
 
@@ -52,6 +51,11 @@ public class MainParamCheck extends AppCompatActivity {
         parameterList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
 
         updateTotal();
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     public void updateTotal() {
@@ -100,6 +104,7 @@ public class MainParamCheck extends AppCompatActivity {
     }
 
     public void nextPressed(View v) {
-
+        Intent leaveActivity = new Intent(this, MainLoading.class);
+        startActivity(leaveActivity);
     }
 }
