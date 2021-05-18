@@ -71,7 +71,7 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
 
     public List<Spending> getAll(String after, String before) {
         List<Spending> ret = new ArrayList<>();
-        String query = "SELECT * FROM "+TABLE+" WHERE "+COL_DT+" >= '"+ after + "' and "+ COL_DT +" < '" + before+"'";
+        String query = "SELECT * FROM "+TABLE+" WHERE "+COL_DT+" >= '"+ after + "' AND "+ COL_DT +" < '" + before+"' AND "+COL_ID+"!= 1";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
@@ -92,13 +92,13 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
         return ret;
     }
 
-    public List<Spending> getAll(boolean before, String dateTime) {
+    public List<Spending> getAll(boolean after, String dateTime) {
         List<Spending> ret = new ArrayList<>();
         String query;
-        if(before)
-            query = "SELECT * FROM "+TABLE+" WHERE "+COL_DT+" >= '"+ dateTime + "'";
+        if(after)
+            query = "SELECT * FROM "+TABLE+" WHERE "+COL_DT+" >= '"+ dateTime + "' AND "+COL_ID+"!= 1";
         else
-            query = "SELECT * FROM "+TABLE+" WHERE "+COL_DT+" < '"+ dateTime + "'";
+            query = "SELECT * FROM "+TABLE+" WHERE "+COL_DT+" < '"+ dateTime + "' AND "+COL_ID+"!= 1";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
@@ -125,6 +125,11 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
         return dateFormat.format(date);
     }
 
+    private String getDateTime(Date date) {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+        return dateFormat.format(date);
+    }
+
     public boolean addOne(Spending s) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues c = new ContentValues();
@@ -132,7 +137,7 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
         c.put(COL_DESC, s.getDesc());
         c.put(COL_AMNT, s.getAmount());
         c.put(COL_NEC, s.getNecessity());
-        c.put(COL_DT, getDateTime());
+        c.put(COL_DT, getDateTime(s.getDateTime()));
         return db.insert(TABLE, null, c) != -1;
     }
 

@@ -1,6 +1,9 @@
 package com.example.money;
 
-import java.sql.Date;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 public class Spending {
 
@@ -28,7 +31,13 @@ public class Spending {
     public Spending(int id, String desc, int amount, Boolean necessity, String dateTime) {
         this.id = id;
         this.amount = amount;
-        this.dateTime = Date.valueOf(dateTime);
+        try {
+            this.dateTime = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).parse(dateTime);
+        } catch (ParseException e) {
+            e.printStackTrace();
+            this.dateTime = new Date();
+        }
+
         this.desc = desc;
         this.necessity = necessity;
     }

@@ -43,4 +43,5 @@
     <string name="selectDateValue">by this Date [Select to Change]</string>
     <string name="savingGoalsValue">Saving Goals</string>
     <string name="loadingValue">Loading Data...</string>
+    <string name="title_activity_main_screen">MainScreen</string>
 </resources>
