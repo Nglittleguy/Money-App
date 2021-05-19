@@ -6,6 +6,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
@@ -28,26 +29,45 @@ public class MainScreen extends AppCompatActivity {
     SpendingDBHelper db;
     TextView sampleText;
     int totalWeekly, spent;
-    ProgressBar spentBar;
+    ProgressBar spentBar, overBar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_screen);
+
         spendView = findViewById(R.id.spendView);
 
         sampleText = findViewById(R.id.explainText);
 
         spentBar = findViewById(R.id.spentBar);
+        overBar = findViewById(R.id.overBar);
         db = Databases.getSpendingHelper();
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.DAY_OF_MONTH, 2);
         spendingList = db.getAll(true, getStartOfWeek());
 
         totalWeekly = db.getWeeklyAllowance();
         spent = initList();
-        spentBar.setProgress(10);
+        if(spent<totalWeekly) {
+            spentBar.setVisibility(View.VISIBLE);
+            overBar.setVisibility(View.INVISIBLE);
+            spentBar.setProgress(100*(totalWeekly-spent)/totalWeekly);
+            sampleText.setText(Databases.centsToDollar(totalWeekly-spent)+"/ "+Databases.centsToDollar(totalWeekly));
+        }
+        else {
+            spentBar.setVisibility(View.INVISIBLE);
+            overBar.setVisibility(View.VISIBLE);
+            if(spent>2*totalWeekly)
+                overBar.setProgress(100);
+            else
+                overBar.setProgress(100*(spent-totalWeekly)/totalWeekly);
+            sampleText.setText(Databases.centsToDollar(totalWeekly-spent)+"/ "+Databases.centsToDollar(totalWeekly));
+        }
+
     }
+
+
+
 
     public String getStartOfWeek() {
         Calendar c = Calendar.getInstance();
@@ -69,6 +89,7 @@ public class MainScreen extends AppCompatActivity {
 
         ArrayAdapter adapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, spendString);
         spendView.setAdapter(adapter);
+
         return total;
     }
 }

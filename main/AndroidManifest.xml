@@ -9,7 +9,13 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/Theme.Money">
-        <activity android:name=".MainScreen"></activity>
+        <activity
+            android:name=".MainTab"
+            android:label="@string/title_activity_main_tab"
+            android:theme="@style/Theme.Money.NoActionBar">
+
+        </activity>
+        <activity android:name=".MainScreen" />
         <activity android:name=".MainLoading">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

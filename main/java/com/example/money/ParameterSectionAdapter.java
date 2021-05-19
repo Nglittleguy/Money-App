@@ -14,10 +14,13 @@ import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.money.Parameter;
+import com.example.money.ui.main.ParameterFragment;
+
 import java.util.List;
 
 public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSectionAdapter.ViewHolder> {
     Context c;
+    ParameterFragment f;
     RecyclerView recyclerView;
     List<Parameter> paramList;
     Class typeOfParameter;
@@ -50,11 +53,12 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
 
     }
 
-    public ParameterSectionAdapter(Context c, List<Parameter> paramList, RecyclerView recyclerView, Class typeOfParameter) {
+    public ParameterSectionAdapter(Context c, List<Parameter> paramList, RecyclerView recyclerView, Class typeOfParameter, ParameterFragment f) {
         this.c = c;
         this.paramList = paramList;
         this.recyclerView = recyclerView;
         this.typeOfParameter = typeOfParameter;
+        this.f = f;
     }
 
     @NonNull
@@ -140,7 +144,10 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
         notifyItemRemoved(pos);
         notifyItemRangeChanged(pos, paramList.size());
 
-        ((MainParamCheck)c).updateTotal();
+        if(f!=null)
+            f.updateTotal();
+        else
+            ((MainParamCheck)c).updateTotal();
     }
 
 }

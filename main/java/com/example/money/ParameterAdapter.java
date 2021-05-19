@@ -16,6 +16,7 @@ import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.example.money.Parameter;
+import com.example.money.ui.main.ParameterFragment;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -23,6 +24,7 @@ import java.util.List;
 
 public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.ViewHolder> {
     Context c;
+    ParameterFragment f;
     RecyclerView recyclerView;
     List<String> list = Arrays.asList("Weekly Income: ", "Weekly Expense: ", "Weekly Savings: ", "Weekly Goals: ");
     List<Income> income;
@@ -30,7 +32,7 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
     List<Saving> savingLT;
     List<Saving> savingGoal;
 
-    class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView parameterTitle;
         TextView parameterValue;
@@ -65,6 +67,18 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
     }
 
     public ParameterAdapter(Context c, RecyclerView recyclerView, List<Income> income,
+                            List<Income> expense, List<Saving> savingLT, List<Saving> savingGoal,
+                            ParameterFragment f) {
+        this.c = c;
+        this.recyclerView = recyclerView;
+        this.income = income;
+        this.expense = expense;
+        this.savingLT = savingLT;
+        this.savingGoal = savingGoal;
+        this.f = f;
+    }
+
+    public ParameterAdapter(Context c, RecyclerView recyclerView, List<Income> income,
                             List<Income> expense, List<Saving> savingLT, List<Saving> savingGoal) {
         this.c = c;
         this.recyclerView = recyclerView;
@@ -72,6 +86,7 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
         this.expense = expense;
         this.savingLT = savingLT;
         this.savingGoal = savingGoal;
+        this.f = null;
     }
 
     @NonNull
@@ -96,7 +111,7 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
                     send.add(income.get(i));
                 }
                 total = Databases.getWeeklyIncome();
-                sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddIncome.class);
+                sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddIncome.class, f);
                 holder.parameterAddButton.setImageDrawable(ContextCompat.getDrawable(c, R.drawable.add_income));
                 holder.parameterValue.setTextColor(ContextCompat.getColor(c, R.color.myGreen));
                 break;
@@ -105,7 +120,7 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
                     send.add(expense.get(i));
                 }
                 total = Databases.getWeeklyExpenses();
-                sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddExpense.class);
+                sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddExpense.class, f);
                 holder.parameterAddButton.setImageDrawable(ContextCompat.getDrawable(c, R.drawable.add_expense));
                 holder.parameterValue.setTextColor(ContextCompat.getColor(c, R.color.design_default_color_error));
                 break;
@@ -114,14 +129,14 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
                     send.add(savingLT.get(i));
                 }
                 total = Databases.getWeeklySaving(true);
-                sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddSavingLT.class);
+                sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddSavingLT.class, f);
                 break;
             default:
                 for(int i = 0; i<savingGoal.size(); i++) {
                     send.add(savingGoal.get(i));
                 }
                 total = Databases.getWeeklySaving(false);
-                sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddSavingGoal.class);
+                sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddSavingGoal.class, f);
         }
         holder.setParameterTitle(position);
         holder.setParameterValue(Databases.centsToDollar(total));

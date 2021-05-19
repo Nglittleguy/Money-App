@@ -261,7 +261,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
             else
                 success = dbHelper.addOne(s);
                 Log.d("Success", "Did it work? "+success+", "+s.toString());
-            Intent leaveActivity = new Intent(this, MainParamCheck.class);
+            Intent leaveActivity = new Intent(this, MainTab.class);
             startActivity(leaveActivity);
         }
         catch (Exception e) {

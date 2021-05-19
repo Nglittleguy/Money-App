@@ -44,4 +44,8 @@
     <string name="savingGoalsValue">Saving Goals</string>
     <string name="loadingValue">Loading Data...</string>
     <string name="title_activity_main_screen">MainScreen</string>
+    <string name="title_activity_main_tabs">MainTabs</string>
+    <string name="tab_text_1">Main</string>
+    <string name="tab_text_2">Parameters</string>
+    <string name="title_activity_main_tab">MainTab</string>
 </resources>

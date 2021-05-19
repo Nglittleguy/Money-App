@@ -60,7 +60,7 @@ public class MainLoading extends AppCompatActivity {
     }
 
     public void goToMainScreen() {
-        Intent leaveActivity = new Intent(this, MainScreen.class);
+        Intent leaveActivity = new Intent(this, MainTab.class);
         startActivity(leaveActivity);
     }
 }
