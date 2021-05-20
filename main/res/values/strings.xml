@@ -48,4 +48,7 @@
     <string name="tab_text_1">Main</string>
     <string name="tab_text_2">Parameters</string>
     <string name="title_activity_main_tab">MainTab</string>
+    <string name="tab_text_3">Spenditure</string>
+    <string name="spenditureValue">Weekly Spenditure</string>
+    <string name="addSpendingValue">Add Spending</string>
 </resources>

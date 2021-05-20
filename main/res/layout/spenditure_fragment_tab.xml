@@ -7,41 +7,36 @@
     android:layout_height="match_parent"
     tools:context=".ui.main.MainFragment">
 
-    <ProgressBar
-        android:id="@+id/progressFrag"
-        style="@style/ThreeToneProgressBar"
-        android:layout_width="350dp"
-        android:layout_height="10dp"
-
-        android:layout_marginBottom="60dp"
-        android:indeterminate="false"
-        android:max="100"
-        android:progress="100"
-        android:secondaryProgress="0"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.491"
-        app:layout_constraintStart_toStartOf="parent" />
-
     <TextView
-        android:id="@+id/totalRemainingFrag"
+        android:id="@+id/totalSpentFrag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:text=""
         android:textSize="25sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toTopOf="@+id/progress"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/parameterListFrag" />
+        app:layout_constraintTop_toBottomOf="@+id/weekSpentListFrag" />
 
     <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/parameterListFrag"
+        android:id="@+id/weekSpentListFrag"
         android:layout_width="395dp"
-        android:layout_height="557dp"
+        android:layout_height="500dp"
+        android:layout_marginTop="12dp"
         app:layoutManager="androidx.recyclerview.widget.LinearLayoutManager"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/spenditureTitle" />
+
+    <TextView
+        android:id="@+id/spenditureTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="28dp"
+        android:text="@string/spenditureValue"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />

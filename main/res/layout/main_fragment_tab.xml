@@ -21,6 +21,7 @@
         app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.338"
         tools:progress="80" />
 
     <ProgressBar
@@ -33,29 +34,45 @@
         android:visibility="invisible"
         app:layout_constraintBottom_toBottomOf="@+id/spentBarFrag"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.495"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="@+id/spentBarFrag"
+        app:layout_constraintVertical_bias="1.0"
         tools:progress="80" />
 
     <TextView
         android:id="@+id/remainingFrag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textSize="30sp"
+        android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/spentBarFrag"
         app:layout_constraintEnd_toEndOf="@+id/spentBarFrag"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="@+id/spentBarFrag"
         app:layout_constraintTop_toTopOf="@+id/spentBarFrag"
-        android:textSize="30sp"
-        android:textStyle="bold"/>
+        app:layout_constraintVertical_bias="0.472" />
 
     <TextView
         android:id="@+id/allowanceFrag"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:textStyle="italic"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/remainingFrag"
-        android:textStyle="italic"/>
+        app:layout_constraintTop_toBottomOf="@+id/remainingFrag" />
+
+    <ImageButton
+        android:id="@+id/addSpendButton"
+        android:layout_width="102dp"
+        android:layout_height="102dp"
+        android:background="@null"
+        android:onClick="addSpending"
+        android:src="@drawable/add_spend"
+        app:layout_constraintEnd_toEndOf="@+id/spentBarFrag"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="@+id/spentBarFrag"
+        app:layout_constraintTop_toBottomOf="@+id/spentBarFrag" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

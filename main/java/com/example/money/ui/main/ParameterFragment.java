@@ -8,9 +8,7 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
@@ -81,7 +79,7 @@ public class ParameterFragment extends Fragment {
         ltList = sDBHelper.getAllLongTerm();
         goalList = sDBHelper.getAllShortTerm();
 
-        parameterList= root.findViewById(R.id.allParameterListFrag);
+        parameterList= root.findViewById(R.id.parameterListFrag);
         ParameterAdapter paramAdapter = new ParameterAdapter(getContext(), parameterList, iList, eList, ltList, goalList, this);
         parameterList.setAdapter(paramAdapter);
         parameterList.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));

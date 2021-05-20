@@ -1,10 +1,12 @@
 package com.example.money.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,7 +18,10 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProvider;
 
+import com.example.money.AddSpending;
 import com.example.money.Databases;
+import com.example.money.MainAddExpense;
+import com.example.money.MainTab;
 import com.example.money.R;
 import com.example.money.Spending;
 import com.example.money.SpendingDBHelper;
@@ -39,6 +44,7 @@ public class MainFragment extends Fragment {
     TextView remainingText, allowanceText;
     int totalWeekly, spent;
     ProgressBar spentBar, overBar;
+    ImageButton addSpending;
 
 
     public static MainFragment newInstance(int index) {
@@ -77,7 +83,11 @@ public class MainFragment extends Fragment {
 
         spentBar = root.findViewById(R.id.spentBarFrag);
         overBar = root.findViewById(R.id.overBarFrag);
-
+        addSpending = root.findViewById(R.id.addSpendButton);
+        db = Databases.getSpendingHelper();
+        Calendar c = Calendar.getInstance();
+        totalWeekly = db.getWeeklyAllowance();
+        spent = updateTotal();
 
         return root;
     }
@@ -86,11 +96,17 @@ public class MainFragment extends Fragment {
     public void onResume() {
         db = Databases.getSpendingHelper();
         Calendar c = Calendar.getInstance();
-        c.set(Calendar.DAY_OF_MONTH, 2);
-        spendingList = db.getAll(true, getStartOfWeek());
-
         totalWeekly = db.getWeeklyAllowance();
-        spent = initList();
+        spent = updateTotal();
+        super.onResume();
+    }
+
+    public int updateTotal() {
+        int total=0;
+        spendingList = db.getAll(true, ((MainTab)(getContext())).getStartOfWeek());
+        for(Spending s: spendingList) {
+            total+=s.getAmount();
+        }
         if(spent<totalWeekly) {
             spentBar.setVisibility(View.VISIBLE);
             overBar.setVisibility(View.INVISIBLE);
@@ -107,26 +123,9 @@ public class MainFragment extends Fragment {
         }
         remainingText.setText(Databases.centsToDollar(totalWeekly-spent));
         allowanceText.setText("Allowance per week: "+Databases.centsToDollar(totalWeekly));
-        super.onResume();
-    }
 
-
-    public String getStartOfWeek() {
-        Calendar c = Calendar.getInstance();
-        c.set(Calendar.DAY_OF_WEEK, 1);
-        c.set(Calendar.HOUR_OF_DAY, 0);
-        c.set(Calendar.MINUTE, 0);
-        c.set(Calendar.SECOND, 0);
-        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(c.getTime());
-    }
-
-    public int initList() {
-        List<String> spendString = new ArrayList<String>();
-        int total=0;
-        for(Spending s: spendingList) {
-            spendString.add(s.toString());
-            total+=s.getAmount();
-        }
         return total;
     }
+
+
 }

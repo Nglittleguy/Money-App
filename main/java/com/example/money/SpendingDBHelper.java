@@ -94,6 +94,9 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
 
     public List<Spending> getAll(boolean after, String dateTime) {
         List<Spending> ret = new ArrayList<>();
+        if(dateTime==null)
+            return ret;
+
         String query;
         if(after)
             query = "SELECT * FROM "+TABLE+" WHERE "+COL_DT+" >= '"+ dateTime + "' AND "+COL_ID+"!= 1";
