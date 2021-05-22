@@ -4,8 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.DatePickerDialog;
 import android.content.Intent;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.text.Editable;
 import android.text.Selection;
@@ -28,7 +26,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
     private EditText descriptionInput, savingInput;
     private Button button;
     private ProgressBar incomeExpenseSavingProgress;
-    private SavingDBHelper dbHelper;
+    private DatabaseHelper dbHelper;
     private Calendar currentDay, selectedDay;
     private int weeksDiff, weeklySaving, oldID;
     private long totalToSave, alreadySaved, oldSaving;
@@ -82,7 +80,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
         incomeExpenseSavingProgress = findViewById(R.id.addSavingGoalProgress);
 
         //Database Helper
-        dbHelper = Databases.getSavingHelper();
+        dbHelper = Databases.getDBHelper();
 
 
         //Saving Amount Input
@@ -228,6 +226,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
             else
                 incomeExpenseSavingProgress.setProgress(incomeSubExpense);
         }
+
     }
 
     public int differenceInWeeks(Calendar a, Calendar b) {
@@ -257,10 +256,10 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
 
             Boolean success;
             if(edit) {
-                success = dbHelper.editOne(s, oldID);
+                success = dbHelper.editOneSave(s, oldID);
             }
             else
-                success = dbHelper.addOne(s);
+                success = dbHelper.addOneSave(s);
                 Log.d("Success", "Did it work? "+success+", "+s.toString());
             Intent leaveActivity;
             if(update)

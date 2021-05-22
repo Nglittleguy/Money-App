@@ -6,14 +6,12 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
 import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.example.money.Parameter;
 import com.example.money.ui.main.ParameterFragment;
 
 import java.util.List;
@@ -142,9 +140,9 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
         Parameter i = paramList.get(pos);
         paramList.remove(pos);
         if(i instanceof Saving)
-            Databases.getSavingHelper().removeOne((Saving)i);
+            Databases.getDBHelper().removeOneSave((Saving)i);
         if(i instanceof Income)
-            Databases.getIncomeHelper().removeOne((Income)i);
+            Databases.getDBHelper().removeOneIncome((Income)i);
         notifyItemRemoved(pos);
         notifyItemRangeChanged(pos, paramList.size());
 

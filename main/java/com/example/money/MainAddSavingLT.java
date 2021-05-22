@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,7 +15,7 @@ import java.util.List;
 
 public class MainAddSavingLT extends AppCompatActivity {
 
-    private SavingDBHelper dbHelper;
+    private DatabaseHelper dbHelper;
     private RecyclerView rvSaving;
     private RecyclerView.LayoutManager rvSavingManger;
     private SavingAdapter rvSavingAdapter;
@@ -29,9 +28,8 @@ public class MainAddSavingLT extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_add_saving_l_t);
 
-        dbHelper = new SavingDBHelper(this);
-        Databases.setSavingHelper(dbHelper);
-        rvSavingList = dbHelper.getAllLongTerm();
+        dbHelper = Databases.getDBHelper();
+        rvSavingList = dbHelper.getAllLongTermSave();
 
         incomeExpenseSavingProgress = findViewById(R.id.savingLTProgress);
 

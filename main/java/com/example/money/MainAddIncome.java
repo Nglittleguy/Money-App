@@ -15,7 +15,7 @@ import java.util.List;
 
 public class MainAddIncome extends AppCompatActivity {
 
-    private IncomeDBHelper dbHelper;
+    private DatabaseHelper dbHelper;
     private RecyclerView rvIncome;
     private RecyclerView.LayoutManager rvIncomeManger;
     private IncomeAdapter incomeAdapter;
@@ -29,10 +29,10 @@ public class MainAddIncome extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_add_income);
 
-        dbHelper = new IncomeDBHelper(this);
-        Databases.setIncomeHelper(dbHelper);
+        dbHelper = new DatabaseHelper(this);
+        Databases.setDBHelper(dbHelper);
 
-        incomeList = dbHelper.getAll(true);
+        incomeList = dbHelper.getAllIncome(true);
 
 
 

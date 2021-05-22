@@ -19,12 +19,12 @@ import java.util.Locale;
 
 public class SpendingDBHelper extends SQLiteOpenHelper{
 
-    public static final String TABLE = "SPENDING_TABLE";
-    public static final String COL_ID = "SPENDING_ID";
-    public static final String COL_DESC = "SPENDING_DESC";
-    public static final String COL_AMNT = "SPENDING_AMOUNT";
-    public static final String COL_NEC = "SPENDING_NECESSITY";
-    public static final String COL_DT = "SPENDING_DATETIME";
+    public static final String SPEND_TABLE = "SPENDING_TABLE";
+    public static final String SPEND_COL_ID = "SPENDING_ID";
+    public static final String SPEND_COL_DESC = "SPENDING_DESC";
+    public static final String SPEND_COL_AMNT = "SPENDING_AMOUNT";
+    public static final String SPEND_COL_NEC = "SPENDING_NECESSITY";
+    public static final String SPEND_COL_DT = "SPENDING_DATETIME";
 
     public SpendingDBHelper(@Nullable Context context) {
         super(context, "spending.db", null, 1);
@@ -32,24 +32,22 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase db) {
-        Log.d("Success", "Started making");
-        String createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE + " ("
-                + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COL_DESC + " TEXT, "
-                + COL_AMNT + " INT, "
-                + COL_NEC + " INTEGER, "
-                + COL_DT + " TEXT)";
+        String createTableStatement = "CREATE TABLE IF NOT EXISTS " + SPEND_TABLE + " ("
+                + SPEND_COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + SPEND_COL_DESC + " TEXT, "
+                + SPEND_COL_AMNT + " INT, "
+                + SPEND_COL_NEC + " INTEGER, "
+                + SPEND_COL_DT + " TEXT)";
         db.execSQL(createTableStatement);
-        Log.d("Success", "Finished making");
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { }
 
-    public List<Spending> getAll() {
+    public List<Spending> getAllSpend() {
         List<Spending> ret = new ArrayList<>();
         String query;
-        query = "SELECT * FROM "+TABLE;
+        query = "SELECT * FROM "+SPEND_TABLE;
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
 
@@ -69,9 +67,9 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
         return ret;
     }
 
-    public List<Spending> getAll(String after, String before) {
+    public List<Spending> getAllSpend(String after, String before) {
         List<Spending> ret = new ArrayList<>();
-        String query = "SELECT * FROM "+TABLE+" WHERE "+COL_DT+" >= '"+ after + "' AND "+ COL_DT +" < '" + before+"' AND "+COL_ID+"!= 1";
+        String query = "SELECT * FROM "+SPEND_TABLE+" WHERE "+SPEND_COL_DT+" >= '"+ after + "' AND "+ SPEND_COL_DT +" < '" + before+"' AND "+SPEND_COL_ID+"!= 1";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
@@ -92,16 +90,16 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
         return ret;
     }
 
-    public List<Spending> getAll(boolean after, String dateTime) {
+    public List<Spending> getAllSpend(boolean after, String dateTime) {
         List<Spending> ret = new ArrayList<>();
         if(dateTime==null)
             return ret;
 
         String query;
         if(after)
-            query = "SELECT * FROM "+TABLE+" WHERE "+COL_DT+" >= '"+ dateTime + "' AND "+COL_ID+"!= 1";
+            query = "SELECT * FROM "+SPEND_TABLE+" WHERE "+SPEND_COL_DT+" >= '"+ dateTime + "' AND "+SPEND_COL_ID+"!= 1";
         else
-            query = "SELECT * FROM "+TABLE+" WHERE "+COL_DT+" < '"+ dateTime + "' AND "+COL_ID+"!= 1";
+            query = "SELECT * FROM "+SPEND_TABLE+" WHERE "+SPEND_COL_DT+" < '"+ dateTime + "' AND "+SPEND_COL_ID+"!= 1";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
@@ -133,44 +131,44 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
         return dateFormat.format(date).toString();
     }
 
-    public boolean addOne(Spending s) {
+    public boolean addOneSpend(Spending s) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues c = new ContentValues();
 
-        c.put(COL_DESC, s.getDesc());
-        c.put(COL_AMNT, s.getAmount());
-        c.put(COL_NEC, s.getNecessity());
-        c.put(COL_DT, getDateTime(s.getDateTime()));
+        c.put(SPEND_COL_DESC, s.getDesc());
+        c.put(SPEND_COL_AMNT, s.getAmount());
+        c.put(SPEND_COL_NEC, s.getNecessity());
+        c.put(SPEND_COL_DT, getDateTime(s.getDateTime()));
         Log.d("Success", "Adding to db: "+getDateTime(s.getDateTime()));
-        return db.insert(TABLE, null, c) != -1;
+        return db.insert(SPEND_TABLE, null, c) != -1;
     }
 
-    public boolean removeOne(Spending s) {
+    public boolean removeOneSpend(Spending s) {
         if(s.getId()!=1) {
             SQLiteDatabase db = this.getWritableDatabase();
-            String query = "DELETE FROM " + TABLE + " WHERE " + COL_ID + " = " + s.getId();
+            String query = "DELETE FROM " + SPEND_TABLE + " WHERE " + SPEND_COL_ID + " = " + s.getId();
             Cursor c = db.rawQuery(query, null);
             return c.moveToFirst();
         }
         return false;
     }
 
-    public boolean editOne(Spending s, int id) {
+    public boolean editOneSpend(Spending s, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query;
         if(id==1) {
-            query = "UPDATE " + TABLE +
-                    " SET " + COL_AMNT + " = " + s.getAmount() + "" +
-                    ", " + COL_DT + " = '" + getDateTime(s.getDateTime()) + "' " +
-                    " WHERE " + COL_ID + " = 1";
+            query = "UPDATE " + SPEND_TABLE +
+                    " SET " + SPEND_COL_AMNT + " = " + s.getAmount() + "" +
+                    ", " + SPEND_COL_DT + " = '" + getDateTime(s.getDateTime()) + "' " +
+                    " WHERE " + SPEND_COL_ID + " = 1";
         }
         else {
-            query = "UPDATE " + TABLE +
-                    " SET " + COL_AMNT + " = " + s.getAmount() + "" +
-                    ", " + COL_DESC + " = '" + s.getDesc() + "' " +
-                    ", " + COL_NEC + " = " + s.getNecessity() + " " +
-                    ", " + COL_DT + " = '" + getDateTime(s.getDateTime()) + "' " +
-                    " WHERE " + COL_ID + " = " + id;
+            query = "UPDATE " + SPEND_TABLE +
+                    " SET " + SPEND_COL_AMNT + " = " + s.getAmount() + "" +
+                    ", " + SPEND_COL_DESC + " = '" + s.getDesc() + "' " +
+                    ", " + SPEND_COL_NEC + " = " + s.getNecessity() + " " +
+                    ", " + SPEND_COL_DT + " = '" + getDateTime(s.getDateTime()) + "' " +
+                    " WHERE " + SPEND_COL_ID + " = " + id;
         }
         db.execSQL(query);
         return true;
@@ -179,9 +177,9 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
 
     public boolean setLastDate() {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + TABLE +
-                " SET "+ COL_DT + " = '" + getDateTime() + "' " +
-                " WHERE " + COL_ID + " = 1";
+        String query = "UPDATE " + SPEND_TABLE +
+                " SET "+ SPEND_COL_DT + " = '" + getDateTime() + "' " +
+                " WHERE " + SPEND_COL_ID + " = 1";
         db.execSQL(query);
         return true;
     }
@@ -189,7 +187,7 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
     public Date getLastDate(){
         Date date = null;
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT "+COL_DT+" FROM "+TABLE+" WHERE "+COL_ID+" = 1";
+        String query = "SELECT "+SPEND_COL_DT+" FROM "+SPEND_TABLE+" WHERE "+SPEND_COL_ID+" = 1";
         Cursor c = db.rawQuery(query, null);
         if(c.moveToFirst()) {
             try {
@@ -206,7 +204,7 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
     public int getWeeklyAllowance() {
         int wA = 0;
         SQLiteDatabase db = this.getReadableDatabase();
-        String query = "SELECT "+COL_AMNT+" FROM "+TABLE+" WHERE "+COL_ID+" = 1";
+        String query = "SELECT "+SPEND_COL_AMNT+" FROM "+SPEND_TABLE+" WHERE "+SPEND_COL_ID+" = 1";
         Cursor c = db.rawQuery(query, null);
         if(c.moveToFirst()) {
             wA = c.getInt(0);

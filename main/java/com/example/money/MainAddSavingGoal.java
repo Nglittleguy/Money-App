@@ -15,7 +15,7 @@ import java.util.List;
 
 public class MainAddSavingGoal extends AppCompatActivity {
 
-    private SavingDBHelper dbHelper;
+    private DatabaseHelper dbHelper;
     private RecyclerView rvSaving;
     private RecyclerView.LayoutManager rvSavingManger;
     private SavingAdapter rvSavingAdapter;
@@ -28,9 +28,8 @@ public class MainAddSavingGoal extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_add_saving_goal);
 
-        dbHelper = new SavingDBHelper(this);
-        Databases.setSavingHelper(dbHelper);
-        rvSavingList = dbHelper.getAllShortTerm();
+        dbHelper = Databases.getDBHelper();
+        rvSavingList = dbHelper.getAllShortTermSave();
 
         incomeExpenseSavingProgress = findViewById(R.id.savingGoalProgress);
 

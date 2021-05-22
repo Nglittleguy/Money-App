@@ -1,22 +1,17 @@
 package com.example.money;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -26,7 +21,7 @@ public class MainScreen extends AppCompatActivity {
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
     List<Spending> spendingList;
-    SpendingDBHelper db;
+    DatabaseHelper db;
     TextView sampleText;
     int totalWeekly, spent;
     ProgressBar spentBar, overBar;
@@ -42,9 +37,9 @@ public class MainScreen extends AppCompatActivity {
 
         spentBar = findViewById(R.id.spentBar);
         overBar = findViewById(R.id.overBar);
-        db = Databases.getSpendingHelper();
+        db = Databases.getDBHelper();
         Calendar c = Calendar.getInstance();
-        spendingList = db.getAll(true, getStartOfWeek());
+        spendingList = db.getAllSpend(true, getStartOfWeek());
 
         totalWeekly = db.getWeeklyAllowance();
         spent = initList();

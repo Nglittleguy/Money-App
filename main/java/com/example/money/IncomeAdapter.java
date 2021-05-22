@@ -8,12 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder> {
@@ -98,7 +96,7 @@ public class IncomeAdapter extends RecyclerView.Adapter<IncomeAdapter.ViewHolder
     public void removeAt(int pos) {
         Income i = incomeList.get(pos);
         incomeList.remove(pos);
-        Databases.getIncomeHelper().removeOne(i);
+        Databases.getDBHelper().removeOneIncome(i);
         notifyItemRemoved(pos);
         notifyItemRangeChanged(pos, incomeList.size());
         if(c instanceof MainAddIncome)

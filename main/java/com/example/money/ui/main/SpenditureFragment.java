@@ -12,19 +12,15 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.money.DatabaseHelper;
 import com.example.money.Databases;
 import com.example.money.MainTab;
-import com.example.money.ParameterAdapter;
 import com.example.money.R;
 import com.example.money.Spending;
 import com.example.money.SpendingDBHelper;
 import com.example.money.SpentAdapter;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.List;
-import java.util.Locale;
 
 public class SpenditureFragment extends Fragment {
 
@@ -34,7 +30,7 @@ public class SpenditureFragment extends Fragment {
 
 
     List<Spending> spendingList;
-    SpendingDBHelper db;
+    DatabaseHelper db;
     RecyclerView weeklySpend;
     TextView spentAmount;
 
@@ -75,8 +71,8 @@ public class SpenditureFragment extends Fragment {
     @Override
     public void onResume() {
 
-        db = Databases.getSpendingHelper();
-        spendingList = db.getAll(true, ((MainTab)(getContext())).getStartOfWeek());
+        db = Databases.getDBHelper();
+        spendingList = db.getAllSpend(true, ((MainTab)(getContext())).getStartOfWeek());
         SpentAdapter spentAdapter = new SpentAdapter(getContext(), spendingList, weeklySpend, this);
         weeklySpend.setAdapter(spentAdapter);
         weeklySpend.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));

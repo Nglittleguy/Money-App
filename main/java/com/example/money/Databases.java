@@ -1,40 +1,40 @@
 package com.example.money;
 
 import android.content.Context;
-import android.util.Log;
 
 import java.text.DecimalFormat;
 import java.util.List;
 
 public final class Databases {
 
-    private static IncomeDBHelper incomeHelper;
-    public static IncomeDBHelper getIncomeHelper() {
-        return incomeHelper;
-    }
-    public static void setIncomeHelper(IncomeDBHelper i) {
-        incomeHelper = i;
-    }
+    private static DatabaseHelper db;
+    public static DatabaseHelper getDBHelper() { return db; }
+    public static void setDBHelper(DatabaseHelper d) { db = d; }
 
-    private static SavingDBHelper savingHelper;
-    public static SavingDBHelper getSavingHelper() { return savingHelper; }
-    public static void setSavingHelper(SavingDBHelper s) {savingHelper = s; }
+//    private static IncomeDBHelper incomeHelper;
+//    public static IncomeDBHelper getIncomeHelper() { return incomeHelper;}
+//    public static void setIncomeHelper(IncomeDBHelper i) {incomeHelper = i;}
 
-    private static SpendingDBHelper spendingHelper;
-    public static SpendingDBHelper getSpendingHelper() { return spendingHelper; }
-    public static void setSpendingHelper(SpendingDBHelper s) {spendingHelper = s; }
+//    private static SavingDBHelper savingHelper;
+//    public static SavingDBHelper getSavingHelper() { return savingHelper; }
+//    public static void setSavingHelper(SavingDBHelper s) {savingHelper = s; }
+
+//    private static SpendingDBHelper spendingHelper;
+//    public static SpendingDBHelper getSpendingHelper() { return spendingHelper; }
+//    public static void setSpendingHelper(SpendingDBHelper s) {spendingHelper = s; }
 
     private static int weeklyAllowance;
     public static int getWeeklyAllowance() {return weeklyAllowance; }
     public static void setWeeklyAllowance(Context c, boolean a) {
         if(a)
-            weeklyAllowance = spendingHelper.getWeeklyAllowance();
+            weeklyAllowance = db.getWeeklyAllowance();
         else {
-            weeklyAllowance = savingHelper.updateSavingAmounts(c);
+            weeklyAllowance = db.updateSavingAmounts(c);
             Spending s = new Spending(-1, "", weeklyAllowance, false);
-            spendingHelper.editOne(s, 1);
+            db.editOneSpend(s, 1);
         }
     }
+
 
     public static String centsToDollar(int wi) {
         DecimalFormat incomeToText = new DecimalFormat("0.00");
@@ -51,8 +51,8 @@ public final class Databases {
     }
 
     public static int getWeeklyAfterExpenses() {
-        if(incomeHelper!=null) {
-            List<Income> in = incomeHelper.getAll();
+        if(db!=null) {
+            List<Income> in = db.getAllIncome();
             int total=0;
             for(Income i:in) {
                 total+=i.getAmountPerWeek()*i.getInc();
@@ -63,8 +63,8 @@ public final class Databases {
     }
 
     public static int getWeeklyIncome() {
-        if(incomeHelper!=null) {
-            List<Income> in = incomeHelper.getAll(true);
+        if(db!=null) {
+            List<Income> in = db.getAllIncome(true);
             int total=0;
             for(Income i:in) {
                 total+=i.getAmountPerWeek();
@@ -75,8 +75,8 @@ public final class Databases {
     }
 
     public static int getWeeklyExpenses() {
-        if(incomeHelper!=null) {
-            List<Income> in = incomeHelper.getAll(false);
+        if(db!=null) {
+            List<Income> in = db.getAllIncome(false);
             int total=0;
             for(Income i:in) {
                 total+=i.getAmountPerWeek();
@@ -87,8 +87,8 @@ public final class Databases {
     }
 
     public static int getWeeklySaving() {
-        if(savingHelper!=null) {
-            List<Saving> sa = savingHelper.getAllNonFinished();
+        if(db!=null) {
+            List<Saving> sa = db.getAllNonFinishedSave();
             int total = 0;
             for(Saving s:sa) {
                 total+=s.getAmountPerWeek();
@@ -99,13 +99,13 @@ public final class Databases {
     }
 
     public static int getWeeklySaving(boolean a) {
-        if(savingHelper!=null) {
+        if(db!=null) {
             List<Saving> sa;
             int total = 0;
             if(a)
-                sa = savingHelper.getAllLongTerm();
+                sa = db.getAllLongTermSave();
             else
-                sa = savingHelper.getAllShortTerm();
+                sa = db.getAllShortTermSave();
             for(Saving s:sa) {
                 total+=s.getAmountPerWeek();
             }

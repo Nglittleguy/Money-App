@@ -14,11 +14,11 @@ import java.util.List;
 
 public class IncomeDBHelper extends SQLiteOpenHelper {
 
-    public static final String TABLE = "INCOME_TABLE";
-    public static final String COL_ID = "INCOME_ID";
-    public static final String COL_DESC = "INCOME_DESC";
-    public static final String COL_AMNT = "INCOME_AMOUNT";
-    public static final String COL_INC = "INCOME_INC";
+    public static final String INCOME_TABLE = "INCOME_TABLE";
+    public static final String INCOME_COL_ID = "INCOME_ID";
+    public static final String INCOME_COL_DESC = "INCOME_DESC";
+    public static final String INCOME_COL_AMNT = "INCOME_AMOUNT";
+    public static final String INCOME_COL_INC = "INCOME_INC";
 
     public IncomeDBHelper(@Nullable Context context) {
         super(context, "income.db", null, 1);
@@ -27,11 +27,11 @@ public class IncomeDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d("Success", "Started making");
-        String createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE + " ("
-                + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COL_DESC + " TEXT, "
-                + COL_AMNT + " INT, "
-                + COL_INC + " INT)";
+        String createTableStatement = "CREATE TABLE IF NOT EXISTS " + INCOME_TABLE + " ("
+                + INCOME_COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + INCOME_COL_DESC + " TEXT, "
+                + INCOME_COL_AMNT + " INT, "
+                + INCOME_COL_INC + " INT)";
         db.execSQL(createTableStatement);
         Log.d("Success", "Finished making");
     }
@@ -40,13 +40,13 @@ public class IncomeDBHelper extends SQLiteOpenHelper {
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) { }
 
 
-    public List<Income> getAll(Boolean a) {
+    public List<Income> getAllIncome(Boolean a) {
         List<Income> ret = new ArrayList<>();
         String query;
         if(a)
-            query = "SELECT * FROM "+TABLE+" WHERE "+COL_INC+" = 1";
+            query = "SELECT * FROM "+INCOME_TABLE+" WHERE "+INCOME_COL_INC+" = 1";
         else
-            query = "SELECT * FROM "+TABLE+" WHERE "+COL_INC+" = -1";
+            query = "SELECT * FROM "+INCOME_TABLE+" WHERE "+INCOME_COL_INC+" = -1";
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
 
@@ -65,9 +65,9 @@ public class IncomeDBHelper extends SQLiteOpenHelper {
         return ret;
     }
 
-    public List<Income> getAll() {
+    public List<Income> getAllIncome() {
         List<Income> ret = new ArrayList<>();
-        String query = "SELECT * FROM "+TABLE;
+        String query = "SELECT * FROM "+INCOME_TABLE;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
@@ -87,30 +87,30 @@ public class IncomeDBHelper extends SQLiteOpenHelper {
         return ret;
     }
 
-    public boolean addOne(Income i) {
+    public boolean addOneIncome(Income i) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues c = new ContentValues();
 
-        c.put(COL_DESC, i.getDesc());
-        c.put(COL_AMNT, i.getAmountPerWeek());
-        c.put(COL_INC, i.getInc());
-        return db.insert(TABLE, null, c) != -1;
+        c.put(INCOME_COL_DESC, i.getDesc());
+        c.put(INCOME_COL_AMNT, i.getAmountPerWeek());
+        c.put(INCOME_COL_INC, i.getInc());
+        return db.insert(INCOME_TABLE, null, c) != -1;
     }
 
-    public boolean removeOne(Income i) {
+    public boolean removeOneIncome(Income i) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "DELETE FROM " + TABLE + " WHERE " + COL_ID + " = " + i.getId();
+        String query = "DELETE FROM " + INCOME_TABLE + " WHERE " + INCOME_COL_ID + " = " + i.getId();
         Cursor c = db.rawQuery(query, null);
 
         return c.moveToFirst();
     }
 
-    public boolean editOne(Income i, int id) {
+    public boolean editOneIncome(Income i, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + TABLE +
-                " SET " + COL_AMNT + " = " + i.getAmountPerWeek() + "" +
-                ", " + COL_DESC + " = '" + i.getDesc() + "' " +
-                " WHERE " + COL_ID + " = " + id;
+        String query = "UPDATE " + INCOME_TABLE +
+                " SET " + INCOME_COL_AMNT + " = " + i.getAmountPerWeek() + "" +
+                ", " + INCOME_COL_DESC + " = '" + i.getDesc() + "' " +
+                " WHERE " + INCOME_COL_ID + " = " + id;
         db.execSQL(query);
         return true;
     }

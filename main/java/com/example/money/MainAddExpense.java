@@ -6,7 +6,6 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -16,7 +15,7 @@ import java.util.List;
 
 public class MainAddExpense extends AppCompatActivity {
 
-    private IncomeDBHelper dbHelper;
+    private DatabaseHelper dbHelper;
     private RecyclerView rvExpense;
     private RecyclerView.LayoutManager rvExpenseManger;
     private IncomeAdapter expenseAdapter;
@@ -30,9 +29,9 @@ public class MainAddExpense extends AppCompatActivity {
         setContentView(R.layout.activity_main_add_expense);
 
         Intent i = getIntent();
-        dbHelper = Databases.getIncomeHelper();
+        dbHelper = Databases.getDBHelper();
 
-        expenseList = dbHelper.getAll(false);
+        expenseList = dbHelper.getAllIncome(false);
 
         incomeExpenseProgress = findViewById(R.id.totalIncomeExpenseProgress);
 

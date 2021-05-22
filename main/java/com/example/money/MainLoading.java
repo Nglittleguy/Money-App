@@ -5,17 +5,13 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Toast;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
 public class MainLoading extends AppCompatActivity {
 
-    private SpendingDBHelper spendingDB;
-    private SavingDBHelper savingDB;
-    private IncomeDBHelper incomeDB;
+    private DatabaseHelper db;
 
 
     @Override
@@ -23,22 +19,17 @@ public class MainLoading extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_loading);
 
-        spendingDB = new SpendingDBHelper(this);
-        Databases.setSpendingHelper(spendingDB);
+        db = new DatabaseHelper(this);
+        Databases.setDBHelper(db);
 
-        savingDB = new SavingDBHelper(this);
-        Databases.setSavingHelper(savingDB);
-
-        incomeDB = new IncomeDBHelper(this);
-        Databases.setIncomeHelper(incomeDB);
-
-        Date d = spendingDB.getLastDate();
+        Date d = db.getLastDate();
 
         if(d==null) {
             setUp();
             return;
         }
-        Log.d("Success", "Last is "+d.toString());
+
+        Log.d("Success", "Last time used is "+d.toString());
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         Calendar now = Calendar.getInstance();
@@ -50,14 +41,13 @@ public class MainLoading extends AppCompatActivity {
         else
             Databases.setWeeklyAllowance(this, false);
 
-        spendingDB.setLastDate();
+        db.setLastDate();
         goToMainScreen();
     }
 
     public void setUp() {
         Spending initialDate = new Spending(-1, "Last Date & Time", 0, true);
-        Log.d("Success", "Date is "+initialDate.getDateTime().toString());
-        spendingDB.addOne(initialDate);
+        db.addOneSpend(initialDate);
         Intent leaveActivity = new Intent(this, MainParamCheck.class);
         startActivity(leaveActivity);
     }

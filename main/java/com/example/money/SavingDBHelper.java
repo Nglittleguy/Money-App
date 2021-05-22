@@ -15,14 +15,14 @@ import java.util.List;
 
 public class SavingDBHelper extends SQLiteOpenHelper {
 
-    public static final String TABLE = "SAVING_TABLE";
-    public static final String COL_ID = "SAVING_ID";
-    public static final String COL_DESC = "SAVING_DESC";
-    public static final String COL_LIMT = "SAVING_LIMT";
-    public static final String COL_STOR = "SAVING_STOR";
-    public static final String COL_WEEK = "SAVING_WEEK";
-    public static final String COL_PERC = "SAVING_PERC";
-    public static final String COL_REMV = "SAVING_REMV";
+    public static final String SAVE_TABLE = "SAVING_TABLE";
+    public static final String SAVE_COL_ID = "SAVING_ID";
+    public static final String SAVE_COL_DESC = "SAVING_DESC";
+    public static final String SAVE_COL_LIMT = "SAVING_LIMT";
+    public static final String SAVE_COL_STOR = "SAVING_STOR";
+    public static final String SAVE_COL_WEEK = "SAVING_WEEK";
+    public static final String SAVE_COL_PERC = "SAVING_PERC";
+    public static final String SAVE_COL_REMV = "SAVING_REMV";
 
     public SavingDBHelper(@Nullable Context context) {
         super(context, "saving.db", null, 1);
@@ -34,58 +34,58 @@ public class SavingDBHelper extends SQLiteOpenHelper {
     @Override
     public void onCreate(SQLiteDatabase db) {
         Log.d("Success", "Started making saving");
-        String createTableStatement = "CREATE TABLE IF NOT EXISTS " + TABLE + " ("
-                + COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
-                + COL_DESC + " TEXT, "
-                + COL_LIMT + " INTEGER, "
-                + COL_STOR + " INTEGER, "
-                + COL_WEEK + " INTEGER, "
-                + COL_PERC + " REAL, "
-                + COL_REMV + " INTEGER )";
+        String createTableStatement = "CREATE TABLE IF NOT EXISTS " + SAVE_TABLE + " ("
+                + SAVE_COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + SAVE_COL_DESC + " TEXT, "
+                + SAVE_COL_LIMT + " INTEGER, "
+                + SAVE_COL_STOR + " INTEGER, "
+                + SAVE_COL_WEEK + " INTEGER, "
+                + SAVE_COL_PERC + " REAL, "
+                + SAVE_COL_REMV + " INTEGER )";
         db.execSQL(createTableStatement);
         Log.d("Success", "Finished making saving");
     }
 
 
-    public boolean addOne(Saving s) {
+    public boolean addOneSave(Saving s) {
         SQLiteDatabase db = this.getWritableDatabase();
         ContentValues c = new ContentValues();
 
-        c.put(COL_DESC, s.getDesc());
-        c.put(COL_LIMT, s.getLimitStored());
-        c.put(COL_STOR, s.getAmountStored());
-        c.put(COL_WEEK, s.getAmountPerWeek());
-        c.put(COL_PERC, s.getPercent());
-        c.put(COL_REMV, s.getCanTakeFrom());
-        return db.insert(TABLE, null, c) != -1;
+        c.put(SAVE_COL_DESC, s.getDesc());
+        c.put(SAVE_COL_LIMT, s.getLimitStored());
+        c.put(SAVE_COL_STOR, s.getAmountStored());
+        c.put(SAVE_COL_WEEK, s.getAmountPerWeek());
+        c.put(SAVE_COL_PERC, s.getPercent());
+        c.put(SAVE_COL_REMV, s.getCanTakeFrom());
+        return db.insert(SAVE_TABLE, null, c) != -1;
     }
 
 
-    public boolean editOne(Saving s, int id) {
+    public boolean editOneSave(Saving s, int id) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + TABLE +
-                " SET " + COL_LIMT + " = " + s.getLimitStored() +
-                ", " + COL_DESC + " = '" + s.getDesc() + "' " +
-                ", " + COL_WEEK + " = " + s.getAmountPerWeek() +
-                ", " + COL_PERC + " = " + s.getPercent() +
-                ", " + COL_REMV + " = " + s.getCanTakeFrom() +
-                " WHERE " + COL_ID + " = " + id;
+        String query = "UPDATE " + SAVE_TABLE +
+                " SET " + SAVE_COL_LIMT + " = " + s.getLimitStored() +
+                ", " + SAVE_COL_DESC + " = '" + s.getDesc() + "' " +
+                ", " + SAVE_COL_WEEK + " = " + s.getAmountPerWeek() +
+                ", " + SAVE_COL_PERC + " = " + s.getPercent() +
+                ", " + SAVE_COL_REMV + " = " + s.getCanTakeFrom() +
+                " WHERE " + SAVE_COL_ID + " = " + id;
         Log.d("Success", "working on it");
         db.execSQL(query);
         return true;
     }
 
-    public boolean removeOne(Saving s) {
+    public boolean removeOneSave(Saving s) {
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "DELETE FROM " + TABLE + " WHERE " + COL_ID + " = " + s.getId();
+        String query = "DELETE FROM " + SAVE_TABLE + " WHERE " + SAVE_COL_ID + " = " + s.getId();
         Cursor c = db.rawQuery(query, null);
 
         return c.moveToFirst();
     }
 
-    public List<Saving> getAllNonFinished() {
+    public List<Saving> getAllNonFinishedSave() {
         List<Saving> ret = new ArrayList<>();
-        String query = "SELECT * FROM "+TABLE+" WHERE "+COL_STOR+" < "+COL_LIMT;
+        String query = "SELECT * FROM "+SAVE_TABLE+" WHERE "+SAVE_COL_STOR+" < "+SAVE_COL_LIMT;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
@@ -108,10 +108,10 @@ public class SavingDBHelper extends SQLiteOpenHelper {
         return ret;
     }
 
-    public List<Saving> getAllLongTerm() {
+    public List<Saving> getAllLongTermSave() {
         List<Saving> ret = new ArrayList<>();
         long max = Long.MAX_VALUE;
-        String query = "SELECT * FROM "+TABLE+" WHERE "+COL_LIMT+" = "+max;
+        String query = "SELECT * FROM "+SAVE_TABLE+" WHERE "+SAVE_COL_LIMT+" = "+max;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
@@ -134,10 +134,10 @@ public class SavingDBHelper extends SQLiteOpenHelper {
         return ret;
     }
 
-    public List<Saving> getAllShortTerm() {
+    public List<Saving> getAllShortTermSave() {
         List<Saving> ret = new ArrayList<>();
         long max = Long.MAX_VALUE;
-        String query = "SELECT * FROM "+TABLE+" WHERE "+COL_LIMT+" != "+max;
+        String query = "SELECT * FROM "+SAVE_TABLE+" WHERE "+SAVE_COL_LIMT+" != "+max;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
@@ -160,10 +160,10 @@ public class SavingDBHelper extends SQLiteOpenHelper {
         return ret;
     }
 
-    public void updatePercentAmounts(int remaining) {
+    public void updatePercentAmountsSave(int remaining) {
         List<Saving> ret = new ArrayList<>();
         long max = Long.MAX_VALUE;
-        String query = "SELECT * FROM "+TABLE+" WHERE "+COL_LIMT+" = "+max;
+        String query = "SELECT * FROM "+SAVE_TABLE+" WHERE "+SAVE_COL_LIMT+" = "+max;
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
@@ -188,17 +188,17 @@ public class SavingDBHelper extends SQLiteOpenHelper {
         for(Saving s: ret) {
             if(s.getPercent()!=0) {
                 s.setAmountPerWeek((int) s.getPercent()*remaining/100);
-                query = "UPDATE " + TABLE +
-                        " SET " + COL_WEEK + " = " + s.getAmountPerWeek() +
-                        " WHERE " + COL_ID + " = " + s.getId();
+                query = "UPDATE " + SAVE_TABLE +
+                        " SET " + SAVE_COL_WEEK + " = " + s.getAmountPerWeek() +
+                        " WHERE " + SAVE_COL_ID + " = " + s.getId();
                 db.execSQL(query);
             }
         }
     }
 
-    public List<Saving> getAllRemoveable() {
+    public List<Saving> getAllRemoveableSave() {
         List<Saving> ret = new ArrayList<>();
-        String query = "SELECT * FROM "+TABLE+" WHERE "+COL_REMV+" = 1";
+        String query = "SELECT * FROM "+SAVE_TABLE+" WHERE "+SAVE_COL_REMV+" = 1";
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor c = db.rawQuery(query, null);
@@ -225,9 +225,9 @@ public class SavingDBHelper extends SQLiteOpenHelper {
         if(s.getCanTakeFrom()!=1)
             return false;
         SQLiteDatabase db = this.getWritableDatabase();
-        String query = "UPDATE " + TABLE +
-                " SET " + COL_STOR + " = " + (s.getAmountStored()-amount) +
-                " WHERE " + COL_ID + " = " + s.getId();
+        String query = "UPDATE " + SAVE_TABLE +
+                " SET " + SAVE_COL_STOR + " = " + (s.getAmountStored()-amount) +
+                " WHERE " + SAVE_COL_ID + " = " + s.getId();
         db.execSQL(query);
         return true;
     }
@@ -235,25 +235,25 @@ public class SavingDBHelper extends SQLiteOpenHelper {
     public int updateSavingAmounts(Context c) {
         int left = Databases.getWeeklyAfterExpenses();
         Log.d("Success", "Weekly after expenses "+left);
-        List<Saving> addAmount = getAllNonFinished();
+        List<Saving> addAmount = getAllNonFinishedSave();
         String query;
-        updatePercentAmounts(left);
+        updatePercentAmountsSave(left);
 
         SQLiteDatabase db = this.getWritableDatabase();
         for(Saving s: addAmount) {
             if(s.getLimitStored()<s.getAmountStored()+s.getAmountPerWeek()) {
-                query = "UPDATE " + TABLE +
-                        " SET " + COL_STOR + " = " + s.getLimitStored() +
-                        ", " + COL_REMV + " = 1" +
-                        " WHERE " + COL_ID + " = " + s.getId();
+                query = "UPDATE " + SAVE_TABLE +
+                        " SET " + SAVE_COL_STOR + " = " + s.getLimitStored() +
+                        ", " + SAVE_COL_REMV + " = 1" +
+                        " WHERE " + SAVE_COL_ID + " = " + s.getId();
                 Toast.makeText(c, "Congratulations, you've reached your goal for "+s.getDesc(), Toast.LENGTH_LONG).show();
                 Toast.makeText(c, "You can now spend the "+s.getLimitStored()+" that you've saved up.", Toast.LENGTH_LONG).show();
                 left -= s.getLimitStored()-s.getAmountStored();
             }
             else {
-                query = "UPDATE " + TABLE +
-                        " SET " + COL_STOR + " = " + (s.getAmountStored() + s.getAmountPerWeek()) +
-                        " WHERE " + COL_ID + " = " + s.getId();
+                query = "UPDATE " + SAVE_TABLE +
+                        " SET " + SAVE_COL_STOR + " = " + (s.getAmountStored() + s.getAmountPerWeek()) +
+                        " WHERE " + SAVE_COL_ID + " = " + s.getId();
                 left -= s.getAmountPerWeek();
             }
             db.execSQL(query);

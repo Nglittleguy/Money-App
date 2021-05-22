@@ -31,7 +31,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
 
     private ConstraintLayout manualPeriodInput;
     private DecimalFormat ExpenseToText;
-    private IncomeDBHelper dbHelper;
+    private DatabaseHelper dbHelper;
 
     private int weeklyExpense, oldID, oldWeeklyExpense;
     private double periodOfWeeks;
@@ -164,7 +164,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
             descriptionInput.setText(intent.getStringExtra("Description"));
 
         //Database Helper
-        dbHelper = Databases.getIncomeHelper();
+        dbHelper = Databases.getDBHelper();
     }
 
     //expensePeriod Spinner Methods
@@ -268,10 +268,10 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
             Log.d("Success", i.toString());
             Boolean success;
             if(edit) {
-                success = dbHelper.editOne(i, oldID);
+                success = dbHelper.editOneIncome(i, oldID);
             }
             else
-                success = dbHelper.addOne(i);
+                success = dbHelper.addOneIncome(i);
             Intent leaveActivity;
             if(update)
                 leaveActivity = new Intent(this, MainLoading.class);
@@ -308,6 +308,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
             else
                 incomeExpenseProgress.setProgress(incomeSubExpense);
         }
+
     }
 
 

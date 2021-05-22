@@ -11,7 +11,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.Spinner;
@@ -25,7 +24,7 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
     Switch plusOrMinus, necOrDesire;
     Spinner descSpinner, sourceSpinner;
     EditText amountInput, descInput;
-    SpendingDBHelper db;
+    DatabaseHelper db;
 
     String descMain;
     int amount;
@@ -37,7 +36,7 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
         setContentView(R.layout.activity_add_spending);
 
         descMain = "";
-        db = Databases.getSpendingHelper();
+        db = Databases.getDBHelper();
 
         title = findViewById(R.id.spendingTitle);
 
@@ -219,7 +218,7 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
 //                success = dbHelper.editOne(i, oldID);
 //            }
 //            else
-                success = db.addOne(i);
+                success = db.addOneSpend(i);
             Log.d("Success", "Add it "+success);
             Intent leaveActivity = new Intent(this, MainLoading.class);
             startActivity(leaveActivity);

@@ -13,14 +13,12 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.money.DatabaseHelper;
 import com.example.money.Databases;
 import com.example.money.Income;
-import com.example.money.IncomeDBHelper;
-import com.example.money.MainTab;
 import com.example.money.ParameterAdapter;
 import com.example.money.R;
 import com.example.money.Saving;
-import com.example.money.SavingDBHelper;
 
 import java.util.List;
 import java.util.Objects;
@@ -37,8 +35,7 @@ public class ParameterFragment extends Fragment {
     private RecyclerView parameterList;
     private List<Income> iList, eList;
     private List<Saving> ltList, goalList;
-    private IncomeDBHelper iDBHelper;
-    private SavingDBHelper sDBHelper;
+    private DatabaseHelper dBHelper;
 
 
     public static ParameterFragment newInstance(int index) {
@@ -72,13 +69,11 @@ public class ParameterFragment extends Fragment {
         progress = root.findViewById(R.id.progressFrag);
         remaining = root.findViewById(R.id.totalRemainingFrag);
 
-        iDBHelper = Databases.getIncomeHelper();
-        iList = iDBHelper.getAll(true);
-        eList = iDBHelper.getAll(false);
-
-        sDBHelper = Databases.getSavingHelper();
-        ltList = sDBHelper.getAllLongTerm();
-        goalList = sDBHelper.getAllShortTerm();
+        dBHelper = Databases.getDBHelper();
+        iList = dBHelper.getAllIncome(true);
+        eList = dBHelper.getAllIncome(false);
+        ltList = dBHelper.getAllLongTermSave();
+        goalList = dBHelper.getAllShortTermSave();
 
         parameterList= root.findViewById(R.id.parameterListFrag);
         ParameterAdapter paramAdapter = new ParameterAdapter(getContext(), parameterList, iList, eList, ltList, goalList, this);
@@ -99,7 +94,7 @@ public class ParameterFragment extends Fragment {
     }
 
     public void updateTotal() {
-        Databases.getSavingHelper().updatePercentAmounts(Databases.getWeeklyAfterExpenses());
+        Databases.getDBHelper().updatePercentAmountsSave(Databases.getWeeklyAfterExpenses());
         resetParameterValues();
         int incomeSubExpense =
                 (int)(100*(1- (double) Databases.getWeeklyExpenses()/Databases.getWeeklyIncome()));

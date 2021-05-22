@@ -2,19 +2,13 @@ package com.example.money;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.provider.ContactsContract;
-import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import java.util.List;
 import java.util.Objects;
@@ -26,8 +20,7 @@ public class MainParamCheck extends AppCompatActivity {
     private RecyclerView parameterList;
     private List<Income> iList, eList;
     private List<Saving> ltList, goalList;
-    private IncomeDBHelper iDBHelper;
-    private SavingDBHelper sDBHelper;
+    private DatabaseHelper dBHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,13 +30,11 @@ public class MainParamCheck extends AppCompatActivity {
         progress = findViewById(R.id.progress);
         remaining = findViewById(R.id.totalRemaining);
 
-        iDBHelper = Databases.getIncomeHelper();
-        iList = iDBHelper.getAll(true);
-        eList = iDBHelper.getAll(false);
-
-        sDBHelper = Databases.getSavingHelper();
-        ltList = sDBHelper.getAllLongTerm();
-        goalList = sDBHelper.getAllShortTerm();
+        dBHelper = Databases.getDBHelper();
+        iList = dBHelper.getAllIncome(true);
+        eList = dBHelper.getAllIncome(false);
+        ltList = dBHelper.getAllLongTermSave();
+        goalList = dBHelper.getAllShortTermSave();
 
         parameterList= findViewById(R.id.allParameterList);
         ParameterAdapter paramAdapter = new ParameterAdapter(this, parameterList, iList, eList, ltList, goalList);
@@ -59,7 +50,6 @@ public class MainParamCheck extends AppCompatActivity {
     }
 
     public void updateTotal() {
-        Databases.getSavingHelper().updatePercentAmounts(Databases.getWeeklyAfterExpenses());
         resetParameterValues();
         int incomeSubExpense =
                 (int)(100*(1- (double) Databases.getWeeklyExpenses()/Databases.getWeeklyIncome()));

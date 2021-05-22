@@ -8,12 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.text.DecimalFormat;
 import java.util.List;
 
 public class SavingAdapter extends RecyclerView.Adapter<SavingAdapter.ViewHolder> {
@@ -108,7 +106,7 @@ public class SavingAdapter extends RecyclerView.Adapter<SavingAdapter.ViewHolder
     public void removeAt(int pos) {
         Saving i = savingList.get(pos);
         savingList.remove(pos);
-        Databases.getSavingHelper().removeOne(i);
+        Databases.getDBHelper().removeOneSave(i);
         notifyItemRemoved(pos);
         notifyItemRangeChanged(pos, savingList.size());
         if(c instanceof MainAddSavingLT)

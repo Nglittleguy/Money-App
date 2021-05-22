@@ -22,8 +22,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.material.slider.Slider;
-
 public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private EditText savingInput, percentInput, periodInput, descriptionInput;
@@ -35,7 +33,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
     private ProgressBar incomeExpenseSavingProgress;
 
     private ConstraintLayout amountLayout, percentLayout, manualPeriodInput;
-    private SavingDBHelper dbHelper;
+    private DatabaseHelper dbHelper;
 
     private int weeklySaving, oldSaving, oldID;
     private double periodOfWeeks, percent;
@@ -66,7 +64,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
         savingPeriod.setOnItemSelectedListener(this);
 
         //Database Helper
-        dbHelper = Databases.getSavingHelper();
+        dbHelper = Databases.getDBHelper();
 
         //Switch
         switchAP = findViewById(R.id.amountVPercent);
@@ -397,10 +395,10 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
 
             Boolean success;
             if(edit) {
-                success = dbHelper.editOne(s, oldID);
+                success = dbHelper.editOneSave(s, oldID);
             }
             else
-                success = dbHelper.addOne(s);
+                success = dbHelper.addOneSave(s);
             Intent leaveActivity;
             if(update)
                 leaveActivity = new Intent(this, MainLoading.class);
@@ -433,6 +431,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
             else
                 incomeExpenseSavingProgress.setProgress(incomeSubExpense);
         }
+
     }
 
 

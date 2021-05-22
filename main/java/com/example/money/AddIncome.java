@@ -20,10 +20,6 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.example.money.ui.main.ParameterFragment;
-
-import java.text.DecimalFormat;
-
 public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
     private EditText incomeInput, periodInput, descriptionInput;
@@ -33,7 +29,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
     private Switch switchTaxes;
 
     private ConstraintLayout manualPeriodInput;
-    private IncomeDBHelper dbHelper;
+    private DatabaseHelper dbHelper;
 
     private int weeklyIncome, oldID;
     private Boolean edit, taxes, update;
@@ -175,7 +171,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
             descriptionInput.setText(intent.getStringExtra("Description"));
 
         //Database Helper
-        dbHelper = Databases.getIncomeHelper();
+        dbHelper = Databases.getDBHelper();
 
     }
 
@@ -281,10 +277,10 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
             i = new Income(-1, descriptionInput.getText().toString(), weeklyIncome, 1);
             Boolean success;
             if(edit) {
-                success = dbHelper.editOne(i, oldID);
+                success = dbHelper.editOneIncome(i, oldID);
             }
             else
-                success = dbHelper.addOne(i);
+                success = dbHelper.addOneIncome(i);
             Log.d("Success", "Add it "+success);
             Intent leaveActivity;
             if(update)
