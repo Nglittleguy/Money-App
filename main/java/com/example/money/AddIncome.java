@@ -20,6 +20,8 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.example.money.ui.main.ParameterFragment;
+
 import java.text.DecimalFormat;
 
 public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
@@ -34,7 +36,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
     private IncomeDBHelper dbHelper;
 
     private int weeklyIncome, oldID;
-    private Boolean edit, taxes;
+    private Boolean edit, taxes, update;
     private double periodOfWeeks;
 
     @Override
@@ -48,7 +50,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
         edit = intent.getBooleanExtra("Edit", false);
         weeklyIncome = intent.getIntExtra("WeeklyIncome", 0);
         oldID = intent.getIntExtra("OldID", 0);
-
+        update = intent.getBooleanExtra("Update", false);
 
 
         //Select Income Period
@@ -284,7 +286,12 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
             else
                 success = dbHelper.addOne(i);
             Log.d("Success", "Add it "+success);
-            Intent leaveActivity = new Intent(this, MainTab.class);
+            Intent leaveActivity;
+            if(update)
+                leaveActivity = new Intent(this, MainLoading.class);
+            else
+                leaveActivity = new Intent(this, MainParamCheck.class);
+
             startActivity(leaveActivity);
         }
         catch (Exception e) {

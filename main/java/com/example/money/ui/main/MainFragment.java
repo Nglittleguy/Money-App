@@ -110,7 +110,10 @@ public class MainFragment extends Fragment {
         if(spent<totalWeekly) {
             spentBar.setVisibility(View.VISIBLE);
             overBar.setVisibility(View.INVISIBLE);
-            spentBar.setProgress(100*(totalWeekly-spent)/totalWeekly);
+            if(totalWeekly!=0)
+                spentBar.setProgress(100*(totalWeekly-spent)/totalWeekly);
+            else
+                spentBar.setProgress(0);
 
         }
         else {
@@ -118,8 +121,12 @@ public class MainFragment extends Fragment {
             overBar.setVisibility(View.VISIBLE);
             if(spent>2*totalWeekly)
                 overBar.setProgress(100);
-            else
-                overBar.setProgress(100*(spent-totalWeekly)/totalWeekly);
+            else {
+                if(totalWeekly!=0)
+                    overBar.setProgress(100 * (spent - totalWeekly) / totalWeekly);
+                else
+                    overBar.setProgress(0);
+            }
         }
         remainingText.setText(Databases.centsToDollar(totalWeekly-spent));
         allowanceText.setText("Allowance per week: "+Databases.centsToDollar(totalWeekly));

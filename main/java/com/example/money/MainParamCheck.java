@@ -104,6 +104,7 @@ public class MainParamCheck extends AppCompatActivity {
     }
 
     public void nextPressed(View v) {
+        Databases.setWeeklyAllowance(this, false);
         Intent leaveActivity = new Intent(this, MainLoading.class);
         startActivity(leaveActivity);
     }

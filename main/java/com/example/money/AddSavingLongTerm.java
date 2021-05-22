@@ -39,13 +39,14 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
 
     private int weeklySaving, oldSaving, oldID;
     private double periodOfWeeks, percent;
-    private Boolean aP, edit, suffixAdded;
+    private Boolean aP, edit, suffixAdded, update;
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_saving_long_term);
+
 
         //Constraints
         manualPeriodInput = findViewById(R.id.manualSavingLTPeriod);
@@ -96,6 +97,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
         oldSaving = weeklySaving;
         oldID = intent.getIntExtra("OldID", 0);
         percent = intent.getDoubleExtra("Percent", 0);
+        update = intent.getBooleanExtra("Update", false);
 
         //Set visibility based on editing percent of saving
         if(percent!=0) {
@@ -399,7 +401,11 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
             }
             else
                 success = dbHelper.addOne(s);
-            Intent leaveActivity = new Intent(this, MainTab.class);
+            Intent leaveActivity;
+            if(update)
+                leaveActivity = new Intent(this, MainLoading.class);
+            else
+                leaveActivity = new Intent(this, MainParamCheck.class);
             startActivity(leaveActivity);
         }
         catch (Exception e) {

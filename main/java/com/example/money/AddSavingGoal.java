@@ -34,7 +34,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
     private long totalToSave, alreadySaved, oldSaving;
     private String oldDesc;
     private int[] oldDay;
-    private boolean edit;
+    private boolean edit, update;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,6 +53,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
         oldID = intent.getIntExtra("OldID", 0);
         oldDesc = intent.getStringExtra("Description");
         alreadySaved = intent.getLongExtra("Stored", 0);
+        update = intent.getBooleanExtra("Update", false);
         if(edit && oldDesc.length()>12) {
             int end = oldDesc.length();
             oldDay = new int[] {Integer.parseInt(oldDesc.substring(end-10, end-6)),
@@ -261,7 +262,11 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
             else
                 success = dbHelper.addOne(s);
                 Log.d("Success", "Did it work? "+success+", "+s.toString());
-            Intent leaveActivity = new Intent(this, MainTab.class);
+            Intent leaveActivity;
+            if(update)
+                leaveActivity = new Intent(this, MainLoading.class);
+            else
+                leaveActivity = new Intent(this, MainParamCheck.class);
             startActivity(leaveActivity);
         }
         catch (Exception e) {

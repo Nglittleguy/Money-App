@@ -50,5 +50,25 @@
     <string name="title_activity_main_tab">MainTab</string>
     <string name="tab_text_3">Spenditure</string>
     <string name="spenditureValue">Weekly Spenditure</string>
+    <string name="spendingTitleValue">Spending</string>
+    <string name="spendingOrIncome">Add instead of subtract</string>
+    <string name="dollarSpentAmount">$ Dollars Spent</string>
+    <string name="necessityValue">Necessity</string>
+    <string name="spendValue">Sub Money</string>
+    <string name="notSpendValue">Add Money</string>
+    <string name="notNecessityValue">Desire</string>
     <string name="addSpendingValue">Add Spending</string>
+    <string name="updateExplainValue">Changes to weekly allowance will be reflected at the start of the next week.</string>
+    <string-array name="spendingTypeValues">
+        <item>Groceries</item>
+        <item>Dining</item>
+        <item>Entertainment</item>
+        <item>Gift</item>
+        <item>Home</item>
+        <item>Self</item>
+        <item>Hobby</item>
+        <item>Repair</item>
+        <item>Utility</item>
+        <item>Other</item>
+    </string-array>
 </resources>

@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.widget.Toast;
 
 import java.text.SimpleDateFormat;
@@ -32,11 +33,12 @@ public class MainLoading extends AppCompatActivity {
         Databases.setIncomeHelper(incomeDB);
 
         Date d = spendingDB.getLastDate();
+
         if(d==null) {
             setUp();
             return;
         }
-
+        Log.d("Success", "Last is "+d.toString());
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         Calendar now = Calendar.getInstance();
@@ -54,6 +56,7 @@ public class MainLoading extends AppCompatActivity {
 
     public void setUp() {
         Spending initialDate = new Spending(-1, "Last Date & Time", 0, true);
+        Log.d("Success", "Date is "+initialDate.getDateTime().toString());
         spendingDB.addOne(initialDate);
         Intent leaveActivity = new Intent(this, MainParamCheck.class);
         startActivity(leaveActivity);

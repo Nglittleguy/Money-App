@@ -3,10 +3,13 @@ package com.example.money;
 import android.content.Intent;
 import android.os.Bundle;
 
+import com.example.money.ui.main.MainFragment;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
@@ -26,12 +29,13 @@ import java.util.List;
 import java.util.Locale;
 
 public class MainTab extends AppCompatActivity {
+    SectionsPagerAdapter sectionsPagerAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_tab);
-        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
         ViewPager viewPager = findViewById(R.id.view_pager);
         viewPager.setAdapter(sectionsPagerAdapter);
 
@@ -63,6 +67,11 @@ public class MainTab extends AppCompatActivity {
             default:
                 return new SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(c.getTime());
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+
     }
 
     public void addSpending(View v){

@@ -17,6 +17,7 @@ public class Spending {
         this.id = id;
         this.amount = amount;
         this.desc = desc;
+        this.dateTime = new Date();
         this.necessity = necessity;
     }
 

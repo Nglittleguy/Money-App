@@ -150,25 +150,26 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
 
 
     public void addParam(int pos) {
-        Intent i;
+        Intent i = new Intent();
         switch(pos) {
             case 0: //Income
                 i = new Intent(c, AddIncome.class);
-                c.startActivity(i);
+
                 break;
             case 1: //Expense
                 i = new Intent(c, AddExpense.class);
-                c.startActivity(i);
                 break;
             case 2: //Saving LT
                 i = new Intent(c, AddSavingLongTerm.class);
-                c.startActivity(i);
                 break;
             case 3: //Saving Goal
                 i = new Intent(c, AddSavingGoal.class);
-                c.startActivity(i);
                 break;
         }
+        if(f!=null)
+            i.putExtra("Update", true);
+
+        c.startActivity(i);
     }
 
 }

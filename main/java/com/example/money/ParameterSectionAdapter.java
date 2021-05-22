@@ -91,6 +91,8 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
                     editIncome.putExtra("WeeklyIncome", i.getAmountPerWeek());
                     editIncome.putExtra("OldID", i.getId());
                     editIncome.putExtra("Description", i.getDesc());
+                    if(f!=null)
+                        editIncome.putExtra("Update", true);
                     c.startActivity(editIncome);
                 }
             });
@@ -113,6 +115,8 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
                     editSaving.putExtra("Percent", i.getPercent());
                     editSaving.putExtra("OldID", i.getId());
                     editSaving.putExtra("Description", i.getDesc());
+                    if(f!=null)
+                        editSaving.putExtra("Update", true);
                     if(typeOfParameter.equals(MainAddSavingLT.class)) {
                         editSaving.setClass(c, AddSavingLongTerm.class);
                     }

@@ -35,7 +35,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
 
     private int weeklyExpense, oldID, oldWeeklyExpense;
     private double periodOfWeeks;
-    private Boolean edit;
+    private Boolean edit, update;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -49,6 +49,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
         weeklyExpense = intent.getIntExtra("WeeklyIncome", 0);
         oldWeeklyExpense = weeklyExpense;
         oldID = intent.getIntExtra("OldID", 0);
+        update = intent.getBooleanExtra("Update", false);
 
 
 
@@ -271,7 +272,11 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
             }
             else
                 success = dbHelper.addOne(i);
-            Intent leaveActivity = new Intent(this, MainTab.class);
+            Intent leaveActivity;
+            if(update)
+                leaveActivity = new Intent(this, MainLoading.class);
+            else
+                leaveActivity = new Intent(this, MainParamCheck.class);
             startActivity(leaveActivity);
         }
         catch (Exception e) {

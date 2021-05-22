@@ -130,7 +130,7 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
 
     private String getDateTime(Date date) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-        return dateFormat.format(date);
+        return dateFormat.format(date).toString();
     }
 
     public boolean addOne(Spending s) {
@@ -141,6 +141,7 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
         c.put(COL_AMNT, s.getAmount());
         c.put(COL_NEC, s.getNecessity());
         c.put(COL_DT, getDateTime(s.getDateTime()));
+        Log.d("Success", "Adding to db: "+getDateTime(s.getDateTime()));
         return db.insert(TABLE, null, c) != -1;
     }
 
@@ -160,7 +161,7 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
         if(id==1) {
             query = "UPDATE " + TABLE +
                     " SET " + COL_AMNT + " = " + s.getAmount() + "" +
-                    ", " + COL_DT + " = '" + s.getDateTime() + "' " +
+                    ", " + COL_DT + " = '" + getDateTime(s.getDateTime()) + "' " +
                     " WHERE " + COL_ID + " = 1";
         }
         else {
@@ -168,7 +169,7 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
                     " SET " + COL_AMNT + " = " + s.getAmount() + "" +
                     ", " + COL_DESC + " = '" + s.getDesc() + "' " +
                     ", " + COL_NEC + " = " + s.getNecessity() + " " +
-                    ", " + COL_DT + " = '" + s.getDateTime() + "' " +
+                    ", " + COL_DT + " = '" + getDateTime(s.getDateTime()) + "' " +
                     " WHERE " + COL_ID + " = " + id;
         }
         db.execSQL(query);

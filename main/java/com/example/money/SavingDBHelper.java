@@ -234,8 +234,10 @@ public class SavingDBHelper extends SQLiteOpenHelper {
 
     public int updateSavingAmounts(Context c) {
         int left = Databases.getWeeklyAfterExpenses();
+        Log.d("Success", "Weekly after expenses "+left);
         List<Saving> addAmount = getAllNonFinished();
         String query;
+        updatePercentAmounts(left);
 
         SQLiteDatabase db = this.getWritableDatabase();
         for(Saving s: addAmount) {
@@ -256,6 +258,7 @@ public class SavingDBHelper extends SQLiteOpenHelper {
             }
             db.execSQL(query);
         }
+        Log.d("Success", "Weekly after savings "+left);
         return left;
     }
 }
