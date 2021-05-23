@@ -1,6 +1,7 @@
 package com.example.money.ui.main;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -56,20 +57,15 @@ public class MainFragment extends Fragment {
             index = getArguments().getInt(ARG_SECTION_NUMBER);
         }
         pageViewModel.setIndex(index);
+
     }
+
 
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         View root = inflater.inflate(R.layout.main_fragment_tab, container, false);
-//        final TextView textView = root.findViewById(R.id.section_label);
-//        pageViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {
-//            @Override
-//            public void onChanged(@Nullable String s) {
-//                textView.setText(s);
-//            }
-//        });
         remainingText = root.findViewById(R.id.remainingFrag);
         allowanceText = root.findViewById(R.id.allowanceFrag);
 
@@ -86,15 +82,14 @@ public class MainFragment extends Fragment {
 
     @Override
     public void onResume() {
-        db = Databases.getDBHelper();
-        Calendar c = Calendar.getInstance();
+        super.onResume();
         totalWeekly = db.getWeeklyAllowance();
         spent = updateTotal();
-        super.onResume();
     }
 
     public int updateTotal() {
         int total=0;
+
         spendingList = db.getAllSpend(true, ((MainTab)(getContext())).getStartOfWeek());
         for(Spending s: spendingList) {
             total+=s.getAmount();
