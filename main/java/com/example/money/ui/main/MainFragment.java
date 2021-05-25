@@ -90,7 +90,7 @@ public class MainFragment extends Fragment {
     public int updateTotal() {
         int total=0;
 
-        spendingList = db.getAllSpend(true, ((MainTab)(getContext())).getStartOfWeek());
+        spendingList = db.getAllSpendFromWA(true, ((MainTab)(getContext())).getStartOfWeek());
         for(Spending s: spendingList) {
             total+=s.getAmount();
         }

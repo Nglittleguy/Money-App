@@ -24,6 +24,7 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
     public static final String SPEND_COL_DESC = "SPENDING_DESC";
     public static final String SPEND_COL_AMNT = "SPENDING_AMOUNT";
     public static final String SPEND_COL_NEC = "SPENDING_NECESSITY";
+    public static final String SPEND_COL_FRS = "SPENDING_FRSAVING";
     public static final String SPEND_COL_DT = "SPENDING_DATETIME";
 
     public SpendingDBHelper(@Nullable Context context) {
@@ -57,8 +58,9 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
                 String desc = c.getString(1);
                 int amount = c.getInt(2);
                 int nec = c.getInt(3);
-                String dt = c.getString(4);
-                Spending s = new Spending(id, desc, amount, nec==1, dt);
+                int frs = c.getInt(4);
+                String dt = c.getString(5);
+                Spending s = new Spending(id, desc, amount, nec==1, dt, frs==1);
                 ret.add(s);
             }while(c.moveToNext());
         }
@@ -80,8 +82,9 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
                 String desc = c.getString(1);
                 int amount = c.getInt(2);
                 int nec = c.getInt(3);
-                String dt = c.getString(4);
-                Spending s = new Spending(id, desc, amount, nec==1, dt);
+                int frs = c.getInt(4);
+                String dt = c.getString(5);
+                Spending s = new Spending(id, desc, amount, nec==1, dt, frs==1);
                 ret.add(s);
             }while(c.moveToNext());
         }
@@ -110,8 +113,40 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
                 String desc = c.getString(1);
                 int amount = c.getInt(2);
                 int nec = c.getInt(3);
-                String dt = c.getString(4);
-                Spending s = new Spending(id, desc, amount, nec==1, dt);
+                int frs = c.getInt(4);
+                String dt = c.getString(5);
+                Spending s = new Spending(id, desc, amount, nec==1, dt, frs==1);
+                ret.add(s);
+            }while(c.moveToNext());
+        }
+        c.close();
+        db.close();
+        return ret;
+    }
+
+    public List<Spending> getAllSpendFromWA(boolean after, String dateTime) {
+        List<Spending> ret = new ArrayList<>();
+        if(dateTime==null)
+            return ret;
+
+        String query;
+        if(after)
+            query = "SELECT * FROM "+SPEND_TABLE+" WHERE "+SPEND_COL_DT+" >= '"+ dateTime + "' AND "+SPEND_COL_ID+"!= 1 AND "+SPEND_COL_FRS+"!= 1";
+        else
+            query = "SELECT * FROM "+SPEND_TABLE+" WHERE "+SPEND_COL_DT+" < '"+ dateTime + "' AND "+SPEND_COL_ID+"!= 1 AND "+SPEND_COL_FRS+"!= 1";
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+
+        if(c.moveToFirst()) {
+            do {
+                int id = c.getInt(0);
+                String desc = c.getString(1);
+                int amount = c.getInt(2);
+                int nec = c.getInt(3);
+                int frs = c.getInt(4);
+                String dt = c.getString(5);
+                Spending s = new Spending(id, desc, amount, nec==1, dt, frs==1);
                 ret.add(s);
             }while(c.moveToNext());
         }
@@ -138,6 +173,7 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
         c.put(SPEND_COL_DESC, s.getDesc());
         c.put(SPEND_COL_AMNT, s.getAmount());
         c.put(SPEND_COL_NEC, s.getNecessity());
+        c.put(SPEND_COL_FRS, s.getFromSaving());
         c.put(SPEND_COL_DT, getDateTime(s.getDateTime()));
         Log.d("Success", "Adding to db: "+getDateTime(s.getDateTime()));
         return db.insert(SPEND_TABLE, null, c) != -1;
@@ -167,6 +203,7 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
                     " SET " + SPEND_COL_AMNT + " = " + s.getAmount() + "" +
                     ", " + SPEND_COL_DESC + " = '" + s.getDesc() + "' " +
                     ", " + SPEND_COL_NEC + " = " + s.getNecessity() + " " +
+                    ", " + SPEND_COL_FRS + " = " + s.getFromSaving() + " " +
                     ", " + SPEND_COL_DT + " = '" + getDateTime(s.getDateTime()) + "' " +
                     " WHERE " + SPEND_COL_ID + " = " + id;
         }
@@ -213,7 +250,6 @@ public class SpendingDBHelper extends SQLiteOpenHelper{
         db.close();
         return wA;
     }
-
 
 }
 

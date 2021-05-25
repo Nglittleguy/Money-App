@@ -18,17 +18,22 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class AddSpending extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
 
-    TextView title;
-    Switch plusOrMinus, necOrDesire;
-    Spinner descSpinner, sourceSpinner;
-    EditText amountInput, descInput;
-    DatabaseHelper db;
+    private TextView title;
+    private Switch plusOrMinus, necOrDesire;
+    private Spinner descSpinner, sourceSpinner;
+    private EditText amountInput, descInput;
+    private DatabaseHelper db;
 
-    String descMain;
-    int amount;
-    boolean subMoney, necessity;
+    private int savingChosenPosition;
+    private String descMain;
+    private int amount;
+    private boolean subMoney, necessity;
+    private List<Saving> canTakeFrom;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -108,6 +113,17 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
 
         //Source Spinner
         sourceSpinner = findViewById(R.id.selectSource);
+        Saving defaultSaving = new Saving (-1, "Weekly Allowance", 0, 0, 0, 1);
+
+        canTakeFrom = db.getAllRemoveableSave();
+        canTakeFrom.add(0, defaultSaving);
+
+        ArrayAdapter<Saving> sourceAdapter = new ArrayAdapter<Saving>(
+                this, android.R.layout.simple_spinner_item, canTakeFrom);
+        sourceAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        sourceSpinner.setAdapter(sourceAdapter);
+        sourceSpinner.setOnItemSelectedListener(this);
+
 
         //Description Text Input
         descInput = findViewById(R.id.spendingDesc);
@@ -148,6 +164,9 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
                     necOrDesire.setChecked(false);
             }
             descMain = getResources().getStringArray(R.array.spendingTypeValues)[position]+": ";
+        }
+        if(parent.equals(sourceSpinner)) {
+            savingChosenPosition = position;
         }
     }
 
@@ -212,14 +231,18 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
                 descNote = "";
             else
                 descNote = descInput.getText().toString();
-            i = new Spending(-1, descMain+descNote, amount, necessity);
-            Boolean success;
-//            if(edit) {
-//                success = dbHelper.editOne(i, oldID);
-//            }
-//            else
-                success = db.addOneSpend(i);
-            Log.d("Success", "Add it "+success);
+
+            if(savingChosenPosition==0)
+                i = new Spending(-1, descMain + descNote, amount, necessity);
+
+            else {
+                i = new Spending(-1,
+                        canTakeFrom.get(savingChosenPosition).getDesc() + ": " +
+                                descNote, amount, necessity, true);
+                db.takeFromSavings(canTakeFrom.get(savingChosenPosition), amount);
+            }
+            db.addOneSpend(i);
+
             Intent leaveActivity = new Intent(this, MainLoading.class);
             startActivity(leaveActivity);
         }

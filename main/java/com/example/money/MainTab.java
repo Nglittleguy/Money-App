@@ -8,6 +8,7 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -32,6 +33,7 @@ import java.util.Locale;
 public class MainTab extends AppCompatActivity {
     SectionsPagerAdapter sectionsPagerAdapter;
     ViewPager viewPager;
+    CoordinatorLayout tabLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +57,8 @@ public class MainTab extends AppCompatActivity {
             @Override
             public void onPageScrollStateChanged(int arg0) { }
         });
+
+        tabLayout = findViewById(R.id.tabCoordinatorLayout);
 
         TabLayout tabs = findViewById(R.id.tabs);
         tabs.setupWithViewPager(viewPager);

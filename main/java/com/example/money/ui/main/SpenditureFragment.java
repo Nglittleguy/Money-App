@@ -7,6 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
@@ -20,6 +21,7 @@ import com.example.money.R;
 import com.example.money.Spending;
 import com.example.money.SpendingDBHelper;
 import com.example.money.SpentAdapter;
+import com.google.android.material.snackbar.Snackbar;
 
 import java.util.List;
 
@@ -65,7 +67,6 @@ public class SpenditureFragment extends Fragment {
         weeklySpend = root.findViewById(R.id.weekSpentListFrag);
         spentAmount = root.findViewById(R.id.totalSpentFrag);
 
-
         return root;
     }
 
@@ -89,5 +90,20 @@ public class SpenditureFragment extends Fragment {
             total+=s.getAmount();
         }
         spentAmount.setText("Since "+((MainTab)(getContext())).getStartOfWeek(2)+": "+Databases.centsToDollar(total));
+    }
+
+    public void showSnackbar(Spending i) {
+        if(getActivity()!=null) {
+            CoordinatorLayout tabLayout = getActivity().findViewById(R.id.tabCoordinatorLayout);
+            String[] descNotes = i.getDesc().split(": ", 2);
+            String note = "";
+            if(descNotes[1].isEmpty())
+                note = "No further description.";
+            else
+                note = descNotes[1];
+
+            Snackbar s = Snackbar.make(tabLayout, note, Snackbar.LENGTH_SHORT);
+            s.show();
+        }
     }
 }

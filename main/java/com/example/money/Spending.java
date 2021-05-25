@@ -12,6 +12,7 @@ public class Spending {
     private Date dateTime;
     private String desc;
     private Boolean necessity;
+    private Boolean fromSaving;
 
     public Spending(int id, String desc, int amount, Boolean necessity) {
         this.id = id;
@@ -19,17 +20,28 @@ public class Spending {
         this.desc = desc;
         this.dateTime = new Date();
         this.necessity = necessity;
+        this.fromSaving = false;
     }
 
-    public Spending(int id, String desc, int amount, Boolean necessity, Date dateTime) {
+    public Spending(int id, String desc, int amount, Boolean necessity, Boolean fromSaving) {
+        this.id = id;
+        this.amount = amount;
+        this.desc = desc;
+        this.dateTime = new Date();
+        this.necessity = necessity;
+        this.fromSaving = fromSaving;
+    }
+
+    public Spending(int id, String desc, int amount, Boolean necessity, Date dateTime, Boolean fromSaving) {
         this.id = id;
         this.amount = amount;
         this.dateTime = dateTime;
         this.desc = desc;
         this.necessity = necessity;
+        this.fromSaving = fromSaving;
     }
 
-    public Spending(int id, String desc, int amount, Boolean necessity, String dateTime) {
+    public Spending(int id, String desc, int amount, Boolean necessity, String dateTime, Boolean fromSaving) {
         this.id = id;
         this.amount = amount;
         try {
@@ -41,6 +53,7 @@ public class Spending {
 
         this.desc = desc;
         this.necessity = necessity;
+        this.fromSaving = fromSaving;
     }
 
     @Override
@@ -51,6 +64,7 @@ public class Spending {
                 ", dateTime=" + dateTime +
                 ", desc='" + desc + '\'' +
                 ", necessity=" + necessity +
+                ", fromSaving=" + fromSaving +
                 '}';
     }
 
@@ -93,4 +107,8 @@ public class Spending {
     public void setNecessity(Boolean necessity) {
         this.necessity = necessity;
     }
+
+    public Boolean getFromSaving() { return fromSaving; }
+
+    public void setFromSaving(Boolean fromSaving) { this.fromSaving = fromSaving; }
 }

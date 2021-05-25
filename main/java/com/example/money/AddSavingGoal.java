@@ -28,6 +28,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
     private ProgressBar incomeExpenseSavingProgress;
     private DatabaseHelper dbHelper;
     private Calendar currentDay, selectedDay;
+
     private int weeksDiff, weeklySaving, oldID;
     private long totalToSave, alreadySaved, oldSaving;
     private String oldDesc;
@@ -252,7 +253,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
             s = new Saving (-1,
                     descriptionInput.getText().toString() + " - " +
                             format.format(selectedDay.getTime()),
-                    getSavingAmount(), alreadySaved, weeklySaving, 0, 1);
+                    getSavingAmount(), alreadySaved, weeklySaving, 0, 0);
 
             Boolean success;
             if(edit) {

@@ -1,5 +1,8 @@
 package com.example.money;
 
+import android.provider.ContactsContract;
+import android.util.Log;
+
 public class Saving extends Parameter{
     private long limitStored;
     private long amountStored;
@@ -70,22 +73,29 @@ public class Saving extends Parameter{
 
     @Override
     public String toString() {
-        String take;
-        if(canTakeFrom == 1)
-            take = "removeable";
+        if(amountStored==0)
+            return getDesc();
         else
-            take = "non removeable";
-        if(limitStored!=Long.MAX_VALUE) {
-            if(percent==0)
-                return "Savings Long Term: "+getId()+" {"+getDesc()+" : "+amountPerWeek+" per week, total["+amountStored+"]}";
-            else
-                return "Savings Long Term: "+getId()+" {"+getDesc()+" : "+percent+"% per week, total["+amountStored+"]}";
-        }
-        else {
-            if(percent==0)
-                return "Savings Short Term: "+getId()+" {"+getDesc()+" : "+amountPerWeek+" per week, total["+amountStored+"], "+take+"}";
-            else
-                return "Savings Short Term: "+getId()+" {"+getDesc()+" : "+percent+"% per week, total["+amountStored+"], "+take+"}";
-        }
+            return getDesc()+": "+ Databases.centsToDollar(amountStored);
+
+//        String take;
+//        if(canTakeFrom == 1)
+//            take = "removeable";
+//        else
+//            take = "non removeable";
+//
+//        if(limitStored==Long.MAX_VALUE) {
+//            if(percent==0)
+//                return "Savings Long Term: "+getId()+" {"+getDesc()+" : "+amountPerWeek+" per week, total["+amountStored+"]}";
+//            else
+//                return "Savings Long Term: "+getId()+" {"+getDesc()+" : "+percent+"% per week, total["+amountStored+"]}";
+//        }
+//        else {
+//            if(percent==0)
+//                return "Savings Short Term: "+getId()+" {"+getDesc()+" : "+amountPerWeek+" per week, total["+amountStored+"], "+take+"}";
+//            else
+//                return "Savings Short Term: "+getId()+" {"+getDesc()+" : "+percent+"% per week, total["+amountStored+"], "+take+"}";
+//        }
+
     }
 }
