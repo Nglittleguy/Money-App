@@ -29,18 +29,16 @@ public class MainLoading extends AppCompatActivity {
             return;
         }
 
-        Log.d("Success", "Last time used is "+d.toString());
         Calendar c = Calendar.getInstance();
         c.setTime(d);
         Calendar now = Calendar.getInstance();
 
-
-        if(c.get(Calendar.WEEK_OF_YEAR) == now.get(Calendar.WEEK_OF_YEAR)
-                && c.get(Calendar.YEAR) == now.get(Calendar.YEAR))
+        if(getStartOfWeek().before(c)) {
             Databases.setWeeklyAllowance(this, true);
-        else
+        }
+        else {
             Databases.setWeeklyAllowance(this, false);
-
+        }
         db.setLastDate();
         goToMainScreen();
     }
@@ -55,5 +53,14 @@ public class MainLoading extends AppCompatActivity {
     public void goToMainScreen() {
         Intent leaveActivity = new Intent(this, MainTab.class);
         startActivity(leaveActivity);
+    }
+
+    public Calendar getStartOfWeek() {
+        Calendar c = Calendar.getInstance();
+        c.set(Calendar.DAY_OF_WEEK, 1);
+        c.set(Calendar.HOUR_OF_DAY, 0);
+        c.set(Calendar.MINUTE, 0);
+        c.set(Calendar.SECOND, 0);
+        return c;
     }
 }

@@ -47,7 +47,7 @@ public class MainTab extends AppCompatActivity {
             @Override
             public void onPageSelected(int position) {
                 //If going to main, update the allowance
-                if(position==0)
+                if(position==0 || position==2)
                     sectionsPagerAdapter.notifyDataSetChanged();
             }
 

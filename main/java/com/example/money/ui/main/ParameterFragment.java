@@ -75,13 +75,14 @@ public class ParameterFragment extends Fragment {
         ltList = dBHelper.getAllLongTermSave();
         goalList = dBHelper.getAllShortTermSave();
 
+
         parameterList= root.findViewById(R.id.parameterListFrag);
         ParameterAdapter paramAdapter = new ParameterAdapter(getContext(), parameterList, iList, eList, ltList, goalList, this);
         parameterList.setAdapter(paramAdapter);
         parameterList.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));
 
         updateTotal();
-
+        dBHelper.closeDatabase();
 
 //        final TextView textView = root.findViewById(R.id.section_label);
 //        pageViewModel.getText().observe(getViewLifecycleOwner(), new Observer<String>() {

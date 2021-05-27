@@ -25,7 +25,7 @@ public class SpentAdapter extends RecyclerView.Adapter<SpentAdapter.ViewHolder> 
     List<Spending> spentList;
     RecyclerView recyclerView;
     SpenditureFragment f;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy - h aa", Locale.getDefault());
+    SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE - h aa", Locale.getDefault());
     //final View.OnClickListener buttonClickListener = new MyButtonClickListener();
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {

@@ -42,6 +42,7 @@ public class MainParamCheck extends AppCompatActivity {
         parameterList.addItemDecoration(new DividerItemDecoration(this, DividerItemDecoration.HORIZONTAL));
 
         updateTotal();
+        dBHelper.closeDatabase();
     }
 
     @Override

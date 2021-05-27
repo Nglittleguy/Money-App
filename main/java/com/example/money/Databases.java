@@ -32,6 +32,9 @@ public final class Databases {
             weeklyAllowance = db.updateSavingAmounts(c);
             Spending s = new Spending(-1, "", weeklyAllowance, false);
             db.editOneSpend(s, 1);
+
+            SpentRecord intialSpent = new SpentRecord(-1, 0);
+            db.addOneRecord(intialSpent);
         }
     }
 

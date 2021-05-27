@@ -19,9 +19,9 @@ import com.example.money.R;
  */
 public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
-    private Fragment main, spenditure, parameter;
+    private Fragment main, spenditure, record, parameter;
     @StringRes
-    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_3, R.string.tab_text_2};
+    private static final int[] TAB_TITLES = new int[]{R.string.tab_text_1, R.string.tab_text_3, R.string.tab_text_4, R.string.tab_text_2};
     private final Context mContext;
 
     public SectionsPagerAdapter(Context context, FragmentManager fm) {
@@ -42,6 +42,10 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
                 if(spenditure==null)
                     spenditure = SpenditureFragment.newInstance(position+1);
                 return spenditure;
+            case 3:
+                if(record==null)
+                    record = RecordFragment.newInstance(position+1);
+                return record;
             default:
                 if(parameter==null)
                     parameter = ParameterFragment.newInstance(position+1);
@@ -65,6 +69,6 @@ public class SectionsPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return 4;
     }
 }

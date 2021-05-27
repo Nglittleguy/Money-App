@@ -12,37 +12,34 @@ import androidx.fragment.app.Fragment;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.viewpager.widget.ViewPager;
 
 import com.example.money.DatabaseHelper;
 import com.example.money.Databases;
 import com.example.money.MainTab;
 import com.example.money.R;
+import com.example.money.RecordAdapter;
 import com.example.money.Spending;
-import com.example.money.SpendingDBHelper;
 import com.example.money.SpentAdapter;
+import com.example.money.SpentRecord;
 import com.google.android.material.snackbar.Snackbar;
 
 import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class SpenditureFragment extends Fragment {
+public class RecordFragment extends Fragment {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private PageViewModel pageViewModel;
 
 
-    List<Spending> spendingList;
+    List<SpentRecord> spentList;
     DatabaseHelper db;
     RecyclerView weeklySpend;
-    TextView spentAmount;
 
-
-
-    public static SpenditureFragment newInstance(int index) {
-        SpenditureFragment fragment = new SpenditureFragment();
+    public static RecordFragment newInstance(int index) {
+        RecordFragment fragment = new RecordFragment();
         Bundle bundle = new Bundle();
         bundle.putInt(ARG_SECTION_NUMBER, index);
         fragment.setArguments(bundle);
@@ -64,11 +61,9 @@ public class SpenditureFragment extends Fragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-            View root = inflater.inflate(R.layout.spenditure_fragment_tab, container, false);
+            View root = inflater.inflate(R.layout.record_fragment_tab, container, false);
 
-        weeklySpend = root.findViewById(R.id.weekSpentListFrag);
-        spentAmount = root.findViewById(R.id.totalSpentFrag);
-
+        weeklySpend = root.findViewById(R.id.totalSpentListFrag);
         return root;
     }
 
@@ -76,38 +71,28 @@ public class SpenditureFragment extends Fragment {
     public void onResume() {
 
         db = Databases.getDBHelper();
-        spendingList = db.getAllSpend(true, ((MainTab)(getContext())).getStartOfWeek());
-        SpentAdapter spentAdapter = new SpentAdapter(getContext(), spendingList, weeklySpend, this);
-        weeklySpend.setAdapter(spentAdapter);
+        spentList = db.getAllRecord();
+        RecordAdapter recAdapter = new RecordAdapter(getContext(), spentList, weeklySpend);
+        weeklySpend.setAdapter(recAdapter);
         weeklySpend.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));
-        updateTotal();
         super.onResume();
     }
 
-
-
-    public void updateTotal() {
-        int total=0;
-        for(Spending s: spendingList) {
-            total+=s.getAmount();
-        }
-        spentAmount.setText("Since "+((MainTab)(getContext())).getStartOfWeek(2)+": "+Databases.centsToDollar(total));
-    }
-
-    public void showSnackbar(Spending i) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy - h:mm aa", Locale.getDefault());
-        if(getActivity()!=null) {
-            CoordinatorLayout tabLayout = getActivity().findViewById(R.id.tabCoordinatorLayout);
-            String[] descNotes = i.getDesc().split(": ", 2);
-            String note = "";
-            if(descNotes[1].isEmpty())
-                note = "No further description.";
-            else
-                note = descNotes[1];
-
-            note += (" - "+dateFormat.format(i.getDateTime()));
-            Snackbar s = Snackbar.make(tabLayout, note, Snackbar.LENGTH_SHORT);
-            s.show();
-        }
-    }
+//
+//    public void showSnackbar(Spending i) {
+//        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy - h:mm aa", Locale.getDefault());
+//        if(getActivity()!=null) {
+//            CoordinatorLayout tabLayout = getActivity().findViewById(R.id.tabCoordinatorLayout);
+//            String[] descNotes = i.getDesc().split(": ", 2);
+//            String note = "";
+//            if(descNotes[1].isEmpty())
+//                note = "No further description.";
+//            else
+//                note = descNotes[1];
+//
+//            note += (" - "+dateFormat.format(i.getDateTime()));
+//            Snackbar s = Snackbar.make(tabLayout, note, Snackbar.LENGTH_SHORT);
+//            s.show();
+//        }
+//    }
 }

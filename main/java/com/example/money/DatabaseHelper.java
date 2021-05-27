@@ -42,6 +42,11 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String SPEND_COL_FRS = "SPENDING_FRSAVING";
     public static final String SPEND_COL_DT = "SPENDING_DATETIME";
 
+    public static final String REC_TABLE = "RECORD_TABLE";
+    public static final String REC_COL_ID = "RECORD_ID";
+    public static final String REC_COL_DT = "RECORD_DATETIME";
+    public static final String REC_COL_AMNT = "RECORD_AMOUNT";
+
 
     public DatabaseHelper(@Nullable Context context) {
         super(context, "coinData.db", null, 1);
@@ -56,6 +61,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         makeSavingTable(db);
         Log.d("Success", "Started making spending table");
         makeSpendingTable(db);
+        Log.d("Success", "Started making record table");
+        makeRecordTable(db);
         Log.d("Success", "Done making all tables");
     }
 
@@ -96,6 +103,19 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.execSQL(createTableStatement);
     }
 
+    public void makeRecordTable(SQLiteDatabase db) {
+        String createTableStatement = "CREATE TABLE IF NOT EXISTS " + REC_TABLE + " ("
+                + REC_COL_ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                + REC_COL_DT + " TEXT, "
+                + REC_COL_AMNT + " INT)";
+        db.execSQL(createTableStatement);
+    }
+
+    public void closeDatabase() {
+        SQLiteDatabase db = this.getReadableDatabase();
+        if (db != null && db.isOpen())
+            db.close();
+    }
 
     /*********************************************************************************************
     Income Table Functions
@@ -122,7 +142,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }while(c.moveToNext());
         }
         c.close();
-        db.close();
+        //db.close();
         return ret;
     }
 
@@ -262,7 +282,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }while(c.moveToNext());
         }
         c.close();
-        db.close();
+        //db.close();
         return ret;
     }
 
@@ -288,7 +308,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             }while(c.moveToNext());
         }
         c.close();
-        db.close();
+        //db.close();
         return ret;
     }
 
@@ -610,5 +630,78 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.close();
         db.close();
         return wA;
+    }
+
+    /*********************************************************************************************
+     Record Table Functions
+     ********************************************************************************************/
+
+    public List<SpentRecord> getAllRecord() {
+        List<SpentRecord> ret = new ArrayList<>();
+        String query;
+        query = "SELECT * FROM "+REC_TABLE;
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+
+        if(c.moveToFirst()) {
+            do {
+                int id = c.getInt(0);
+                String dt = c.getString(1);
+                int amount = c.getInt(2);
+                SpentRecord s = new SpentRecord(id, dt, amount);
+                ret.add(s);
+            }while(c.moveToNext());
+        }
+        c.close();
+        db.close();
+        return ret;
+    }
+
+    public boolean addOneRecord(SpentRecord s) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        ContentValues c = new ContentValues();
+
+        c.put(REC_COL_DT, getDateTime(s.getStart()));
+        c.put(REC_COL_AMNT, s.getAmount());
+
+        return db.insert(REC_TABLE, null, c) != -1;
+    }
+
+    public boolean removeOneRecord(SpentRecord s) {
+        if(s.getId()!=1) {
+            SQLiteDatabase db = this.getWritableDatabase();
+            String query = "DELETE FROM " + REC_TABLE + " WHERE " + REC_COL_ID + " = " + s.getId();
+            Cursor c = db.rawQuery(query, null);
+            return c.moveToFirst();
+        }
+        return false;
+    }
+
+    public boolean editCurrentRecord(SpentRecord s) {
+        SQLiteDatabase db = this.getWritableDatabase();
+        String query = "UPDATE " + REC_TABLE +
+                " SET " + REC_COL_AMNT + " = " + s.getAmount() + "" +
+                " WHERE " + REC_COL_ID + " = (SELECT max("+REC_COL_ID+") FROM "+REC_TABLE+")";
+
+        db.execSQL(query);
+        return true;
+    }
+
+    public SpentRecord getCurrentRecord() {
+        String query = "SELECT * FROM "+REC_TABLE+" " +
+                "WHERE "+REC_COL_ID+" = (SELECT max("+REC_COL_ID+") FROM "+REC_TABLE+")";
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+
+        SpentRecord s = null;
+        if(c.moveToFirst()) {
+            int id = c.getInt(0);
+            String dt = c.getString(1);
+            int amount = c.getInt(2);
+            s = new SpentRecord(id, dt, amount);
+        }
+        c.close();
+        db.close();
+        return s;
     }
 }

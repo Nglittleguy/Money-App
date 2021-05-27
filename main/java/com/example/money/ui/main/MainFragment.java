@@ -19,6 +19,7 @@ import com.example.money.MainTab;
 import com.example.money.R;
 import com.example.money.Spending;
 import com.example.money.SpendingDBHelper;
+import com.example.money.SpentRecord;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -88,7 +89,7 @@ public class MainFragment extends Fragment {
     }
 
     public int updateTotal() {
-        int total=0;
+        int total=0, ratio = 0;
 
         spendingList = db.getAllSpendFromWA(true, ((MainTab)(getContext())).getStartOfWeek());
         for(Spending s: spendingList) {
@@ -97,8 +98,10 @@ public class MainFragment extends Fragment {
         if(spent<totalWeekly) {
             spentBar.setVisibility(View.VISIBLE);
             overBar.setVisibility(View.INVISIBLE);
-            if(totalWeekly!=0)
-                spentBar.setProgress(100*(totalWeekly-spent)/totalWeekly);
+            if(totalWeekly!=0) {
+                ratio = 100 * (totalWeekly - spent) / totalWeekly;
+                spentBar.setProgress(ratio);
+            }
             else
                 spentBar.setProgress(0);
 
@@ -106,15 +109,21 @@ public class MainFragment extends Fragment {
         else {
             spentBar.setVisibility(View.INVISIBLE);
             overBar.setVisibility(View.VISIBLE);
-            if(spent>2*totalWeekly)
+            if(spent>2*totalWeekly) {
+                ratio = -100* (spent - totalWeekly) / totalWeekly;
                 overBar.setProgress(100);
+            }
             else {
-                if(totalWeekly!=0)
-                    overBar.setProgress(100 * (spent - totalWeekly) / totalWeekly);
+                if(totalWeekly!=0) {
+                    ratio = -100 * (spent - totalWeekly) / totalWeekly;
+                    overBar.setProgress(-ratio);
+                }
                 else
                     overBar.setProgress(0);
             }
         }
+        SpentRecord s = new SpentRecord(-1, ratio);
+        db.editCurrentRecord(s);
         remainingText.setText(Databases.centsToDollar(totalWeekly-spent));
         allowanceText.setText("Allowance per week: "+Databases.centsToDollar(totalWeekly));
 
