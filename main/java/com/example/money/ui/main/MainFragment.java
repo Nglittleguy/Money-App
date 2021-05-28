@@ -101,6 +101,8 @@ public class MainFragment extends Fragment {
             if(totalWeekly!=0) {
                 ratio = 100 * (totalWeekly - spent) / totalWeekly;
                 spentBar.setProgress(ratio);
+                if(ratio>100)
+                    remainingText.setTextColor(getActivity().getResources().getColor(R.color.myGreen));
             }
             else
                 spentBar.setProgress(0);
@@ -112,6 +114,7 @@ public class MainFragment extends Fragment {
             if(spent>2*totalWeekly) {
                 ratio = -100* (spent - totalWeekly) / totalWeekly;
                 overBar.setProgress(100);
+                remainingText.setTextColor(getActivity().getResources().getColor(R.color.myRed));
             }
             else {
                 if(totalWeekly!=0) {

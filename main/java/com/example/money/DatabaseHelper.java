@@ -402,13 +402,14 @@ public class DatabaseHelper extends SQLiteOpenHelper {
 
         SQLiteDatabase db = this.getWritableDatabase();
         for(Saving s: addAmount) {
-            if(s.getLimitStored()<s.getAmountStored()+s.getAmountPerWeek()) {
+            if(s.getLimitStored()<=s.getAmountStored()+s.getAmountPerWeek()) {
                 query = "UPDATE " + SAVE_TABLE +
                         " SET " + SAVE_COL_STOR + " = " + s.getLimitStored() +
+                        ", " + SAVE_COL_WEEK + " = 0 " +
                         ", " + SAVE_COL_REMV + " = 1" +
                         " WHERE " + SAVE_COL_ID + " = " + s.getId();
                 Toast.makeText(c, "Congratulations, you've reached your goal for "+s.getDesc(), Toast.LENGTH_LONG).show();
-                Toast.makeText(c, "You can now spend the "+s.getLimitStored()+" that you've saved up.", Toast.LENGTH_LONG).show();
+                Toast.makeText(c, "You can now spend the "+Databases.centsToDollar(s.getLimitStored())+" that you've saved up.", Toast.LENGTH_LONG).show();
                 left -= s.getLimitStored()-s.getAmountStored();
             }
             else {

@@ -97,36 +97,45 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
         }
         else if(j instanceof Saving) {
             Saving i = (Saving)j;
-            if(i.getPercent()!=0)
-                holder.rowAmount.setText(i.getPercent()+"% of Remaining");
-            else
-                holder.rowAmount.setText(""+Databases.centsToDollar(i.getAmountPerWeek()));
-            holder.rowDesc.setText(""+i.getDesc()+"\t "+Databases.centsToDollar(i.getAmountStored()));
-
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    Intent editSaving = new Intent();
-                    editSaving.putExtra("Edit", true);
-                    editSaving.putExtra("WeeklySaving", i.getAmountPerWeek());
-                    editSaving.putExtra("Percent", i.getPercent());
-                    editSaving.putExtra("OldID", i.getId());
-                    editSaving.putExtra("Description", i.getDesc());
-                    if(f!=null)
-                        editSaving.putExtra("Update", true);
-                    if(typeOfParameter.equals(MainAddSavingLT.class)) {
-                        editSaving.setClass(c, AddSavingLongTerm.class);
+                    if(!(typeOfParameter.equals(MainAddSavingGoal.class) && i.getAmountPerWeek()!=0 && c instanceof MainTab)) {
+                        Intent editSaving = new Intent();
+                        editSaving.putExtra("Edit", true);
+                        editSaving.putExtra("WeeklySaving", i.getAmountPerWeek());
+                        editSaving.putExtra("Percent", i.getPercent());
+                        editSaving.putExtra("OldID", i.getId());
+                        editSaving.putExtra("Description", i.getDesc());
+                        if(f!=null)
+                            editSaving.putExtra("Update", true);
+                        if(typeOfParameter.equals(MainAddSavingLT.class)) {
+                            editSaving.setClass(c, AddSavingLongTerm.class);
+                        }
+                        else {
+                            editSaving.putExtra("SavingTotal", i.getLimitStored());
+                            editSaving.putExtra("Stored", i.getAmountStored());
+                            editSaving.setClass(c, AddSavingGoal.class);
+                            Log.d("Success", "limit is "+i.getLimitStored());
+                        }
+                        c.startActivity(editSaving);
                     }
-                    else {
-                        editSaving.putExtra("SavingTotal", i.getLimitStored());
-                        editSaving.putExtra("Stored", i.getAmountStored());
-                        editSaving.setClass(c, AddSavingGoal.class);
-                        Log.d("Success", "limit is "+i.getLimitStored());
-                    }
-                    c.startActivity(editSaving);
                 }
             });
+
+            if(i.getPercent()!=0)
+                holder.rowAmount.setText(i.getPercent()+"% of Remaining");
+            else {
+                if(i.getAmountPerWeek()==0) {
+                    holder.rowAmount.setTextColor(f.getActivity().getResources().getColor(R.color.myOrange));
+                    holder.rowAmount.setText("Completed");
+                    holder.itemView.setOnClickListener(null);
+                }
+                else
+                    holder.rowAmount.setText("" + Databases.centsToDollar(i.getAmountPerWeek()));
+            }
+            holder.rowDesc.setText(""+i.getDesc()+"\t "+Databases.centsToDollar(i.getAmountStored()));
         }
 
     }
@@ -139,8 +148,12 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
     public void removeAt(int pos) {
         Parameter i = paramList.get(pos);
         paramList.remove(pos);
-        if(i instanceof Saving)
-            Databases.getDBHelper().removeOneSave((Saving)i);
+        if(i instanceof Saving) {
+            Databases.getDBHelper().removeOneSave((Saving) i);
+            if(c instanceof MainTab) {
+                ((MainTab)f.getActivity()).openDialog((Saving)i);
+            }
+        }
         if(i instanceof Income)
             Databases.getDBHelper().removeOneIncome((Income)i);
         notifyItemRemoved(pos);

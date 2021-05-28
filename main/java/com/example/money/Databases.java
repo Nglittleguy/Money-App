@@ -40,17 +40,29 @@ public final class Databases {
 
 
     public static String centsToDollar(int wi) {
+        String dollarsign = "";
+        if(wi<0) {
+            dollarsign += "-";
+            wi*=-1;
+        }
+        dollarsign+="$";
         DecimalFormat incomeToText = new DecimalFormat("0.00");
         double amount = ((double)wi)/100;
         String num = incomeToText.format(amount);
-        return "$"+num;
+        return dollarsign+num;
     }
 
     public static String centsToDollar(long wi) {
+        String dollarsign = "";
+        if(wi<0) {
+            dollarsign += "-";
+            wi*=-1;
+        }
+        dollarsign+="$";
         DecimalFormat incomeToText = new DecimalFormat("0.00");
         double amount = ((double)wi)/100;
         String num = incomeToText.format(amount);
-        return "$"+num;
+        return dollarsign+num;
     }
 
     public static int getWeeklyAfterExpenses() {

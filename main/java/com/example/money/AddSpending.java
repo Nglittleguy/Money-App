@@ -238,7 +238,7 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
             else {
                 i = new Spending(-1,
                         canTakeFrom.get(savingChosenPosition).getDesc() + ": " +
-                                descNote, amount, necessity, true);
+                                descNote.split(" -", 2)[0], amount, necessity, true);
                 db.takeFromSavings(canTakeFrom.get(savingChosenPosition), amount);
             }
             db.addOneSpend(i);

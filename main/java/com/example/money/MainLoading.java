@@ -31,7 +31,6 @@ public class MainLoading extends AppCompatActivity {
 
         Calendar c = Calendar.getInstance();
         c.setTime(d);
-        Calendar now = Calendar.getInstance();
 
         if(getStartOfWeek().before(c)) {
             Databases.setWeeklyAllowance(this, true);

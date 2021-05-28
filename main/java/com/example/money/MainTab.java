@@ -3,34 +3,21 @@ package com.example.money;
 import android.content.Intent;
 import android.os.Bundle;
 
-import com.example.money.ui.main.MainFragment;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.RecyclerView;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.example.money.ui.main.SectionsPagerAdapter;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.List;
 import java.util.Locale;
 
-public class MainTab extends AppCompatActivity {
+public class MainTab extends AppCompatActivity implements MoveSavingsDialog.MoveSavingListener {
     SectionsPagerAdapter sectionsPagerAdapter;
     ViewPager viewPager;
     CoordinatorLayout tabLayout;
@@ -97,5 +84,30 @@ public class MainTab extends AppCompatActivity {
         Intent leaveActivity = new Intent(this, AddSpending.class);
         startActivity(leaveActivity);
     }
+
+    public void openDialog(Saving take) {
+        MoveSavingsDialog dialog = new MoveSavingsDialog();
+        dialog.setFrom(take);
+        dialog.show(getSupportFragmentManager(), "Remaining Funds Dialog");
+    }
+
+    @Override
+    public void applySaving(Saving s, Saving take) {
+        if(s.getId()==-1) {
+            Spending i = new Spending(-1, take.getDesc().split(" -", 2)[0] + ": Remaining",
+                    -1 * (int) take.getAmountStored(), false);
+            Databases.getDBHelper().addOneSpend(i);
+        }
+        else {
+            Databases.getDBHelper().addToSavings(s, (int)take.getAmountStored());
+        }
+
+    }
+
+//    public void updateWeek(View v) {
+//        Databases.setWeeklyAllowance(this, false);
+//        Intent leaveActivity = new Intent(this, MainLoading.class);
+//        startActivity(leaveActivity);
+//    }
 
 }

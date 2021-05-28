@@ -82,7 +82,13 @@ public class SpentAdapter extends RecyclerView.Adapter<SpentAdapter.ViewHolder> 
         if(i.getNecessity()) {
             holder.rowAmount.setTypeface(Typeface.defaultFromStyle(Typeface.BOLD));
         }
-        holder.rowAmount.setText(""+Databases.centsToDollar(i.getAmount()));
+        if(i.getAmount()<0) {
+            holder.rowDesc.setTextColor(f.getActivity().getResources().getColor(R.color.myGreen));
+            holder.rowAmount.setTextColor(f.getActivity().getResources().getColor(R.color.myGreen));
+            holder.rowAmount.setText(""+Databases.centsToDollar(-i.getAmount()));
+        }
+        else
+            holder.rowAmount.setText(""+Databases.centsToDollar(i.getAmount()));
         holder.rowDesc.setText(""+i.getDesc().split(":")[0]+": "+dateFormat.format(i.getDateTime()));
 
 
