@@ -6,10 +6,19 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Environment;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.nio.charset.Charset;
 import java.util.List;
 import java.util.Objects;
 
@@ -35,6 +44,7 @@ public class MainParamCheck extends AppCompatActivity {
         eList = dBHelper.getAllIncome(false);
         ltList = dBHelper.getAllLongTermSave();
         goalList = dBHelper.getAllShortTermSave();
+
 
         parameterList= findViewById(R.id.allParameterList);
         ParameterAdapter paramAdapter = new ParameterAdapter(this, parameterList, iList, eList, ltList, goalList);
@@ -93,6 +103,8 @@ public class MainParamCheck extends AppCompatActivity {
             }
         }
     }
+
+
 
     public void nextPressed(View v) {
         Databases.setWeeklyAllowance(this, false);

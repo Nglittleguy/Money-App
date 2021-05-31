@@ -11,8 +11,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.money.ui.main.RecordFragment;
 import com.example.money.ui.main.SpenditureFragment;
 
 import java.text.SimpleDateFormat;
@@ -24,8 +26,9 @@ public class SpentAdapter extends RecyclerView.Adapter<SpentAdapter.ViewHolder> 
     Context c;
     List<Spending> spentList;
     RecyclerView recyclerView;
-    SpenditureFragment f;
+    Fragment f;
     SimpleDateFormat dateFormat = new SimpleDateFormat("EEEE - h aa", Locale.getDefault());
+    RecordSpendingDialog dialog;
     //final View.OnClickListener buttonClickListener = new MyButtonClickListener();
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
@@ -56,11 +59,20 @@ public class SpentAdapter extends RecyclerView.Adapter<SpentAdapter.ViewHolder> 
 
     }
 
-    public SpentAdapter(Context c, List<Spending> spentList, RecyclerView recyclerView, SpenditureFragment f) {
+    public SpentAdapter(Context c, List<Spending> spentList, RecyclerView recyclerView, Fragment f, RecordSpendingDialog dialog) {
         this.c = c;
         this.spentList = spentList;
         this.recyclerView = recyclerView;
         this.f = f;
+        this.dialog = dialog;
+    }
+
+    public SpentAdapter(Context c, List<Spending> spentList, RecyclerView recyclerView, Fragment f) {
+        this.c = c;
+        this.spentList = spentList;
+        this.recyclerView = recyclerView;
+        this.f = f;
+        this.dialog = null;
     }
 
     @NonNull
@@ -75,6 +87,8 @@ public class SpentAdapter extends RecyclerView.Adapter<SpentAdapter.ViewHolder> 
     @Override
     public void onBindViewHolder(@NonNull SpentAdapter.ViewHolder holder, int position) {
         Spending i = spentList.get(position);
+        if(f instanceof RecordFragment)
+            holder.rowButton.setVisibility(View.GONE);
         if(i.getFromSaving()) {
             holder.rowDesc.setTextColor(f.getActivity().getResources().getColor(R.color.myOrange));
             holder.rowAmount.setTextColor(f.getActivity().getResources().getColor(R.color.myOrange));
@@ -95,7 +109,10 @@ public class SpentAdapter extends RecyclerView.Adapter<SpentAdapter.ViewHolder> 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                f.showSnackbar(i);
+                if(f instanceof SpenditureFragment)
+                    ((SpenditureFragment)f).showSnackbar(i);
+                else if(f instanceof RecordFragment && dialog!=null)
+                    dialog.showSnackbar(i);
             }
         });
     }
@@ -112,7 +129,7 @@ public class SpentAdapter extends RecyclerView.Adapter<SpentAdapter.ViewHolder> 
             Databases.getDBHelper().removeOneSpend(i);
             notifyItemRemoved(pos);
             notifyItemRangeChanged(pos, spentList.size());
-            f.updateTotal();
+            ((SpenditureFragment)f).updateTotal();
         }
         else
             Toast.makeText(f.getContext(), "Sorry. Cannot remove spenditure from saving.", Toast.LENGTH_LONG).show();

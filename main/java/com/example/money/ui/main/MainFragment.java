@@ -1,5 +1,6 @@
 package com.example.money.ui.main;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,7 +23,13 @@ import com.example.money.SpendingDBHelper;
 import com.example.money.SpentRecord;
 
 import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.Locale;
 
@@ -33,6 +40,7 @@ public class MainFragment extends Fragment {
     private PageViewModel pageViewModel;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
+    SimpleDateFormat dayFormat = new SimpleDateFormat("yyyyMMdd");
     List<Spending> spendingList;
     DatabaseHelper db;
     TextView remainingText, allowanceText;
@@ -74,7 +82,6 @@ public class MainFragment extends Fragment {
         overBar = root.findViewById(R.id.overBarFrag);
         addSpending = root.findViewById(R.id.addSpendButton);
         db = Databases.getDBHelper();
-        Calendar c = Calendar.getInstance();
         totalWeekly = db.getWeeklyAllowance();
         spent = updateTotal();
 
@@ -84,6 +91,13 @@ public class MainFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        Date start = db.getLastDate();
+        if(!(dayFormat.format(start)).equals(dayFormat.format(new Date()))) {
+            Log.d("Success", "Last start was "+dayFormat.format(start));
+            Log.d("Success", "Now is "+dayFormat.format(new Date()));
+            ((MainTab)getContext()).forceLoading();
+            return;
+        }
         totalWeekly = db.getWeeklyAllowance();
         spent = updateTotal();
     }

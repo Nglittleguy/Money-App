@@ -47,6 +47,10 @@ public class SpentRecord {
         return start;
     }
 
+    public String getStartString() {
+        return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(start);
+    }
+
     public void setStart(Date start) {
         this.start = start;
     }

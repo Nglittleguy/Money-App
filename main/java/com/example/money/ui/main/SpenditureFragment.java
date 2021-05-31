@@ -64,7 +64,8 @@ public class SpenditureFragment extends Fragment {
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
-            View root = inflater.inflate(R.layout.spenditure_fragment_tab, container, false);
+
+        View root = inflater.inflate(R.layout.spenditure_fragment_tab, container, false);
 
         weeklySpend = root.findViewById(R.id.weekSpentListFrag);
         spentAmount = root.findViewById(R.id.totalSpentFrag);

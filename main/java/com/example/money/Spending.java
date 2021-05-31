@@ -88,6 +88,8 @@ public class Spending {
         return dateTime;
     }
 
+    public String getDateTimeString() { return new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()).format(dateTime); }
+
     public void setDateTime(Date dateTime) {
         this.dateTime = dateTime;
     }

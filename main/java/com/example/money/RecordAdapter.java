@@ -1,5 +1,6 @@
 package com.example.money;
 
+import android.app.Dialog;
 import android.content.Context;
 import android.graphics.Typeface;
 import android.util.Log;
@@ -14,6 +15,7 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.example.money.ui.main.RecordFragment;
 import com.example.money.ui.main.SpenditureFragment;
 
 import java.text.SimpleDateFormat;
@@ -22,13 +24,14 @@ import java.util.Locale;
 
 public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder> {
 
-    Context c;
-    List<SpentRecord> spentList;
-    RecyclerView recyclerView;
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy, MMM d", Locale.getDefault());
+    private Context c;
+    private List<SpentRecord> spentList;
+    private RecyclerView recyclerView;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy, MMM d", Locale.getDefault());
+    private RecordFragment parentFragment;
     //final View.OnClickListener buttonClickListener = new MyButtonClickListener();
 
-    public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
+    public class ViewHolder extends RecyclerView.ViewHolder {
 
         TextView dateText;
         ProgressBar negativeBar, positiveBar, wholeBar;
@@ -42,24 +45,15 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
             negativeBar = itemView.findViewById(R.id.negativeBar);
             positiveBar = itemView.findViewById(R.id.positiveBar);
             wholeBar = itemView.findViewById(R.id.wholeBar);
-            //rowButton.setOnClickListener(this);
-        }
-
-        @Override
-        public void onClick(View v) {
-            int iPos = getAdapterPosition();
-            //removeAt(iPos);
-            //Databases.getSavingHelper().removeOne(savingList.get(iPos));
-            Log.d("Success", iPos+"");
         }
 
     }
 
-    public RecordAdapter(Context c, List<SpentRecord> spentList, RecyclerView recyclerView) {
+    public RecordAdapter(Context c, List<SpentRecord> spentList, RecyclerView recyclerView, RecordFragment recFrag) {
         this.c = c;
         this.spentList = spentList;
         this.recyclerView = recyclerView;
-        //this.f = f;
+        parentFragment = recFrag;
     }
 
     @NonNull
@@ -94,12 +88,14 @@ public class RecordAdapter extends RecyclerView.Adapter<RecordAdapter.ViewHolder
         }
 
 
-//        holder.itemView.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                f.showSnackbar(i);
-//            }
-//        });
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                RecordSpendingDialog dialog = new RecordSpendingDialog();
+                dialog.setFrom(i.getStart(), parentFragment);
+                dialog.show(((MainTab)c).getSupportFragmentManager(), "Remaining Funds Dialog");
+            }
+        });
     }
 
     @Override

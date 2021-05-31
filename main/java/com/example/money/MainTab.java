@@ -1,27 +1,39 @@
 package com.example.money;
 
+import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 
 import com.google.android.material.tabs.TabLayout;
 
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
+import androidx.core.content.FileProvider;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.util.Log;
 import android.view.View;
+import android.widget.ImageButton;
 
 import com.example.money.ui.main.SectionsPagerAdapter;
 
+import java.io.File;
+import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.ConcurrentModificationException;
+import java.util.List;
 import java.util.Locale;
 
 public class MainTab extends AppCompatActivity implements MoveSavingsDialog.MoveSavingListener {
-    SectionsPagerAdapter sectionsPagerAdapter;
-    ViewPager viewPager;
-    CoordinatorLayout tabLayout;
-
+    private SectionsPagerAdapter sectionsPagerAdapter;
+    private ViewPager viewPager;
+    private CoordinatorLayout tabLayout;
+    private ImageButton exportButton;
+    
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -72,8 +84,10 @@ public class MainTab extends AppCompatActivity implements MoveSavingsDialog.Move
                 return new SimpleDateFormat("yyyy-MMM-dd HH:mm:ss", Locale.getDefault()).format(c.getTime());
             case 1:
                 return new SimpleDateFormat("MMM d, yyyy HH", Locale.getDefault()).format(c.getTime());
-            default:
+            case 2:
                 return new SimpleDateFormat("MMM d, yyyy", Locale.getDefault()).format(c.getTime());
+            default:
+                return new SimpleDateFormat("yyyyMMdd", Locale.getDefault()).format(c.getTime());
         }
     }
 
@@ -86,9 +100,11 @@ public class MainTab extends AppCompatActivity implements MoveSavingsDialog.Move
     }
 
     public void openDialog(Saving take) {
-        MoveSavingsDialog dialog = new MoveSavingsDialog();
-        dialog.setFrom(take);
-        dialog.show(getSupportFragmentManager(), "Remaining Funds Dialog");
+        if(take.getAmountStored()!=0) {
+            MoveSavingsDialog dialog = new MoveSavingsDialog();
+            dialog.setFrom(take);
+            dialog.show(getSupportFragmentManager(), "Remaining Funds Dialog");
+        }
     }
 
     @Override
@@ -103,6 +119,50 @@ public class MainTab extends AppCompatActivity implements MoveSavingsDialog.Move
         }
 
     }
+
+    public void forceLoading() {
+        Intent leaveActivity = new Intent(this, MainLoading.class);
+        startActivity(leaveActivity);
+    }
+
+    public void exportData() {
+        DatabaseHelper db = Databases.getDBHelper();
+
+        try{
+            FileOutputStream out = openFileOutput("CoinDataExport.csv", Context.MODE_PRIVATE);
+            out.write((db.getIncomeExport()).getBytes());
+
+            out.write((db.getSavingExport()).getBytes());
+
+            out.write((db.getRecordExport()).getBytes());
+
+            out.write((db.getSpendingExport()).getBytes());
+
+            out.close();
+
+            Context context = getApplicationContext();
+            File filelocation = new File(getFilesDir(), "CoinDataExport.csv");
+            Uri path = FileProvider.getUriForFile(context, "com.example.money.fileprovider", filelocation);
+            Intent fileExport = new Intent(Intent.ACTION_SEND);
+            fileExport.setType("text/csv");
+            fileExport.putExtra(Intent.EXTRA_SUBJECT, "CoinDataExport");
+            fileExport.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            fileExport.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+            fileExport.putExtra(Intent.EXTRA_STREAM, path);
+
+            Intent chooser = Intent.createChooser(fileExport, "Share File");
+            List<ResolveInfo> resInfoList = this.getPackageManager().queryIntentActivities(chooser, PackageManager.MATCH_DEFAULT_ONLY);
+            for (ResolveInfo resolveInfo : resInfoList) {
+                String packageName = resolveInfo.activityInfo.packageName;
+                this.grantUriPermission(packageName, path, Intent.FLAG_GRANT_WRITE_URI_PERMISSION | Intent.FLAG_GRANT_READ_URI_PERMISSION);
+            }
+            startActivity(chooser);
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
 
 //    public void updateWeek(View v) {
 //        Databases.setWeeklyAllowance(this, false);

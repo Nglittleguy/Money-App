@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -27,16 +28,17 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.Locale;
 
-public class RecordFragment extends Fragment {
+public class RecordFragment extends Fragment implements View.OnClickListener {
 
     private static final String ARG_SECTION_NUMBER = "section_number";
 
     private PageViewModel pageViewModel;
 
 
-    List<SpentRecord> spentList;
-    DatabaseHelper db;
-    RecyclerView weeklySpend;
+    private List<SpentRecord> spentList;
+    private DatabaseHelper db;
+    private RecyclerView weeklySpend;
+    private ImageButton exportButton;
 
     public static RecordFragment newInstance(int index) {
         RecordFragment fragment = new RecordFragment();
@@ -64,6 +66,8 @@ public class RecordFragment extends Fragment {
             View root = inflater.inflate(R.layout.record_fragment_tab, container, false);
 
         weeklySpend = root.findViewById(R.id.totalSpentListFrag);
+        exportButton = root.findViewById(R.id.exportButton);
+        exportButton.setOnClickListener(this);
         return root;
     }
 
@@ -72,27 +76,15 @@ public class RecordFragment extends Fragment {
 
         db = Databases.getDBHelper();
         spentList = db.getAllRecord();
-        RecordAdapter recAdapter = new RecordAdapter(getContext(), spentList, weeklySpend);
+        RecordAdapter recAdapter = new RecordAdapter(getContext(), spentList, weeklySpend, this);
         weeklySpend.setAdapter(recAdapter);
         weeklySpend.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));
+        weeklySpend.scrollToPosition(spentList.size()-1);
         super.onResume();
     }
 
-//
-//    public void showSnackbar(Spending i) {
-//        SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy - h:mm aa", Locale.getDefault());
-//        if(getActivity()!=null) {
-//            CoordinatorLayout tabLayout = getActivity().findViewById(R.id.tabCoordinatorLayout);
-//            String[] descNotes = i.getDesc().split(": ", 2);
-//            String note = "";
-//            if(descNotes[1].isEmpty())
-//                note = "No further description.";
-//            else
-//                note = descNotes[1];
-//
-//            note += (" - "+dateFormat.format(i.getDateTime()));
-//            Snackbar s = Snackbar.make(tabLayout, note, Snackbar.LENGTH_SHORT);
-//            s.show();
-//        }
-//    }
+    @Override
+    public void onClick(View v) {
+        ((MainTab)getContext()).exportData();
+    }
 }

@@ -10,6 +10,7 @@ import android.widget.Toast;
 
 import androidx.annotation.Nullable;
 
+import java.text.DecimalFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -46,6 +47,7 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public static final String REC_COL_ID = "RECORD_ID";
     public static final String REC_COL_DT = "RECORD_DATETIME";
     public static final String REC_COL_AMNT = "RECORD_AMOUNT";
+    public static final DecimalFormat incomeToText = new DecimalFormat("0.00");
 
 
     public DatabaseHelper(@Nullable Context context) {
@@ -196,6 +198,18 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return true;
     }
 
+    public String getIncomeExport() {
+        List<Income> iList = getAllIncome();
+        StringBuilder incomeCSV = new StringBuilder();
+        incomeCSV.append("Income ID,Income Description,Income Amount,Income Increment,,,");
+
+        for(Income i:iList) {
+            incomeCSV.append("\n"+i.getId()+","+i.getDesc()+","+incomeToText.format(((double)i.getAmountPerWeek())/100)+","+i.getInc()+",,,");
+        }
+        incomeCSV.append("\n,,,,,,\n");
+        return incomeCSV.toString();
+    }
+
     /*********************************************************************************************
      Saving Table Functions
      ********************************************************************************************/
@@ -233,6 +247,31 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         Cursor c = db.rawQuery(query, null);
 
         return c.moveToFirst();
+    }
+
+    public List<Saving> getAllSave() {
+        List<Saving> ret = new ArrayList<>();
+        String query = "SELECT * FROM "+SAVE_TABLE;
+
+        SQLiteDatabase db = this.getReadableDatabase();
+        Cursor c = db.rawQuery(query, null);
+
+        if(c.moveToFirst()) {
+            do {
+                int id = c.getInt(0);
+                String desc = c.getString(1);
+                long limit = c.getLong(2);
+                long stored = c.getLong(3);
+                int week = c.getInt(4);
+                double percent = c.getDouble(5);
+                int removeable = c.getInt(6);
+                Saving s = new Saving(id, desc, limit, stored, week, percent, removeable);
+                ret.add(s);
+            }while(c.moveToNext());
+        }
+        c.close();
+        db.close();
+        return ret;
     }
 
     public List<Saving> getAllNonFinishedSave() {
@@ -421,6 +460,21 @@ public class DatabaseHelper extends SQLiteOpenHelper {
             db.execSQL(query);
         }
         return left;
+    }
+
+    public String getSavingExport() {
+        List<Saving> sList = getAllSave();
+        StringBuilder saveCSV = new StringBuilder();
+        saveCSV.append("Saving ID,Saving Description,Saving Limit Amount,Saving Amount Stored,Saving Amount per Week,Saving Percent,Saving Removable");
+        for(Saving s:sList) {
+            saveCSV.append("\n"+s.getId()+","+s.getDesc()+","
+                    +(s.getLimitStored()==Long.MAX_VALUE? s.getLimitStored() : incomeToText.format(((double)s.getLimitStored())/100))+","
+                    +incomeToText.format(((double)s.getAmountStored())/100)+","
+                    +incomeToText.format(((double)s.getAmountPerWeek())/100)+","
+                    +s.getPercent()+","+(s.getCanTakeFrom()==1?"TRUE":"FALSE"));
+        }
+        saveCSV.append("\n,,,,,,\n");
+        return saveCSV.toString();
     }
 
     /*********************************************************************************************
@@ -633,6 +687,17 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         return wA;
     }
 
+    public String getSpendingExport() {
+        List<Spending> sList = getAllSpend();
+        StringBuilder spendCSV = new StringBuilder();
+        spendCSV.append("Spending ID,Spending Description,Spending Amount,Spending Necessity,Spending From Savings,Spending DateTime,");
+        for(Spending s:sList) {
+            spendCSV.append("\n"+s.getId()+","+s.getDesc()+","+incomeToText.format(((double)s.getAmount())/100)+","+s.getNecessity()+","+s.getFromSaving()+","+s.getDateTimeString()+",");
+        }
+        spendCSV.append("\n,,,,,,\n");
+        return spendCSV.toString();
+    }
+
     /*********************************************************************************************
      Record Table Functions
      ********************************************************************************************/
@@ -681,8 +746,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
     public boolean editCurrentRecord(SpentRecord s) {
         SQLiteDatabase db = this.getWritableDatabase();
         String query = "UPDATE " + REC_TABLE +
-                " SET " + REC_COL_AMNT + " = " + s.getAmount() + "" +
-                " WHERE " + REC_COL_ID + " = (SELECT max("+REC_COL_ID+") FROM "+REC_TABLE+")";
+                " SET " + REC_COL_AMNT + " = " + s.getAmount() +
+                " WHERE " + REC_COL_ID + " = ( SELECT MAX("+REC_COL_ID+") FROM "+REC_TABLE+")";
 
         db.execSQL(query);
         return true;
@@ -705,4 +770,16 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         db.close();
         return s;
     }
+
+    public String getRecordExport() {
+        List<SpentRecord> rList = getAllRecord();
+        StringBuilder recordCSV = new StringBuilder();
+        recordCSV.append("Record ID,Record Start DateTime,Record Amount,,,,");
+        for(SpentRecord r:rList) {
+            recordCSV.append("\n"+r.getId()+","+r.getStartString()+","+r.getAmount()+",,,,");
+        }
+        recordCSV.append("\n,,,,,,\n");
+        return recordCSV.toString();
+    }
+
 }
