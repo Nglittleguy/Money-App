@@ -34,12 +34,15 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
 
     private PageViewModel pageViewModel;
 
-
-    private List<SpentRecord> spentList;
-    private DatabaseHelper db;
     private RecyclerView weeklySpend;
     private ImageButton exportButton;
 
+    private DatabaseHelper db;
+
+    private List<SpentRecord> spentList;
+
+
+    //Default method
     public static RecordFragment newInstance(int index) {
         RecordFragment fragment = new RecordFragment();
         Bundle bundle = new Bundle();
@@ -48,6 +51,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         return fragment;
     }
 
+    //Default method
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,6 +63,7 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         pageViewModel.setIndex(index);
     }
 
+    //First Usage
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
@@ -71,20 +76,25 @@ public class RecordFragment extends Fragment implements View.OnClickListener {
         return root;
     }
 
+    //Reload Fragment
     @Override
     public void onResume() {
-
         db = Databases.getDBHelper();
         spentList = db.getAllRecord();
+
+        //set recycler view for records, scroll to bottom
         RecordAdapter recAdapter = new RecordAdapter(getContext(), spentList, weeklySpend, this);
         weeklySpend.setAdapter(recAdapter);
         weeklySpend.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));
         weeklySpend.scrollToPosition(spentList.size()-1);
+
         super.onResume();
     }
 
+    //Export data if clicked export button
     @Override
     public void onClick(View v) {
         ((MainTab)getContext()).exportData();
     }
+
 }

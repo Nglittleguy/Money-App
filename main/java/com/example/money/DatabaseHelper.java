@@ -204,7 +204,10 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         incomeCSV.append("Income ID,Income Description,Income Amount,Income Increment,,,");
 
         for(Income i:iList) {
-            incomeCSV.append("\n"+i.getId()+","+i.getDesc()+","+incomeToText.format(((double)i.getAmountPerWeek())/100)+","+i.getInc()+",,,");
+            incomeCSV.append("\n"+i.getId()+","
+                    +i.getDesc()+","
+                    +incomeToText.format(((double)i.getAmountPerWeek())/100)+","
+                    +i.getInc()+",,,");
         }
         incomeCSV.append("\n,,,,,,\n");
         return incomeCSV.toString();
@@ -236,7 +239,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
                 ", " + SAVE_COL_PERC + " = " + s.getPercent() +
                 ", " + SAVE_COL_REMV + " = " + s.getCanTakeFrom() +
                 " WHERE " + SAVE_COL_ID + " = " + id;
-        Log.d("Success", "working on it");
         db.execSQL(query);
         return true;
     }
@@ -468,7 +470,8 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         saveCSV.append("Saving ID,Saving Description,Saving Limit Amount,Saving Amount Stored,Saving Amount per Week,Saving Percent,Saving Removable");
         for(Saving s:sList) {
             saveCSV.append("\n"+s.getId()+","+s.getDesc()+","
-                    +(s.getLimitStored()==Long.MAX_VALUE? s.getLimitStored() : incomeToText.format(((double)s.getLimitStored())/100))+","
+                    +(s.getLimitStored() == Long.MAX_VALUE?
+                        s.getLimitStored() : incomeToText.format(((double)s.getLimitStored())/100))+","
                     +incomeToText.format(((double)s.getAmountStored())/100)+","
                     +incomeToText.format(((double)s.getAmountPerWeek())/100)+","
                     +s.getPercent()+","+(s.getCanTakeFrom()==1?"TRUE":"FALSE"));
@@ -611,7 +614,6 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         c.put(SPEND_COL_NEC, s.getNecessity());
         c.put(SPEND_COL_FRS, s.getFromSaving());
         c.put(SPEND_COL_DT, getDateTime(s.getDateTime()));
-        Log.d("Success", "Adding to db: "+getDateTime(s.getDateTime()));
         return db.insert(SPEND_TABLE, null, c) != -1;
     }
 
@@ -692,7 +694,12 @@ public class DatabaseHelper extends SQLiteOpenHelper {
         StringBuilder spendCSV = new StringBuilder();
         spendCSV.append("Spending ID,Spending Description,Spending Amount,Spending Necessity,Spending From Savings,Spending DateTime,");
         for(Spending s:sList) {
-            spendCSV.append("\n"+s.getId()+","+s.getDesc()+","+incomeToText.format(((double)s.getAmount())/100)+","+s.getNecessity()+","+s.getFromSaving()+","+s.getDateTimeString()+",");
+            spendCSV.append("\n"+s.getId()+","
+                    +s.getDesc()+","
+                    +incomeToText.format(((double)s.getAmount())/100)+","
+                    +s.getNecessity()+","
+                    +s.getFromSaving()+","
+                    +s.getDateTimeString()+",");
         }
         spendCSV.append("\n,,,,,,\n");
         return spendCSV.toString();

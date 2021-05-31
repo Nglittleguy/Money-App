@@ -45,7 +45,6 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_saving_long_term);
 
-
         //Constraints
         manualPeriodInput = findViewById(R.id.manualSavingLTPeriod);
         amountLayout = findViewById(R.id.amountLayout);
@@ -148,7 +147,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     }
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddSavingLongTerm.this, "Failed to parse saving.", Toast.LENGTH_LONG).show();
                     updateWeeklySaving(periodOfWeeks, 0);
                 }
@@ -176,7 +175,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     }
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddSavingLongTerm.this, "Failed to parse percent", Toast.LENGTH_LONG).show();
                 }
             }
@@ -192,7 +191,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     }
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddSavingLongTerm.this, "Failed to parse percent", Toast.LENGTH_LONG).show();
                 }
                 if(aP)
@@ -246,7 +245,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     }
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddSavingLongTerm.this, "Failed to parse period", Toast.LENGTH_LONG).show();
                 }
 
@@ -263,7 +262,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     }
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddSavingLongTerm.this, "Failed to parse period", Toast.LENGTH_LONG).show();
                     updateWeeklySaving(periodOfWeeks, 0);
                 }
@@ -365,6 +364,9 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
         updateWeeklySavingView();
     }
 
+    /*
+    Updates the weekly savings based on a percentage
+     */
     public void updateWeeklySaving(double percent) {
         weeklySaving = (int) percent*Databases.getWeeklyAfterExpenses()/100;
         updateWeeklySavingView();
@@ -394,9 +396,8 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                 s = new Saving (-1, descriptionInput.getText().toString(), Long.MAX_VALUE, 0, weeklySaving, percent, 1);
 
             Boolean success;
-            if(edit) {
+            if(edit)
                 success = dbHelper.editOneSave(s, oldID);
-            }
             else
                 success = dbHelper.addOneSave(s);
             Intent leaveActivity;
@@ -408,7 +409,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
         }
         catch (Exception e) {
             Toast.makeText(this, "Failed to add saving", Toast.LENGTH_LONG).show();
-            Log.d("Success", e.toString());
+            Log.e("Exception", e.toString());
         }
     }
 

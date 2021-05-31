@@ -1,6 +1,7 @@
 package com.example.money;
 
 import android.content.Context;
+import android.util.Log;
 
 import java.text.DecimalFormat;
 import java.util.List;
@@ -25,8 +26,8 @@ public final class Databases {
 
     private static int weeklyAllowance;
     public static int getWeeklyAllowance() {return weeklyAllowance; }
-    public static void setWeeklyAllowance(Context c, boolean a) {
-        if(a)
+    public static void setWeeklyAllowance(Context c, boolean sameWeek) {
+        if(sameWeek)
             weeklyAllowance = db.getWeeklyAllowance();
         else {
             weeklyAllowance = db.updateSavingAmounts(c);

@@ -43,8 +43,6 @@ public class MainLoading extends AppCompatActivity {
     }
 
     public void setUp() {
-        Spending initialDate = new Spending(-1, "Last Date & Time", 0, true);
-        db.addOneSpend(initialDate);
         Intent leaveActivity = new Intent(this, MainImport.class);
         startActivity(leaveActivity);
     }

@@ -92,7 +92,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                     }
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddIncome.this, "Failed to parse income.", Toast.LENGTH_LONG).show();
                     updateWeeklyIncome(periodOfWeeks, 0);
                 }
@@ -102,6 +102,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
         //Period Input
         periodInput = findViewById(R.id.setIncomePeriod);
         periodInput.addTextChangedListener(new TextWatcher() {
+
             /*
                 https://stackoverflow.com/questions/34596536/android-edittext-with-suffix -
                 by kandroidj, Jan 4, 2016
@@ -126,10 +127,9 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                     }
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddIncome.this, "Failed to parse period", Toast.LENGTH_LONG).show();
                 }
-
             }
             @Override
             public void afterTextChanged(Editable s) {
@@ -143,7 +143,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                     }
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddIncome.this, "Failed to parse period", Toast.LENGTH_LONG).show();
                     updateWeeklyIncome(periodOfWeeks, 0);
                 }

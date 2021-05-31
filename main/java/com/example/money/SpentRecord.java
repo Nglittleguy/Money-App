@@ -72,7 +72,6 @@ public class SpentRecord {
         return c;
     }
 
-
     @Override
     public String toString() {
         return "SpentRecord{" +

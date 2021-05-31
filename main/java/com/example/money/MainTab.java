@@ -94,7 +94,7 @@ public class MainTab extends AppCompatActivity implements MoveSavingsDialog.Move
     @Override
     public void onBackPressed() { }
 
-    public void addSpending(View v){
+    public void addSpending(View view){
         Intent leaveActivity = new Intent(this, AddSpending.class);
         startActivity(leaveActivity);
     }

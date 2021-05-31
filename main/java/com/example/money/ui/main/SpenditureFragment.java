@@ -33,14 +33,14 @@ public class SpenditureFragment extends Fragment {
 
     private PageViewModel pageViewModel;
 
-
-    List<Spending> spendingList;
-    DatabaseHelper db;
     RecyclerView weeklySpend;
     TextView spentAmount;
 
+    DatabaseHelper db;
 
+    List<Spending> spendingList;
 
+    //Default method
     public static SpenditureFragment newInstance(int index) {
         SpenditureFragment fragment = new SpenditureFragment();
         Bundle bundle = new Bundle();
@@ -49,6 +49,7 @@ public class SpenditureFragment extends Fragment {
         return fragment;
     }
 
+    //Default method
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -60,6 +61,7 @@ public class SpenditureFragment extends Fragment {
         pageViewModel.setIndex(index);
     }
 
+    //First usage
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
@@ -73,32 +75,42 @@ public class SpenditureFragment extends Fragment {
         return root;
     }
 
+    //Reload fragment
     @Override
     public void onResume() {
-
         db = Databases.getDBHelper();
+
+        //set recycler view for spenditure
         spendingList = db.getAllSpend(true, ((MainTab)(getContext())).getStartOfWeek());
         SpentAdapter spentAdapter = new SpentAdapter(getContext(), spendingList, weeklySpend, this);
         weeklySpend.setAdapter(spentAdapter);
         weeklySpend.addItemDecoration(new DividerItemDecoration(getContext(), DividerItemDecoration.HORIZONTAL));
+
         updateTotal();
+
         super.onResume();
     }
 
 
-
+    //Update the total spent during this week
     public void updateTotal() {
         int total=0;
-        for(Spending s: spendingList) {
+        for(Spending s: spendingList)
             total+=s.getAmount();
-        }
+
+        //set the text
         spentAmount.setText("Since "+((MainTab)(getContext())).getStartOfWeek(2)+": "+Databases.centsToDollar(total));
     }
 
+    //Show description note of spenditure when pressed
     public void showSnackbar(Spending i) {
+
         SimpleDateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy - h:mm aa", Locale.getDefault());
+
         if(getActivity()!=null) {
             CoordinatorLayout tabLayout = getActivity().findViewById(R.id.tabCoordinatorLayout);
+
+            //split description to just have note
             String[] descNotes = i.getDesc().split(": ", 2);
             String note = "";
             if(descNotes[1].isEmpty())
@@ -106,6 +118,7 @@ public class SpenditureFragment extends Fragment {
             else
                 note = descNotes[1];
 
+            //display note of the description and the date time when purchased
             note += (" - "+dateFormat.format(i.getDateTime()));
             Snackbar s = Snackbar.make(tabLayout, note, Snackbar.LENGTH_SHORT);
             s.show();

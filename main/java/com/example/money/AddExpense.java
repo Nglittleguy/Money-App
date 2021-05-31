@@ -84,7 +84,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
                     }
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddExpense.this, "Failed to parse expense.", Toast.LENGTH_LONG).show();
                     updateWeeklyExpense(periodOfWeeks, 0);
                 }
@@ -118,7 +118,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
                     }
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddExpense.this, "Failed to parse period", Toast.LENGTH_LONG).show();
                 }
             }
@@ -134,7 +134,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
                     }
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddExpense.this, "Failed to parse period", Toast.LENGTH_LONG).show();
                     updateWeeklyExpense(periodOfWeeks, 0);
                 }
@@ -265,7 +265,6 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
         Income i;
         try {
             i = new Income(-1, descriptionInput.getText().toString(), weeklyExpense, -1);
-            Log.d("Success", i.toString());
             Boolean success;
             if(edit) {
                 success = dbHelper.editOneIncome(i, oldID);
@@ -281,7 +280,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
         }
         catch (Exception e) {
             Toast.makeText(this, "Failed to add expense", Toast.LENGTH_LONG).show();
-            Log.d("Success", e.toString());
+            Log.e("Exception", e.toString());
         }
     }
 
@@ -310,6 +309,5 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
         }
 
     }
-
 
 }

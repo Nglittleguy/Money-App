@@ -45,8 +45,6 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
         public void onClick(View v) {
             int iPos = getAdapterPosition();
             removeAt(iPos);
-            //Databases.getSavingHelper().removeOne(savingList.get(iPos));
-            Log.d("Success", iPos+"");
         }
 
     }
@@ -101,7 +99,11 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(!(typeOfParameter.equals(MainAddSavingGoal.class) && i.getAmountPerWeek()!=0 && c instanceof MainTab)) {
+                    if(typeOfParameter.equals(MainAddSavingGoal.class)) {
+                        Log.d("Success", "here i am "+i.getDesc());
+                        f.showDescription(i);
+                    }
+                    else if(i.getAmountPerWeek()!=0 && c instanceof MainTab) {
                         Intent editSaving = new Intent();
                         editSaving.putExtra("Edit", true);
                         editSaving.putExtra("WeeklySaving", i.getAmountPerWeek());
@@ -135,7 +137,7 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
                 else
                     holder.rowAmount.setText("" + Databases.centsToDollar(i.getAmountPerWeek()));
             }
-            holder.rowDesc.setText(""+i.getDesc()+"\t "+Databases.centsToDollar(i.getAmountStored()));
+            holder.rowDesc.setText(""+i.getDesc().split(" - ")[0]+"\t "+Databases.centsToDollar(i.getAmountStored()));
         }
 
     }

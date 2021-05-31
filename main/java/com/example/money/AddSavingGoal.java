@@ -41,8 +41,6 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
         setContentView(R.layout.activity_add_saving_goal);
 
 
-
-
         //Read Information of Previous Income for Editing
         Intent intent = getIntent();
         edit = intent.getBooleanExtra("Edit", false);
@@ -53,6 +51,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
         oldDesc = intent.getStringExtra("Description");
         alreadySaved = intent.getLongExtra("Stored", 0);
         update = intent.getBooleanExtra("Update", false);
+
         if(edit && oldDesc.length()>12) {
             int end = oldDesc.length();
             oldDay = new int[] {Integer.parseInt(oldDesc.substring(end-10, end-6)),
@@ -62,9 +61,9 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
                 oldDay[1]--;
             else
                 oldDay = new int[1];
-
-
         }
+
+        //Date selector to find difference in weeks
         currentDay = Calendar.getInstance();
         selectedDay = Calendar.getInstance();
         weeksDiff = 0;
@@ -106,18 +105,20 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
                     updateWeeklySaving();
                 }
                 catch (NumberFormatException e) {
-                    Log.d("Exception", e.toString());
+                    Log.e("Exception", e.toString());
                     Toast.makeText(AddSavingGoal.this, "Failed to parse saving.", Toast.LENGTH_LONG).show();
                     updateWeeklySaving(0);
                 }
             }
         });
 
+        //Setting the date when editing
         if(edit && oldDay.length==3) {
             savingInput.setText(Databases.centsToDollar(totalToSave));
             setDate(oldDay[0], oldDay[1], oldDay[2]);
         }
 
+        //Setting the old description (remove the date)
         descriptionInput = findViewById(R.id.savingGoalDesc);
         if(edit) {
             if(oldDesc!=null && oldDesc.length()>13)
@@ -128,28 +129,30 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
         button = findViewById(R.id.addSavingGoalButton);
         if(edit)
             button.setText("Update Saving");
-
-
     }
 
+    /*
+    Generates DatePicker dialog
+     */
     private void showDateDialog() {
         int year, month, day;
         year = selectedDay.get(Calendar.YEAR);
         month = selectedDay.get(Calendar.MONTH);
         day = selectedDay.get(Calendar.DAY_OF_MONTH);
-
-
-
         DatePickerDialog dialog = new DatePickerDialog(
                 this, this, year, month, day);
         dialog.show();
     }
 
+    //Sets the date via the DatePicker
     @Override
     public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
         setDate(year, month, dayOfMonth);
     }
 
+    /*
+    Sets the date via the DatePicker
+     */
     public void setDate(int year, int month, int dayOfMonth) {
         Calendar c = Calendar.getInstance();
         c.set(Calendar.YEAR, year);
@@ -166,6 +169,9 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
         updateWeeklySaving();
     }
 
+    /*
+    Finds the difference of the money left to set what needs to be saved
+     */
     public void updateWeeklySaving() {
         if(weeksDiff != 0 && getSavingAmount()>alreadySaved)
             weeklySaving = (int) Math.ceil((double)(getSavingAmount()-Long.valueOf(alreadySaved).intValue())/weeksDiff);
@@ -174,6 +180,9 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
         updateWeeklySavingView();
     }
 
+    /*
+    Updates the variable of weekly savings required
+     */
     public void updateWeeklySaving(int wS) {
         weeklySaving = wS;
         updateWeeklySavingView();
@@ -210,6 +219,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
         return amountInteger;
     }
 
+
     /*
     Update progress bar with saving
      */
@@ -230,6 +240,9 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
 
     }
 
+    /*
+    Finds the difference in weeks between 2 dates
+     */
     public int differenceInWeeks(Calendar a, Calendar b) {
         int weeks = 0;
         Calendar c = Calendar.getInstance();
@@ -242,7 +255,9 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
         return weeks;
     }
 
-
+    /*
+    Adds the saving of the current values to a list
+     */
     public void addSavingGoalToList(View v){
         if(weeklySaving==0 || descriptionInput.getText().toString().length()==0 || selectedDay==null)
             return;
@@ -256,12 +271,11 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
                     getSavingAmount(), alreadySaved, weeklySaving, 0, 0);
 
             Boolean success;
-            if(edit) {
+            if(edit)
                 success = dbHelper.editOneSave(s, oldID);
-            }
             else
                 success = dbHelper.addOneSave(s);
-                Log.d("Success", "Did it work? "+success+", "+s.toString());
+
             Intent leaveActivity;
             if(update)
                 leaveActivity = new Intent(this, MainLoading.class);
@@ -271,7 +285,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
         }
         catch (Exception e) {
             Toast.makeText(this, "Failed to add saving", Toast.LENGTH_LONG).show();
-            Log.d("Success", e.toString());
+            Log.e("Exception", e.toString());
         }
     }
 }

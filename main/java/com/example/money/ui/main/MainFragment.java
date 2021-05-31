@@ -39,16 +39,19 @@ public class MainFragment extends Fragment {
 
     private PageViewModel pageViewModel;
 
-    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
-    SimpleDateFormat dayFormat = new SimpleDateFormat("yyyyMMdd");
-    List<Spending> spendingList;
-    DatabaseHelper db;
     TextView remainingText, allowanceText;
-    int totalWeekly, spent;
     ProgressBar spentBar, overBar;
     ImageButton addSpending;
 
+    DatabaseHelper db;
 
+    int totalWeekly, spent;
+    List<Spending> spendingList;
+    SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault()),
+            dayFormat = new SimpleDateFormat("yyyyMMdd");
+
+
+    //Default method
     public static MainFragment newInstance(int index) {
         MainFragment fragment = new MainFragment();
         Bundle bundle = new Bundle();
@@ -57,6 +60,7 @@ public class MainFragment extends Fragment {
         return fragment;
     }
 
+    //Default method
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,52 +73,62 @@ public class MainFragment extends Fragment {
 
     }
 
-
+    //First usage
     @Override
     public View onCreateView(
             @NonNull LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
+
         View root = inflater.inflate(R.layout.main_fragment_tab, container, false);
         remainingText = root.findViewById(R.id.remainingFrag);
         allowanceText = root.findViewById(R.id.allowanceFrag);
-
         spentBar = root.findViewById(R.id.spentBarFrag);
         overBar = root.findViewById(R.id.overBarFrag);
         addSpending = root.findViewById(R.id.addSpendButton);
+
         db = Databases.getDBHelper();
-        totalWeekly = db.getWeeklyAllowance();
-        spent = updateTotal();
 
         return root;
     }
 
+    //Reload Fragment
     @Override
     public void onResume() {
         super.onResume();
+
         Date start = db.getLastDate();
+
+        //if new day, reload
         if(!(dayFormat.format(start)).equals(dayFormat.format(new Date()))) {
-            Log.d("Success", "Last start was "+dayFormat.format(start));
-            Log.d("Success", "Now is "+dayFormat.format(new Date()));
             ((MainTab)getContext()).forceLoading();
             return;
         }
+
+        //update allowance and spent
         totalWeekly = db.getWeeklyAllowance();
         spent = updateTotal();
     }
 
+    //Update the total spent - and reload record
     public int updateTotal() {
         int total=0, ratio = 0;
 
+        //get amount spent since start of week
         spendingList = db.getAllSpendFromWA(true, ((MainTab)(getContext())).getStartOfWeek());
-        for(Spending s: spendingList) {
+        for(Spending s: spendingList)
             total+=s.getAmount();
-        }
-        if(spent<totalWeekly) {
+
+        //if spent is less than weekly allowance, green progress bar - else, red progress bar
+        if(total<totalWeekly) {
             spentBar.setVisibility(View.VISIBLE);
             overBar.setVisibility(View.INVISIBLE);
+
+            //if non-zero allowance, find the ratio to set the progress bar
             if(totalWeekly!=0) {
-                ratio = 100 * (totalWeekly - spent) / totalWeekly;
+                ratio = 100 * (totalWeekly - total) / totalWeekly;
                 spentBar.setProgress(ratio);
+
+                //if more money than allowance, set green text
                 if(ratio>100)
                     remainingText.setTextColor(getActivity().getResources().getColor(R.color.myGreen));
             }
@@ -125,23 +139,28 @@ public class MainFragment extends Fragment {
         else {
             spentBar.setVisibility(View.INVISIBLE);
             overBar.setVisibility(View.VISIBLE);
-            if(spent>2*totalWeekly) {
-                ratio = -100* (spent - totalWeekly) / totalWeekly;
+
+            //if non-zero allowance and total spent exceeds the total allowance twice over, set red text
+            if(total>2*totalWeekly && totalWeekly!=0) {
+                ratio = -100* (total - totalWeekly) / totalWeekly;
                 overBar.setProgress(100);
                 remainingText.setTextColor(getActivity().getResources().getColor(R.color.myRed));
             }
             else {
+                //if non-zero allowance (so spent does not exceed twice over), set progress and ratio
                 if(totalWeekly!=0) {
-                    ratio = -100 * (spent - totalWeekly) / totalWeekly;
+                    ratio = -100 * (total - totalWeekly) / totalWeekly;
                     overBar.setProgress(-ratio);
                 }
                 else
                     overBar.setProgress(0);
             }
         }
+        //change the ratio that in the record to a new ratio
         SpentRecord s = new SpentRecord(-1, ratio);
         db.editCurrentRecord(s);
-        remainingText.setText(Databases.centsToDollar(totalWeekly-spent));
+
+        remainingText.setText(Databases.centsToDollar(totalWeekly-total));
         allowanceText.setText("Allowance per week: "+Databases.centsToDollar(totalWeekly));
 
         return total;

@@ -8,6 +8,10 @@ import androidx.lifecycle.ViewModel;
 
 public class PageViewModel extends ViewModel {
 
+    /*
+    I have no idea what's going on here. It's all just default stuff
+     */
+
     private MutableLiveData<Integer> mIndex = new MutableLiveData<>();
     private LiveData<String> mText = Transformations.map(mIndex, new Function<Integer, String>() {
         @Override

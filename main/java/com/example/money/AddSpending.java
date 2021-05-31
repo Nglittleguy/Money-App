@@ -27,11 +27,11 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
     private Switch plusOrMinus, necOrDesire;
     private Spinner descSpinner, sourceSpinner;
     private EditText amountInput, descInput;
+
     private DatabaseHelper db;
 
-    private int savingChosenPosition;
+    private int savingChosenPosition, amount;
     private String descMain;
-    private int amount;
     private boolean subMoney, necessity;
     private List<Saving> canTakeFrom;
 
@@ -40,10 +40,11 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_spending);
 
-        descMain = "";
         db = Databases.getDBHelper();
 
+        //Title and Description
         title = findViewById(R.id.spendingTitle);
+        descMain = "";
 
         //Description Spinner
         descSpinner = findViewById(R.id.selectSpendingDesc);
@@ -115,6 +116,7 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
         sourceSpinner = findViewById(R.id.selectSource);
         Saving defaultSaving = new Saving (-1, "Weekly Allowance", 0, 0, 0, 1);
 
+            //List of Savings that can be taken from, + weekly allowance
         canTakeFrom = db.getAllRemoveableSave();
         canTakeFrom.add(0, defaultSaving);
 
@@ -124,13 +126,16 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
         sourceSpinner.setAdapter(sourceAdapter);
         sourceSpinner.setOnItemSelectedListener(this);
 
-
         //Description Text Input
         descInput = findViewById(R.id.spendingDesc);
     }
 
+    /*
+    Spinner selection - both source and description
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+        //if description
         if(parent.equals(descSpinner)) {
             switch(position) {
                 case 0:                             //Groceries
@@ -163,17 +168,17 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
                 default:                            //Other
                     necOrDesire.setChecked(false);
             }
+            //set Necessity and Description
             descMain = getResources().getStringArray(R.array.spendingTypeValues)[position]+": ";
         }
+        //if source, set source
         if(parent.equals(sourceSpinner)) {
             savingChosenPosition = position;
         }
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
-
-    }
+    public void onNothingSelected(AdapterView<?> parent) { }
 
     /*
    Reads income amount from input
@@ -192,6 +197,7 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
                 amountInteger = 0;
         }
         catch (NumberFormatException e) {
+            Log.e("Exception", e.toString());
             Toast.makeText(this, "Failed to parse amount", Toast.LENGTH_LONG).show();
             amountInteger = 0;
         }
