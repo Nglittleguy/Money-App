@@ -17,6 +17,8 @@ import java.util.Locale;
 
 public class MainScreen extends AppCompatActivity {
 
+    //Deprecated Activity
+
     ListView spendView;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.getDefault());
@@ -60,9 +62,6 @@ public class MainScreen extends AppCompatActivity {
         }
 
     }
-
-
-
 
     public String getStartOfWeek() {
         Calendar c = Calendar.getInstance();

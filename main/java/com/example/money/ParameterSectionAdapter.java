@@ -23,6 +23,9 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
     List<Parameter> paramList;
     Class typeOfParameter;
 
+    /*
+    Single Parameter View
+     */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView rowDesc;
@@ -41,12 +44,12 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
             rowButton.setOnClickListener(this);
         }
 
+        //Remove parameter if button is clicked
         @Override
         public void onClick(View v) {
             int iPos = getAdapterPosition();
             removeAt(iPos);
         }
-
     }
 
     public ParameterSectionAdapter(Context c, List<Parameter> paramList, RecyclerView recyclerView, Class typeOfParameter, ParameterFragment f) {
@@ -61,6 +64,9 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
     @Override
     public ParameterSectionAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(c);
+        /*
+    Single Parameter Type View
+     */
         View v = inflater.inflate(R.layout.single_income, parent, false);
         ParameterSectionAdapter.ViewHolder vH = new ParameterSectionAdapter.ViewHolder(v);
         return vH;
@@ -69,7 +75,9 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
     @Override
     public void onBindViewHolder(@NonNull ParameterSectionAdapter.ViewHolder holder, int position) {
         Parameter j = paramList.get(position);
+        //Set values based on parameter type
         if(j instanceof Income){
+            //if income or expense, parse into Income
             Income i = (Income)j;
 
             holder.rowDesc.setText(""+i.getDesc());
@@ -79,7 +87,7 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
                 @Override
                 public void onClick(View v) {
                     Intent editIncome;
-                    if(typeOfParameter.equals(MainAddIncome.class))                          //Editing Income
+                    if(typeOfParameter.equals(MainAddIncome.class))         //Editing Income
                         editIncome = new Intent(c, AddIncome.class);
                     else                                                    //Editing Expense
                         editIncome = new Intent(c, AddExpense.class);
@@ -94,6 +102,7 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
             });
         }
         else if(j instanceof Saving) {
+            //if saving, parse into Saving
             Saving i = (Saving)j;
 
             holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -125,10 +134,11 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
                     }
                 }
             });
-
+            //set text if percent based, or not
             if(i.getPercent()!=0)
                 holder.rowAmount.setText(i.getPercent()+"% of Remaining");
             else {
+                //if done saving (no more amount) - orange text, "Completed", non-clickable; else get amount
                 if(i.getAmountPerWeek()==0) {
                     holder.rowAmount.setTextColor(f.getActivity().getResources().getColor(R.color.myOrange));
                     holder.rowAmount.setText("Completed");
@@ -147,9 +157,13 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
         return paramList.size();
     }
 
+    /*
+    Remove parameter
+     */
     public void removeAt(int pos) {
         Parameter i = paramList.get(pos);
         paramList.remove(pos);
+        //if removing saving, open dialog to handle remaining funds
         if(i instanceof Saving) {
             Databases.getDBHelper().removeOneSave((Saving) i);
             if(c instanceof MainTab) {
@@ -158,9 +172,10 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
         }
         if(i instanceof Income)
             Databases.getDBHelper().removeOneIncome((Income)i);
+        //notify recycler view that item is moved/changed
         notifyItemRemoved(pos);
         notifyItemRangeChanged(pos, paramList.size());
-
+        //update total
         if(f!=null)
             f.updateTotal();
         else

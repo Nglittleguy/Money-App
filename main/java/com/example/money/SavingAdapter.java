@@ -35,7 +35,6 @@ public class SavingAdapter extends RecyclerView.Adapter<SavingAdapter.ViewHolder
             rowDesc = itemView.findViewById(R.id.income_desc);
             rowAmount = itemView.findViewById(R.id.income_amount);
             rowButton = itemView.findViewById(R.id.income_remove_button);
-
             rowButton.setOnClickListener(this);
         }
 
@@ -43,8 +42,6 @@ public class SavingAdapter extends RecyclerView.Adapter<SavingAdapter.ViewHolder
         public void onClick(View v) {
             int iPos = getAdapterPosition();
             removeAt(iPos);
-            //Databases.getSavingHelper().removeOne(savingList.get(iPos));
-            Log.d("Success", iPos+"");
         }
 
     }
@@ -59,6 +56,7 @@ public class SavingAdapter extends RecyclerView.Adapter<SavingAdapter.ViewHolder
     @Override
     public SavingAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(c);
+        //Inflate recycler with single_income layout
         View v = inflater.inflate(R.layout.single_income, parent, false);
         ViewHolder vH = new ViewHolder(v);
         return vH;
@@ -67,26 +65,25 @@ public class SavingAdapter extends RecyclerView.Adapter<SavingAdapter.ViewHolder
     @Override
     public void onBindViewHolder(@NonNull SavingAdapter.ViewHolder holder, int position) {
         Saving i = savingList.get(position);
+        //set values based on either percent or amount per week
         if(i.getPercent()!=0)
             holder.rowAmount.setText(i.getPercent()+"% of Remaining");
         else
             holder.rowAmount.setText(""+Databases.centsToDollar(i.getAmountPerWeek()));
         holder.rowDesc.setText(""+i.getDesc()+"\t "+Databases.centsToDollar(i.getAmountStored()));
 
-
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //Edit saving if clicked
                 Intent editSaving = new Intent();
                 editSaving.putExtra("Edit", true);
                 editSaving.putExtra("WeeklySaving", i.getAmountPerWeek());
                 editSaving.putExtra("Percent", i.getPercent());
                 editSaving.putExtra("OldID", i.getId());
                 editSaving.putExtra("Description", i.getDesc());
-                if(c instanceof MainAddSavingLT) {
+                if(c instanceof MainAddSavingLT)
                     editSaving.setClass(c, AddSavingLongTerm.class);
-
-                }
                 else {
                     editSaving.putExtra("SavingTotal", i.getLimitStored());
                     editSaving.putExtra("Stored", i.getAmountStored());
@@ -103,6 +100,9 @@ public class SavingAdapter extends RecyclerView.Adapter<SavingAdapter.ViewHolder
         return savingList.size();
     }
 
+    /*
+    Remove saving when clicked on button
+     */
     public void removeAt(int pos) {
         Saving i = savingList.get(pos);
         savingList.remove(pos);

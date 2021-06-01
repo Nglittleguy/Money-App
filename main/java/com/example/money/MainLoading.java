@@ -13,18 +13,22 @@ public class MainLoading extends AppCompatActivity {
 
     private DatabaseHelper db;
 
-
+    /*
+    Initial Activity - starts everything up
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main_loading);
 
+        //Generate database, and set it
         db = new DatabaseHelper(this);
         Databases.setDBHelper(db);
 
         Date d = db.getLastDate();
 
         if(d==null) {
+            //no prior usage, so set up parameters
             setUp();
             return;
         }
@@ -32,21 +36,27 @@ public class MainLoading extends AppCompatActivity {
         Calendar c = Calendar.getInstance();
         c.setTime(d);
 
-        if(getStartOfWeek().before(c)) {
+        //Set weekly allowance if same or different week as last used
+        if(getStartOfWeek().before(c))
             Databases.setWeeklyAllowance(this, true);
-        }
-        else {
+        else
             Databases.setWeeklyAllowance(this, false);
-        }
+
         db.setLastDate();
         goToMainScreen();
     }
 
+    /*
+    Sets up parameters, or allows for import
+     */
     public void setUp() {
         Intent leaveActivity = new Intent(this, MainImport.class);
         startActivity(leaveActivity);
     }
 
+    /*
+    Goes to main tab
+     */
     public void goToMainScreen() {
         Intent leaveActivity = new Intent(this, MainTab.class);
         startActivity(leaveActivity);

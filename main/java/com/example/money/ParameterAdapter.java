@@ -27,11 +27,12 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
     ParameterFragment f;
     RecyclerView recyclerView;
     List<String> list = Arrays.asList("Weekly Income: ", "Weekly Expense: ", "Weekly Savings: ", "Weekly Goals: ");
-    List<Income> income;
-    List<Income> expense;
-    List<Saving> savingLT;
-    List<Saving> savingGoal;
+    List<Income> income, expense;
+    List<Saving> savingLT, savingGoal;
 
+    /*
+    Single Parameter Type View
+     */
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
 
         TextView parameterTitle;
@@ -51,6 +52,7 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
             parameterAddButton.setOnClickListener(this);
         }
 
+        //Add parameter if button is clicked
         @Override
         public void onClick(View v) {
             int iPos = getAdapterPosition();
@@ -66,6 +68,9 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
         }
     }
 
+    /*
+    Constructor for ParameterFragment
+     */
     public ParameterAdapter(Context c, RecyclerView recyclerView, List<Income> income,
                             List<Income> expense, List<Saving> savingLT, List<Saving> savingGoal,
                             ParameterFragment f) {
@@ -78,6 +83,9 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
         this.f = f;
     }
 
+    /*
+   Constructor without ParameterFragment
+    */
     public ParameterAdapter(Context c, RecyclerView recyclerView, List<Income> income,
                             List<Income> expense, List<Saving> savingLT, List<Saving> savingGoal) {
         this.c = c;
@@ -93,6 +101,7 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
     @Override
     public ParameterAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(c);
+        //Inflate the recycler view with parameter_section layout
         View v = inflater.inflate(R.layout.parameter_section, parent, false);
         ParameterAdapter.ViewHolder vH = new ParameterAdapter.ViewHolder(v);
         return vH;
@@ -103,10 +112,12 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
         String title = list.get(position);
         int total = 0;
 
+        //set values depending on the type of parameter (position), new recycler view per paramter type
         List<Parameter> send = new ArrayList<>();
         ParameterSectionAdapter sectionAdapter;
         switch(position) {
             case 0:
+                //Income
                 for(int i = 0; i<income.size(); i++) {
                     send.add(income.get(i));
                 }
@@ -116,6 +127,7 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
                 holder.parameterValue.setTextColor(ContextCompat.getColor(c, R.color.myGreen));
                 break;
             case 1:
+                //Expense
                 for(int i = 0; i<expense.size(); i++) {
                     send.add(expense.get(i));
                 }
@@ -125,6 +137,7 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
                 holder.parameterValue.setTextColor(ContextCompat.getColor(c, R.color.design_default_color_error));
                 break;
             case 2:
+                //Saving LT
                 for(int i = 0; i<savingLT.size(); i++) {
                     send.add(savingLT.get(i));
                 }
@@ -132,6 +145,7 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
                 sectionAdapter = new ParameterSectionAdapter(c, send, holder.childView, MainAddSavingLT.class, f);
                 break;
             default:
+                //Saving Goal
                 for(int i = 0; i<savingGoal.size(); i++) {
                     send.add(savingGoal.get(i));
                 }
@@ -148,13 +162,14 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
         return list.size();
     }
 
-
+    /*
+    Add parameter depending on type of parameter
+     */
     public void addParam(int pos) {
         Intent i = new Intent();
         switch(pos) {
             case 0: //Income
                 i = new Intent(c, AddIncome.class);
-
                 break;
             case 1: //Expense
                 i = new Intent(c, AddExpense.class);
@@ -168,7 +183,6 @@ public class ParameterAdapter extends RecyclerView.Adapter<ParameterAdapter.View
         }
         if(f!=null)
             i.putExtra("Update", true);
-
         c.startActivity(i);
     }
 

@@ -19,18 +19,24 @@ import java.util.List;
 
 public class MoveSavingsDialog extends AppCompatDialogFragment implements AdapterView.OnItemSelectedListener{
 
-    private Spinner sources;
     private DatabaseHelper db;
+
+    private MoveSavingListener mySavingListener;
+    private Spinner sources;
+
     private Saving chosenDest, from;
     private List<Saving> canTakeFrom;
-    private MoveSavingListener mySavingListener;
 
+    /*
+    Construct dialog to move remaining savings to another location
+     */
     @NonNull
     @Override
     public Dialog onCreateDialog(@Nullable Bundle savedInstanceState) {
 
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         LayoutInflater inflater = getActivity().getLayoutInflater();
+        //Take dialog layout from dialog_move_remaining
         View v = inflater.inflate(R.layout.dialog_move_remaining, null);
         builder.setView(v)
                 .setTitle("Remaining Funds Management")
@@ -42,12 +48,15 @@ public class MoveSavingsDialog extends AppCompatDialogFragment implements Adapte
                     }
                 });
 
+        //Get database
         db = Databases.getDBHelper();
 
+        //Generate list of savings to add to - including weekly allowance
         Saving defaultSaving = new Saving (-1, "Weekly Allowance", 0, 0, 0, 1);
         canTakeFrom = db.getAllLongTermSave();
         canTakeFrom.add(0, defaultSaving);
 
+        //Source spinner
         sources = v.findViewById(R.id.moveFundsSpinner);
         ArrayAdapter<Saving> sourceAdapter = new ArrayAdapter<Saving>(
                 getContext(), android.R.layout.simple_spinner_item, canTakeFrom);
@@ -55,20 +64,23 @@ public class MoveSavingsDialog extends AppCompatDialogFragment implements Adapte
         sources.setAdapter(sourceAdapter);
         sources.setOnItemSelectedListener(this);
 
-
         return builder.create();
     }
 
+    /*
+    Change destination of remaining funds
+     */
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         chosenDest = canTakeFrom.get(position);
     }
 
     @Override
-    public void onNothingSelected(AdapterView<?> parent) {
+    public void onNothingSelected(AdapterView<?> parent) { }
 
-    }
-
+    /*
+    Attaches listener to MainTab
+     */
     @Override
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
@@ -81,6 +93,9 @@ public class MoveSavingsDialog extends AppCompatDialogFragment implements Adapte
 
     }
 
+    /*
+    Set original saving, maintains remaining amount
+     */
     public void setFrom(Saving from) {
         this.from = from;
     }

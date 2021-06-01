@@ -27,9 +27,11 @@ public class MainParamCheck extends AppCompatActivity {
     private ProgressBar progress;
     private TextView remaining;
     private RecyclerView parameterList;
+
+    private DatabaseHelper dBHelper;
+
     private List<Income> iList, eList;
     private List<Saving> ltList, goalList;
-    private DatabaseHelper dBHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,13 +41,14 @@ public class MainParamCheck extends AppCompatActivity {
         progress = findViewById(R.id.progress);
         remaining = findViewById(R.id.totalRemaining);
 
+        //get parameters
         dBHelper = Databases.getDBHelper();
         iList = dBHelper.getAllIncome(true);
         eList = dBHelper.getAllIncome(false);
         ltList = dBHelper.getAllLongTermSave();
         goalList = dBHelper.getAllShortTermSave();
 
-
+        //set parameter recycler view
         parameterList= findViewById(R.id.allParameterList);
         ParameterAdapter paramAdapter = new ParameterAdapter(this, parameterList, iList, eList, ltList, goalList);
         parameterList.setAdapter(paramAdapter);
@@ -56,20 +59,24 @@ public class MainParamCheck extends AppCompatActivity {
     }
 
     @Override
-    public void onBackPressed() {
+    public void onBackPressed() { }
 
-    }
-
+    /*
+    Update the total value and progress bar
+     */
     public void updateTotal() {
         resetParameterValues();
         int incomeSubExpense =
                 (int)(100*(1- (double) Databases.getWeeklyExpenses()/Databases.getWeeklyIncome()));
+
         if(incomeSubExpense<=0)
             progress.setSecondaryProgress(0);
         else {
+            //set savings (orange)
             progress.setSecondaryProgress(incomeSubExpense);
             incomeSubExpense =
                     (int)(100*(1- (double) (Databases.getWeeklyExpenses()+Databases.getWeeklySaving())/Databases.getWeeklyIncome()));
+            //set remaining (green)
             if(incomeSubExpense<=0)
                 progress.setProgress(0);
             else
@@ -78,6 +85,9 @@ public class MainParamCheck extends AppCompatActivity {
         remaining.setText("Weekly Allowance: " + Databases.centsToDollar(Databases.getRemaining()));
     }
 
+    /*
+    Gets parameter values from database and sets text
+     */
     public void resetParameterValues() {
         for(int i = 0; i<4; i++) {
             if(parameterList.findViewHolderForAdapterPosition(i)!=null) {
@@ -98,14 +108,17 @@ public class MainParamCheck extends AppCompatActivity {
                             val = Databases.getWeeklySaving(false);
                             break;
                     }
-                    (((ParameterAdapter.ViewHolder) Objects.requireNonNull(parameterList.findViewHolderForAdapterPosition(i)))).setParameterValue(Databases.centsToDollar(val));
+                    (((ParameterAdapter.ViewHolder)
+                            Objects.requireNonNull(parameterList.findViewHolderForAdapterPosition(i))))
+                            .setParameterValue(Databases.centsToDollar(val));
                 }
             }
         }
     }
 
-
-
+    /*
+    Go back to loading to reset values
+     */
     public void nextPressed(View v) {
         Databases.setWeeklyAllowance(this, false);
         Intent leaveActivity = new Intent(this, MainLoading.class);
