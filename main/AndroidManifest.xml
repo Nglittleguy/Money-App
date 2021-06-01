@@ -13,13 +13,16 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Money">
         <activity android:name=".MainImport"
+            android:screenOrientation="portrait"
             android:parentActivityName="MainLoading"/>
         <activity
             android:name=".AddSpending"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainTab"/>
         <activity
             android:name=".MainTab"
             android:label="@string/title_activity_main_tab"
+            android:screenOrientation="portrait"
             android:theme="@style/Theme.Money.NoActionBar" />
         <activity android:name=".MainScreen" />
         <activity android:name=".MainLoading">
@@ -29,28 +32,36 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".MainParamCheck" />
+        <activity android:name=".MainParamCheck"
+            android:screenOrientation="portrait"/>
         <activity
             android:name=".MainAddSavingGoal"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainAddSavingLT" />
         <activity
             android:name=".AddSavingGoal"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainParamCheck" />
         <activity
             android:name=".MainAddSavingLT"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainAddExpense" />
         <activity
             android:name=".AddSavingLongTerm"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainParamCheck" />
         <activity
             android:name=".AddExpense"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainParamCheck" />
         <activity
             android:name=".MainAddExpense"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainAddIncome" />
         <activity android:name=".MainAddIncome" />
         <activity
             android:name=".AddIncome"
+            android:screenOrientation="portrait"
             android:parentActivityName=".MainParamCheck" />
 
         <provider
