@@ -1,9 +1,9 @@
 # Money-App
 Resource Link | Author | Date of Access | Concept
 --- | ---|---|---
-(https://www.youtube.com/watch?v=tZvjSl9dswg) | Caleb Curry | Apr 27, 2021 | General
-(https://www.youtube.com/watch?v=312RhjfetP8) | Shad Sluiter | Apr 30, 2021 | Database SQLite
-(https://www.youtube.com/watch?v=5Tm--PHhbJo) | Android WorldClub | May 3, 2021 | List Views
+https://www.youtube.com/watch?v=tZvjSl9dswg | Caleb Curry | Apr 27, 2021 | General
+https://www.youtube.com/watch?v=312RhjfetP8 | Shad Sluiter | Apr 30, 2021 | Database SQLite
+https://www.youtube.com/watch?v=5Tm--PHhbJo | Android WorldClub | May 3, 2021 | List Views
 https://www.youtube.com/watch?v=18VcnYN5_LM | Stevdza-San | May 3, 2021 | RecyclerView Lists
 https://www.youtube.com/watch?v=on_OrrX7Nw4 | Coding in Flow | May 3, 2021 | Spinner
 https://stackoverflow.com/questions/34596536/android-edittext-with-suffix | Kandroid | May 3, 2021 | Suffix
