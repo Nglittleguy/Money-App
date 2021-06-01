@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Money</string>
+    <string name="app_name">Coin</string>
     <string name="incomeTitleValue">Long Term Income</string>
     <string name="incomeDescriptionValue">Description</string>
     <string name="incomeValue">Income</string>
@@ -59,6 +59,14 @@
     <string name="notNecessityValue">Desire</string>
     <string name="addSpendingValue">Add Spending</string>
     <string name="updateExplainValue">Changes to weekly allowance will be reflected at the start of the next week.</string>
+    <string name="tab_text_4">Record</string>
+    <string name="totalRecordValue">Total Spending Record</string>
+    <string name="moveDialogDescValue">Please choose where the remaining funds should be put.</string>
+    <string name="confirmValue">Confirm</string>
+    <string name="importValue">Do you have a separate file in your "Downloads" to import?</string>
+    <string name="yesValue">Yes, Import</string>
+    <string name="noButtonValue">No, Proceed Without</string>
+    <string name="incomeNoteValue">Note</string>
     <string-array name="spendingTypeValues">
         <item>Groceries</item>
         <item>Dining</item>

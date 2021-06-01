@@ -7,7 +7,7 @@
         <item name="colorOnPrimary">@color/white</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/myBlue</item>
-        <item name="colorSecondaryVariant">@color/myBlue</item>
+        <item name="colorSecondaryVariant">@color/myLightBlue</item>
         <item name="colorOnSecondary">@color/black</item>
         <!-- Status bar color. -->
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
@@ -29,5 +29,16 @@
         <item name="android:progressDrawable">@drawable/green_bar</item>
         <item name="android:minHeight">10dip</item>
         <item name="android:maxHeight">20dip</item>
+    </style>
+
+    <style name="WhiteBackBar" parent="android:Widget.ProgressBar.Horizontal">
+        <item name="android:progressDrawable">@drawable/white_back_bar</item>
+        <item name="android:minHeight">10dip</item>
+        <item name="android:maxHeight">20dip</item>
+    </style>
+
+    <style name="TabLayoutStyle" parent="Theme.Money.AppBarOverlay">
+        <item name="android:textSize">13sp</item>
+        <item name="android:textStyle">bold</item>
     </style>
 </resources>
