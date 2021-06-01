@@ -211,7 +211,7 @@ public class AddSpending extends AppCompatActivity implements AdapterView.OnItem
             plusOrMinus.setText(R.string.spendValue);
         }
         else {
-            title.setText(R.string.incomeTitleValue);
+            title.setText(R.string.incomeValue);
             plusOrMinus.setText(R.string.notSpendValue);
         }
 

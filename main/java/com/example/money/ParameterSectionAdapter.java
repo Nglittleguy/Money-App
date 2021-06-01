@@ -108,11 +108,10 @@ public class ParameterSectionAdapter extends RecyclerView.Adapter<ParameterSecti
             holder.itemView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if(typeOfParameter.equals(MainAddSavingGoal.class)) {
-                        Log.d("Success", "here i am "+i.getDesc());
+                    if(typeOfParameter.equals(MainAddSavingGoal.class) && c instanceof MainTab) {
                         f.showDescription(i);
                     }
-                    else if(i.getAmountPerWeek()!=0 && c instanceof MainTab) {
+                    else if(i.getAmountPerWeek()!=0) {
                         Intent editSaving = new Intent();
                         editSaving.putExtra("Edit", true);
                         editSaving.putExtra("WeeklySaving", i.getAmountPerWeek());

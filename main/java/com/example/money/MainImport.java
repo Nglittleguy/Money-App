@@ -139,9 +139,9 @@ public class MainImport extends AppCompatActivity {
                         Spending s = new Spending(Integer.parseInt(val[0]),
                                 val[1],
                                 (int)(Double.parseDouble(val[2])*100),
-                                val[3].equals("TRUE"),
+                                (val[3].equals("true")),
                                 val[5],
-                                val[4].equals("TRUE"));
+                                val[4].equals("true"));
                         dBHelper.addOneSpend(s);
                     }
                 }
