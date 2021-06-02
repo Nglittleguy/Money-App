@@ -198,7 +198,7 @@ public class AddExpense extends AppCompatActivity implements AdapterView.OnItemS
                     if (amountDouble / 100 > Integer.MAX_VALUE)
                         Toast.makeText(AddExpense.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
 
-                    int amountInteger = (int) amountDouble * 100;
+                    int amountInteger = (int) (amountDouble * 100);
                     updateWeeklyExpense(periodOfWeeks, amountInteger);
                 }
                 else {

@@ -208,7 +208,7 @@ public class AddSavingGoal extends AppCompatActivity implements DatePickerDialog
                 if(amountDouble/100 > Integer.MAX_VALUE)
                     Toast.makeText(AddSavingGoal.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
 
-                amountInteger = (int) amountDouble*100;
+                amountInteger = (int) (amountDouble*100);
             }
             else
                 amountInteger = 0;

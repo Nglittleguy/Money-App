@@ -314,7 +314,7 @@ public class AddSavingLongTerm extends AppCompatActivity implements AdapterView.
                     if (amountDouble / 100 > Integer.MAX_VALUE)
                         Toast.makeText(AddSavingLongTerm.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
 
-                    int amountInteger = (int) amountDouble * 100;
+                    int amountInteger = (int) (amountDouble * 100);
                     updateWeeklySaving(periodOfWeeks, amountInteger);
                 }
                 else {

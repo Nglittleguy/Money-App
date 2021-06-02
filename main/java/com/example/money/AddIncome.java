@@ -234,7 +234,7 @@ public class AddIncome extends AppCompatActivity implements AdapterView.OnItemSe
                 if(amountDouble/100 > Integer.MAX_VALUE)
                     Toast.makeText(AddIncome.this, "Error, too large a weekly amount", Toast.LENGTH_LONG).show();
 
-                amountInteger = (int) amountDouble*100;
+                amountInteger = (int) (amountDouble*100);
                 if(taxes) {
                     amountInteger -= (int) Databases.taxAmount(amountInteger);
                 }
