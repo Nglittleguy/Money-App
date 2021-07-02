@@ -125,7 +125,7 @@ public class MainImport extends AppCompatActivity {
                         String[] val = line.split(",");
                         SpentRecord s = new SpentRecord(Integer.parseInt(val[0]),
                                 val[1],
-                                (int)(Double.parseDouble(val[2])*100));
+                                Integer.parseInt(val[2]));
                         dBHelper.addOneRecord(s);
                     }
                 }
